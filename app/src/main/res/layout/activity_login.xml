@@ -1,163 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/login_background"
+    android:fillViewport="true"
     tools:context=".LoginActivity">
 
-    <Spinner
-        android:id="@+id/languageSpinner"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/loginLogo"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:src="@drawable/logo"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/languageSpinner"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <TextView
-        android:id="@+id/recentLoginTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Recent Logins"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/loginLogo"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/recentLoginCard"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:layout_margin="10dp"
-        android:clickable="true"
-        app:layout_constraintTop_toBottomOf="@id/recentLoginTxt">
+        android:layout_height="wrap_content">
 
+        <!-- Language -->
+        <Spinner
+            android:id="@+id/languageSpinner"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/card_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Logo -->
         <ImageView
+            android:id="@+id/loginLogo"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/logo" />
+            android:layout_marginTop="10dp"
+            android:contentDescription="Kinnect logo"
+            android:src="@drawable/logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/languageSpinner" />
 
-
-        <LinearLayout
+        <!-- Recent Logins Title -->
+        <TextView
+            android:id="@+id/recentLoginTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:text="RECENT LOGINS"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/loginLogo" />
 
-            <TextView
+        <!-- Recent Login Card -->
+        <LinearLayout
+            android:id="@+id/recentLoginCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/card_background"
+            android:padding="16dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recentLoginTxt">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:contentDescription="Profile image"
+                android:src="@drawable/logo" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name"/>
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Jacob West"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:text="Tap to login" />
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tap to login"/>
+                android:backgroundTint="@color/transparent"
+                android:text="..."
+                android:textColor="@color/text_gray"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <Space
+        <!-- Username -->
+        <LinearLayout
+            android:id="@+id/usernameCard"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:orientation="vertical"
+            android:layout_marginVertical="20dp"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recentLoginCard">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/input_bg"
+                android:padding="8dp"
+                android:text="Mobile number or email"
+                android:textColor="@color/text_gray" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/input_bg"
+                android:hint="Enter email"
+                android:inputType="textEmailAddress"
+                android:padding="8dp" />
+
+        </LinearLayout>
+
+        <!-- Password -->
+        <LinearLayout
+            android:id="@+id/passwordCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/usernameCard">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/input_bg"
+                android:padding="8dp"
+                android:text="Password"
+                android:textColor="@color/text_gray" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/input_bg"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="8dp" />
+
+        </LinearLayout>
+
+        <!-- Login Button -->
         <Button
+            android:id="@+id/loginBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:backgroundTint="@color/primary_teal"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/passwordCard" />
+
+        <!-- Forgot Password -->
+        <TextView
+            android:id="@+id/forgotPasswordLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="..." />
+            android:clickable="true"
+            android:padding="16dp"
+            android:layout_marginVertical="10dp"
+            android:text="Forgot Password ?"
+            android:textColor="@color/primary_teal"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/loginBtn" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/usernameCard"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/recentLoginCard"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:padding="16dp">
-
-        <EditText
-            android:layout_width="200dp"
+        <!-- Create Account -->
+        <Button
+            android:id="@+id/createNewAccBtn"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            android:layout_marginVertical="100dp"
+            android:layout_marginHorizontal="20dp"
+            android:text="Create New Account"
+            android:textColor="@color/primary_teal"
+            android:textStyle="bold"
+            android:background="@drawable/outline_button"
+            android:backgroundTint="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/forgotPasswordLink" />
 
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/passwordCard"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/usernameCard"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:padding="16dp">
-
-        <EditText
-            android:layout_width="200dp"
+        <!-- Footer -->
+        <TextView
+            android:id="@+id/footer"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:layout_marginTop="20dp"
+            android:text="Kinnect from SMD"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createNewAccBtn" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/loginBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:backgroundTint="@color/primary_teal"
-        app:layout_constraintTop_toBottomOf="@id/passwordCard"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:padding="16dp"/>
-
-    <TextView
-        android:id="@+id/forgotPasswordLink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Forgot Password ?"
-        android:clickable="true"
-        android:textColor="@color/primary_teal"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/loginBtn"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:padding="16dp"/>
-
-    <Button
-        android:id="@+id/createNewAccBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create New Account"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/forgotPasswordLink"
-        app:layout_constraintBottom_toTopOf="@id/footer"/>
-
-    <TextView
-        android:id="@+id/footer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kinnect from SMD"
-        app:layout_constraintTop_toBottomOf="@id/createNewAccBtn"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
