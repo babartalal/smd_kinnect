@@ -8,4 +8,5 @@
     <color name="login_background">#DBDBDB</color>
     <color name="transparent">#00000000</color>
     <color name="card_background">#F5F5F5</color>
+    <color name="home_feed_background">#F0F2F5</color>
 </resources>
