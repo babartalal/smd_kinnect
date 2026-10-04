@@ -351,6 +351,7 @@
                         android:id="@+id/feedPostHeader"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -495,7 +496,7 @@
                             android:layout_weight="1"
                             android:textColor="@color/text_gray"
                             android:background="@color/transparent"
-                            app:iconTint="@color/black"
+                            app:iconTint="@color/text_gray"
                             app:icon="@drawable/outline_hand_bones_24"/>
 
                         <Button
@@ -505,7 +506,7 @@
                             android:layout_weight="1"
                             android:textColor="@color/text_gray"
                             android:background="@color/transparent"
-                            app:iconTint="@color/black"
+                            app:iconTint="@color/text_gray"
                             app:icon="@drawable/sharp_mode_comment_24" />
 
                         <Button
@@ -514,7 +515,7 @@
                             android:text="Share"
                             android:textColor="@color/text_gray"
                             android:background="@color/transparent"
-                            app:iconTint="@color/black"
+                            app:iconTint="@color/text_gray"
                             android:layout_weight="1"
                             app:icon="@drawable/rounded_arrow_top_right_24" />
 
@@ -528,10 +529,11 @@
                     android:id="@+id/feedPost2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/feedPostHeader"
+                        android:id="@+id/feedPostHeader2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -599,7 +601,7 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/feedPostCaption"
+                        android:id="@+id/feedPostCaption2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="caption"
