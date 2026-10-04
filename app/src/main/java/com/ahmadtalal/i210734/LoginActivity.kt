@@ -1,7 +1,10 @@
 package com.ahmadtalal.i210734
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -37,5 +40,12 @@ class LoginActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         languageSpinner.adapter = adapter
+
+        val createAccBtn = findViewById<Button>(R.id.createNewAccBtn)
+
+        createAccBtn.setOnClickListener {
+            val intent = Intent(this, CreateAccountActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
