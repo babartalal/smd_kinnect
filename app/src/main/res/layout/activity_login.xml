@@ -19,7 +19,6 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@color/card_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -54,7 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@color/card_background"
+            android:background="@drawable/bg_rounded_white"
             android:padding="16dp"
             android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="20dp"
@@ -114,6 +113,8 @@
             android:orientation="vertical"
             android:layout_marginVertical="20dp"
             android:layout_marginHorizontal="20dp"
+            android:background="@drawable/bg_rounded_white"
+            android:padding="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recentLoginCard">
@@ -121,7 +122,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/input_bg"
                 android:padding="8dp"
                 android:text="Mobile number or email"
                 android:textColor="@color/text_gray" />
@@ -129,7 +129,6 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/input_bg"
                 android:hint="Enter email"
                 android:inputType="textEmailAddress"
                 android:padding="8dp" />
@@ -144,6 +143,8 @@
             android:orientation="vertical"
             android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="20dp"
+            android:background="@drawable/bg_rounded_white"
+            android:padding="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/usernameCard">
@@ -151,7 +152,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/input_bg"
                 android:padding="8dp"
                 android:text="Password"
                 android:textColor="@color/text_gray" />
@@ -159,7 +159,6 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/input_bg"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:padding="8dp" />
