@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
@@ -28,7 +29,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kinnect" />
+                android:text="Kinnect"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:textColor="@color/primary_teal"/>
 
             <Space
                 android:layout_width="0dp"
@@ -38,12 +42,16 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/outline_search_24" />
+                android:src="@drawable/outline_search_24"
+                android:background="@drawable/bg_circle_grey"
+                android:padding="8dp" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/outline_sms_24" />
+                android:src="@drawable/outline_sms_24"
+                android:background="@drawable/bg_circle_grey"
+                android:padding="8dp" />
 
         </LinearLayout>
 
@@ -53,35 +61,65 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:layout_width="wrap_content"
+            <Space
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/rounded_home_24"
                 android:background="@color/transparent" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
+            <Space
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/rounded_group_24"
                 android:background="@color/transparent" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
+            <Space
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/rounded_add_business_24"
                 android:background="@color/transparent" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
+            <Space
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/rounded_notifications_24"
                 android:background="@color/transparent" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
+            <Space
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/outline_menu_24"
                 android:background="@color/transparent" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -114,7 +152,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="16dp"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:gravity="center_vertical">
 
 
                 <ImageView
@@ -128,12 +167,15 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:hint="Whats on your mind?"
-                    android:layout_weight="5"/>
+                    android:layout_weight="5"
+                    android:background="@drawable/woym_round_border"
+                    android:padding="8dp"/>
 
                 <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/outline_search_24"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/outline_image_24"
+                    android:background="@color/transparent"
                     android:layout_weight="1"/>
 
             </LinearLayout>
@@ -314,11 +356,196 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:src="@drawable/round_account_circle_24" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="8"
+                            android:orientation="vertical"
+                            >
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Lina Marsh"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=" is at " />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Clifton Beach"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2h" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="..."
+                            android:textStyle="bold"
+                            android:padding="2dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="X"
+                            android:textStyle="bold"
+                            android:padding="2dp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/feedPostCaption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="caption: Sunset walk with the crew. Worth every grain of sand in my shoes"
+                        android:layout_weight="1"/>
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/landscape1" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/landscape1"
+                                android:layout_weight="1"/>
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/landscape1"
+                                android:layout_weight="1"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Aisha and 1.2k others"
+                            android:layout_weight="1"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="86 comments"
+                            android:layout_weight="1"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12 shares"
+                            android:layout_weight="1"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#D3D3D3" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Like"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_gray"
+                            android:background="@color/transparent"
+                            app:iconTint="@color/black"
+                            app:icon="@drawable/outline_hand_bones_24"/>
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Comment"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_gray"
+                            android:background="@color/transparent"
+                            app:iconTint="@color/black"
+                            app:icon="@drawable/sharp_mode_comment_24" />
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Share"
+                            android:textColor="@color/text_gray"
+                            android:background="@color/transparent"
+                            app:iconTint="@color/black"
+                            android:layout_weight="1"
+                            app:icon="@drawable/rounded_arrow_top_right_24" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:id="@+id/feedPost2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/feedPostHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:src="@drawable/round_account_circle_24" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8"
                             android:orientation="vertical"
                             >
 
@@ -356,6 +583,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="..."
                             android:textStyle="bold"
                             android:padding="2dp" />
@@ -363,6 +591,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="X"
                             android:textStyle="bold"
                             android:padding="2dp" />
@@ -373,12 +602,39 @@
                         android:id="@+id/feedPostCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="caption" />
+                        android:text="caption"
+                        android:layout_weight="1"/>
 
-                    <ImageView
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/landscape1" />
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/landscape1" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/landscape1"
+                                android:layout_weight="1"/>
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/landscape1"
+                                android:layout_weight="1"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -388,19 +644,27 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Aisha and 1.2k others" />
+                            android:text="Aisha and 1.2k others"
+                            android:layout_weight="1"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="86 comments" />
+                            android:text="86 comments"
+                            android:layout_weight="1"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="12 shares" />
+                            android:text="12 shares"
+                            android:layout_weight="1"/>
 
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#D3D3D3" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -411,24 +675,33 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Like"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_gray"
+                            android:background="@color/transparent"
+                            app:iconTint="@color/black"
                             app:icon="@drawable/outline_hand_bones_24"/>
 
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Comment"
+                            android:layout_weight="1"
+                            android:textColor="@color/text_gray"
+                            android:background="@color/transparent"
+                            app:iconTint="@color/black"
                             app:icon="@drawable/sharp_mode_comment_24" />
 
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Share"
+                            android:textColor="@color/text_gray"
+                            android:background="@color/transparent"
+                            app:iconTint="@color/black"
+                            android:layout_weight="1"
                             app:icon="@drawable/rounded_arrow_top_right_24" />
 
                     </LinearLayout>
-
-
-
 
                 </LinearLayout>
 
