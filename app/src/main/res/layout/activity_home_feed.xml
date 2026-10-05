@@ -488,6 +488,7 @@
                         android:orientation="horizontal">
 
                         <Button
+                            android:id="@+id/likeBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Like"
@@ -521,7 +522,9 @@
 
                 </LinearLayout>
 
+
                 <LinearLayout
+                    android:id="@+id/reactionPicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -532,24 +535,28 @@
                     android:background="@drawable/reaction_picker_bg">
 
                     <ImageButton
+                        android:id="@+id/happyReaction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/outline_sentiment_very_satisfied_24"
                         android:background="@color/transparent"
                         android:padding="12dp"/>
                     <ImageButton
+                        android:id="@+id/wowReaction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/outline_sentiment_very_dissatisfied_24"
                         android:background="@color/transparent"
                         android:padding="12dp"/>
                     <ImageButton
+                        android:id="@+id/sadReaction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/outline_sentiment_dissatisfied_24"
                         android:background="@color/transparent"
                         android:padding="12dp"/>
                     <ImageButton
+                        android:id="@+id/angryReaction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/outline_sentiment_extremely_dissatisfied_24"
