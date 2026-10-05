@@ -333,19 +333,17 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!--Feed Posts -->
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="8dp"
-                android:background="@color/white">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:id="@+id/feedPost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="@color/white"
+                    android:layout_marginTop="8dp">
 
                     <LinearLayout
                         android:id="@+id/feedPostHeader"
@@ -523,193 +521,44 @@
 
                 </LinearLayout>
 
-
-
                 <LinearLayout
-                    android:id="@+id/feedPost2"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginBottom="45dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/reaction_picker_bg">
 
-                    <LinearLayout
-                        android:id="@+id/feedPostHeader2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:src="@drawable/round_account_circle_24" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="8"
-                            android:orientation="vertical"
-                            >
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="name"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text=" is at " />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="location"
-                                    android:textStyle="bold" />
-
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="2h" />
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="..."
-                            android:textStyle="bold"
-                            android:padding="2dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="X"
-                            android:textStyle="bold"
-                            android:padding="2dp" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/feedPostCaption2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="caption"
-                        android:layout_weight="1"/>
-
-
-                    <LinearLayout
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/landscape1" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/landscape1"
-                                android:layout_weight="1"/>
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/landscape1"
-                                android:layout_weight="1"/>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                        android:src="@drawable/outline_sentiment_very_satisfied_24"
+                        android:background="@color/transparent"
+                        android:padding="12dp"/>
+                    <ImageButton
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Aisha and 1.2k others"
-                            android:layout_weight="1"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="86 comments"
-                            android:layout_weight="1"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="12 shares"
-                            android:layout_weight="1"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#D3D3D3" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                        android:src="@drawable/outline_sentiment_very_dissatisfied_24"
+                        android:background="@color/transparent"
+                        android:padding="12dp"/>
+                    <ImageButton
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Like"
-                            android:layout_weight="1"
-                            android:textColor="@color/text_gray"
-                            android:background="@color/transparent"
-                            app:iconTint="@color/black"
-                            app:icon="@drawable/outline_hand_bones_24"/>
-
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Comment"
-                            android:layout_weight="1"
-                            android:textColor="@color/text_gray"
-                            android:background="@color/transparent"
-                            app:iconTint="@color/black"
-                            app:icon="@drawable/sharp_mode_comment_24" />
-
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Share"
-                            android:textColor="@color/text_gray"
-                            android:background="@color/transparent"
-                            app:iconTint="@color/black"
-                            android:layout_weight="1"
-                            app:icon="@drawable/rounded_arrow_top_right_24" />
-
-                    </LinearLayout>
-
+                        android:src="@drawable/outline_sentiment_dissatisfied_24"
+                        android:background="@color/transparent"
+                        android:padding="12dp"/>
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/outline_sentiment_extremely_dissatisfied_24"
+                        android:background="@color/transparent"
+                        android:padding="12dp"/>
                 </LinearLayout>
 
+            </FrameLayout>
 
-
-            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
