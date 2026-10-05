@@ -1,5 +1,6 @@
 package com.ahmadtalal.i210734
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -22,9 +23,15 @@ class HomeFeedActivity : AppCompatActivity() {
         }
 
 
+        val commentBtn = findViewById<Button>(R.id.commentBtn)
+        commentBtn.setOnClickListener {
+            val intent = Intent(this, CommentsActivity::class.java)
+            startActivity(intent)
+        }
+
+
         val likeBtn = findViewById<Button>(R.id.likeBtn)
         val reactionPicker = findViewById<LinearLayout>(R.id.reactionPicker)
-        val clickShield = findViewById<View>(R.id.clickShield)
 
         reactionPicker.visibility = View.GONE
 
@@ -36,10 +43,6 @@ class HomeFeedActivity : AppCompatActivity() {
         }
 
 
-        clickShield.setOnClickListener {
-            reactionPicker.visibility = View.GONE
-            clickShield.visibility = View.GONE
-        }
 
         val happyReactionBtn = findViewById<ImageButton>(R.id.happyReaction)
 

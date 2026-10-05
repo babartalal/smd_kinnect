@@ -500,6 +500,7 @@
                             app:icon="@drawable/outline_hand_bones_24"/>
 
                         <Button
+                            android:id="@+id/commentBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Comment"
