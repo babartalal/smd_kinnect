@@ -20,18 +20,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <ImageButton
                 android:id="@+id/commentSectionBackBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/outline_chevron_backward_24" />
+                android:src="@drawable/outline_chevron_backward_24"
+                android:backgroundTint="@color/transparent"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Comments" />
+                android:text="Comments"
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
             <Spinner
                 android:id="@+id/commentSortSpinner"
@@ -52,7 +61,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -67,7 +77,8 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/outline_chevron_forward_24" />
+                android:src="@drawable/outline_chevron_forward_24"
+                android:backgroundTint="@color/transparent"/>
 
         </LinearLayout>
 
@@ -83,9 +94,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#D3D3D3" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -126,7 +143,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/outline_photo_camera_24"
-                android:backgroundTint="@color/transparent" />
+                android:backgroundTint="@color/transparent"
+                app:iconTint="@color/primary_teal"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -154,7 +172,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/white">
 
             <FrameLayout
                 android:id="@+id/comment1"
@@ -184,7 +203,9 @@
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:background="@drawable/bg_comment_rounded"
+                                android:padding="8dp">
 
                                 <TextView
                                     android:layout_width="wrap_content"
