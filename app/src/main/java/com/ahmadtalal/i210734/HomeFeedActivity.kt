@@ -49,7 +49,12 @@ class HomeFeedActivity : AppCompatActivity() {
             true
         }
 
+        val createStoryCard = findViewById<LinearLayout>(R.id.createStoryCard)
 
+        createStoryCard.setOnClickListener {
+            val intent = Intent(this, StoryEditorActivity::class.java)
+            startActivity(intent)
+        }
 
         val happyReactionBtn = findViewById<ImageButton>(R.id.happyReaction)
 
