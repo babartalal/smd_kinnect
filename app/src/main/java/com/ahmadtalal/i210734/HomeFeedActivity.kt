@@ -45,8 +45,13 @@ class HomeFeedActivity : AppCompatActivity() {
         likeBtn.setOnClickListener {
 
             reactionPicker.visibility = View.VISIBLE
+        }
 
-            true
+        val homeFeedSearchBtn = findViewById<ImageButton>(R.id.homeFeedSearchBtn)
+
+        homeFeedSearchBtn.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
         }
 
 
