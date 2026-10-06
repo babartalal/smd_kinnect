@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".StoryViewerActivity">
+
+
+    <ImageView
+        android:id="@+id/storyMedia"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/landscape1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#66000000"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#66000000"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- TOP PROGRESS BARS -->
+    <LinearLayout
+        android:id="@+id/progressContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:progressDrawable="@drawable/bg_circle_grey"
+            android:progressTint="@color/white"
+            android:progress="100" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:progressDrawable="@drawable/bg_circle_grey"
+            android:progressTint="@color/white"
+            android:progress="40" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:progressDrawable="@drawable/bg_circle_grey"
+            android:progressTint="#80FFFFFF"
+            android:progress="0" />
+    </LinearLayout>
+
+    <!-- 3. USER HEADER -->
+    <LinearLayout
+        android:id="@+id/storyHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/progressContainer">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/round_account_circle_24" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jacob West"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginStart="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2h"
+                android:textColor="#CCFFFFFF"
+                android:textSize="14sp"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/moreOptionsBtn"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@color/transparent"
+            android:src="@drawable/outline_menu_24"
+            app:tint="@color/white" />
+
+        <ImageButton
+            android:id="@+id/closeStoryBtn"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/transparent"
+            android:src="@drawable/outline_cancel_24"
+        app:tint="@color/white" />
+    </LinearLayout>
+
+    <!-- 4. BOTTOM INTERACTION BAR -->
+    <LinearLayout
+        android:id="@+id/storyBottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Message Input -->
+        <EditText
+            android:id="@+id/replyInput"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:hint="Send message..."
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:paddingHorizontal="20dp"
+            android:background="@drawable/woym_round_border"
+            android:backgroundTint="#4DFFFFFF"
+            android:inputType="textShortMessage" />
+
+        <!-- Like/Heart Icon -->
+        <ImageButton
+            android:id="@+id/likeStoryBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:background="@color/transparent"
+            android:src="@drawable/outline_hand_bones_24"
+            app:tint="@color/white" />
+
+        <ImageButton
+            android:id="@+id/likeStoryBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:background="@color/transparent"
+            android:src="@drawable/rounded_ecg_heart_24"
+            app:tint="@color/white" />
+
+        <!-- Share/Send Icon -->
+        <ImageButton
+            android:id="@+id/shareStoryBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@color/transparent"
+            android:src="@drawable/outline_sentiment_very_satisfied_24"
+            app:tint="@color/white" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

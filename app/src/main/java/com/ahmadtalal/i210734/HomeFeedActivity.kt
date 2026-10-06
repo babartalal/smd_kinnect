@@ -49,6 +49,15 @@ class HomeFeedActivity : AppCompatActivity() {
             true
         }
 
+
+        val storyCard2 = findViewById<LinearLayout>(R.id.storyCard2)
+
+        storyCard2.setOnClickListener {
+            val intent = Intent(this, StoryViewerActivity::class.java)
+            startActivity(intent)
+        }
+
+
         val createStoryCard = findViewById<LinearLayout>(R.id.createStoryCard)
 
         createStoryCard.setOnClickListener {
