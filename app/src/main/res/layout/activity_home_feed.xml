@@ -103,6 +103,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
+                android:id="@+id/homeFeedNotificationsBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/rounded_notifications_24"
@@ -176,6 +177,7 @@
                     android:padding="8dp"/>
 
                 <ImageButton
+                    android:id="@+id/homeFeedPhotoPickerBtn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/outline_image_24"

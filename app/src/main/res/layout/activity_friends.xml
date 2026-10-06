@@ -41,7 +41,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
-                android:id="@+id/homeFeedSearchBtn"
+                android:id="@+id/friendsSearchBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/outline_search_24"
@@ -104,6 +104,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
+                android:id="@+id/friendsNotificationsBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/rounded_notifications_24"

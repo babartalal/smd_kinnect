@@ -68,6 +68,20 @@ class HomeFeedActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val homeFeedNotificationsBtn = findViewById<ImageButton>(R.id.homeFeedNotificationsBtn)
+
+        homeFeedNotificationsBtn.setOnClickListener {
+            val intent = Intent(this, NotificationsActivity::class.java)
+            startActivity(intent)
+        }
+
+        val homeFeedPhotoPickerBtn = findViewById<ImageButton>(R.id.homeFeedPhotoPickerBtn)
+
+        homeFeedPhotoPickerBtn.setOnClickListener {
+            val intent = Intent(this, PhotoPickerActivity::class.java)
+            startActivity(intent)
+        }
+
 
         val storyCard2 = findViewById<LinearLayout>(R.id.storyCard2)
 

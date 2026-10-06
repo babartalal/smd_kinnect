@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".NotificationsActivity">
+
+    <LinearLayout
+        android:id="@+id/notificationFixedTopSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notifications"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:textColor="@color/black"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/notificationsSearchBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/outline_search_24"
+                android:background="@drawable/bg_circle_grey"
+                android:padding="8dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/outline_sms_24"
+                android:background="@drawable/bg_circle_grey"
+                android:padding="8dp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/notificationsHomeBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/rounded_home_24"
+                android:background="@color/transparent" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/notificationFriendsBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/rounded_group_24"
+                android:background="@color/transparent" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/notificationMarketplaceBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/rounded_add_business_24"
+                android:background="@color/transparent" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/rounded_notifications_24"
+                android:background="@color/transparent" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/outline_menu_24"
+                android:background="@color/transparent" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <!--Dividing line-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#D3D3D3" />
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/headerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#D3D3D3"
+        app:layout_constraintTop_toBottomOf="@id/notificationFixedTopSection"/>
+
+    <!-- 3. MAIN SCROLLABLE CONTENT -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="32dp">
+
+            <!-- ================= TODAY SECTION ================= -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Notification 1: Like (Unread with blue tint) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:background="#E8F4FD"
+                android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/round_account_circle_24" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aisha Khan and 32 others"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 hours ago"
+                    android:textColor="@color/primary_teal"
+                    android:textSize="13sp"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <!-- Post Thumbnail for context -->
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerCrop"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/landscape1" />
+        </LinearLayout>
+
+        <!-- Notification 2: Comment -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:background="#E8F4FD"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/round_account_circle_24" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="David Chen commented: 'This looks amazing!'"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4 hours ago"
+                    android:textColor="@color/primary_teal"
+                    android:textSize="13sp"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <!-- Post Thumbnail -->
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerCrop"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/landscape1" />
+        </LinearLayout>
+
+        <!-- ================= EARLIER SECTION ================= -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Earlier"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Notification 3: Group Invite (Contains Action Button) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/round_account_circle_24" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Zain Raza replied to your comment"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Next time invite us"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yesterday"
+                    android:textColor="#808080"
+                    android:textSize="13sp"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <!-- Join Button -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_comment_rounded"
+                android:backgroundTint="@color/white"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+        <!-- Notification 4: Tagged in a post -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/round_account_circle_24" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New Post in SMD Class of 2026"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Assignment should be extended"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Oct 4"
+                    android:textColor="#808080"
+                    android:textSize="13sp"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_comment_rounded"
+                android:backgroundTint="@color/white"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="See Previous Notifications"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_comment_rounded"
+                android:backgroundTint="@color/text_gray"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="15dp"
+                android:textStyle="bold"
+                android:textSize="14sp"/>
+
+    </LinearLayout>
+</ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

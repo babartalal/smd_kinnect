@@ -29,8 +29,7 @@ class MarketplaceActivity : AppCompatActivity() {
         val marketplaceHomeBtn = findViewById<ImageButton>(R.id.marketplaceHomeBtn)
 
         marketplaceHomeBtn.setOnClickListener {
-            val intent = Intent(this, HomeFeedActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
 
@@ -39,6 +38,15 @@ class MarketplaceActivity : AppCompatActivity() {
         marketplaceFriendsBtn.setOnClickListener {
             val intent = Intent(this, FriendsActivity::class.java)
             startActivity(intent)
+            finish()
+        }
+
+        val marketplaceNotificationsBtn = findViewById<ImageButton>(R.id.marketplaceNotificationsBtn)
+
+        marketplaceNotificationsBtn.setOnClickListener {
+            val intent = Intent(this, NotificationsActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

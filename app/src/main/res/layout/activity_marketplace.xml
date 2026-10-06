@@ -103,6 +103,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
+                android:id="@+id/marketplaceNotificationsBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/rounded_notifications_24"
