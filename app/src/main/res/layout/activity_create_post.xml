@@ -130,6 +130,7 @@
 
         <!-- Photo/Video Row -->
         <LinearLayout
+            android:id="@+id/pickPhotoCreatePost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
