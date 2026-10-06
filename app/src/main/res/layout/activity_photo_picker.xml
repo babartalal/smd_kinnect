@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".PhotoPickerActivity">
+
+
+    <LinearLayout
+        android:id="@+id/pickerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/closeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:text="Cancel"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Photos"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"
+            android:textColor="@color/black" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/doneBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DONE"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/primary_teal" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/headerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#D3D3D3"
+        app:layout_constraintTop_toBottomOf="@id/pickerHeader"/>
+
+    <ImageView
+        android:id="@+id/selectedImagePreview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:scaleType="centerCrop"
+        android:src="@drawable/landscape1"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- THE PHOTO GRID -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/photoGridRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/selectedImagePreview"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="4"
+        tools:listitem="@layout/item_photo_grid"
+        tools:itemCount="30" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
