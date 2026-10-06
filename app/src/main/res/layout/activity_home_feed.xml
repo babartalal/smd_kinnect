@@ -79,6 +79,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
+                android:id="@+id/friendsBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/rounded_group_24"

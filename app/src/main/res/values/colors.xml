@@ -11,4 +11,5 @@
     <color name="home_feed_background">#F0F2F5</color>
     <color name="button_gray">#EEEEEE</color>
     <color name="yellow">#FFFF00</color>
+    <color name="red">#FF0000</color>
 </resources>

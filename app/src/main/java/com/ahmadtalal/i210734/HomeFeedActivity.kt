@@ -23,6 +23,13 @@ class HomeFeedActivity : AppCompatActivity() {
             insets
         }
 
+        val friendsBtn = findViewById<ImageButton>(R.id.friendsBtn)
+
+        friendsBtn.setOnClickListener {
+            val intent = Intent(this, FriendsActivity::class.java)
+            startActivity(intent)
+        }
+
         val woymTxtField = findViewById<EditText>(R.id.woym)
         woymTxtField.setOnClickListener {
             val intent = Intent(this, CreatePostActivity::class.java)
