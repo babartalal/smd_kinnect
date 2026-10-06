@@ -61,6 +61,13 @@ class HomeFeedActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val homeFeedMarketplaceBtn = findViewById<ImageButton>(R.id.homeFeedMarketplaceBtn)
+
+        homeFeedMarketplaceBtn.setOnClickListener {
+            val intent = Intent(this, MarketplaceActivity::class.java)
+            startActivity(intent)
+        }
+
 
         val storyCard2 = findViewById<LinearLayout>(R.id.storyCard2)
 
