@@ -24,8 +24,7 @@ class PhotoPickerActivity : AppCompatActivity() {
 
         val closeBtnPhotoPicker = findViewById<Button>(R.id.closeBtnPhotoPicker)
         closeBtnPhotoPicker.setOnClickListener {
-            val intent = Intent(this, CreatePostActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
 

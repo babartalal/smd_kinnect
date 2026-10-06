@@ -22,8 +22,7 @@ class CommentsActivity : AppCompatActivity() {
 
         val commentSectionBackBtn = findViewById<ImageButton>(R.id.commentSectionBackBtn)
         commentSectionBackBtn.setOnClickListener {
-            val intent = Intent(this, HomeFeedActivity::class.java)
-            startActivity(intent)
+            finish()
         }
     }
 

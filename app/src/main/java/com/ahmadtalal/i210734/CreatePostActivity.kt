@@ -21,6 +21,12 @@ class CreatePostActivity : AppCompatActivity() {
             insets
         }
 
+        val openCamera = findViewById<LinearLayout>(R.id.openCamera)
+        openCamera.setOnClickListener {
+            val intent = Intent(this, CameraActivity::class.java)
+            startActivity(intent)
+        }
+
         val pickPhotoCreatePost = findViewById<LinearLayout>(R.id.pickPhotoCreatePost)
         pickPhotoCreatePost.setOnClickListener {
             val intent = Intent(this, PhotoPickerActivity::class.java)
@@ -29,8 +35,7 @@ class CreatePostActivity : AppCompatActivity() {
 
         val createPostbackBtn = findViewById<ImageButton>(R.id.createPostbackBtn)
         createPostbackBtn.setOnClickListener {
-            val intent = Intent(this, HomeFeedActivity::class.java)
-            startActivity(intent)
+            finish()
         }
     }
 }

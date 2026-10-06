@@ -71,17 +71,13 @@ class CreateAccountActivity : AppCompatActivity() {
         val loginLink = findViewById<TextView>(R.id.loginLink)
 
         loginLink.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-
-            startActivity(intent)
+            finish()
         }
 
         val backToLoginBtn = findViewById<Button>(R.id.backToLoginBtn)
 
         backToLoginBtn.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-
-            startActivity(intent)
+            finish()
         }
     }
 }
