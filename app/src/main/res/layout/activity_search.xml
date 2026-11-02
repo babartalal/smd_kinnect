@@ -1,66 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/bg_warm_offwhite"
     tools:context=".SearchActivity">
 
-    <!--FIXED SEARCH HEADER -->
+    <!-- Top Search Bar -->
     <LinearLayout
-        android:id="@+id/searchHeader"
+        android:id="@+id/topSearchBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="56dp"
+        android:background="@color/white"
         android:gravity="center_vertical"
-        android:padding="12dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/searchBackBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:background="@color/transparent"
-            android:src="@drawable/outline_chevron_backward_24"
-            app:tint="@color/black" />
+            android:contentDescription="Back"
+            android:padding="6dp"
+            android:src="@drawable/rounded_arrow_back_ios_24"
+            app:tint="@color/text_dark" />
 
-        <EditText
-            android:id="@+id/searchInput"
+        <!-- Search Input Box -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="40dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/bg_circle_grey"
-            android:hint="Search"
-            android:paddingHorizontal="16dp"
-            android:drawableStart="@drawable/outline_search_24"
-            android:drawablePadding="8dp"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
-            android:textColor="@color/black"
-            android:textColorHint="#808080" />
+            android:background="@drawable/bg_pill_gray"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="14dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:contentDescription="Search"
+                android:src="@drawable/outline_search_24"
+                app:tint="@color/text_gray" />
+
+            <EditText
+                android:id="@+id/searchEt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:text="omar"
+                android:textColor="@color/text_dark"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="Clear"
+                android:src="@drawable/outline_cancel_24"
+                app:tint="@color/text_gray" />
+        </LinearLayout>
     </LinearLayout>
 
-    <View
-        android:id="@+id/headerDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#D3D3D3"
-        app:layout_constraintTop_toBottomOf="@id/searchHeader"/>
-
-    <!--FILTER TABS;l; ALSO FIXED -->
+    <!-- Filter Category Pills Row -->
     <HorizontalScrollView
-        android:id="@+id/searchFiltersScroll"
+        android:id="@+id/filterScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="10dp"
         android:scrollbars="none"
-        android:paddingVertical="12dp"
-        android:clipToPadding="false"
-        android:paddingHorizontal="16dp"
-        app:layout_constraintTop_toBottomOf="@id/headerDivider">
+        app:layout_constraintTop_toBottomOf="@id/topSearchBar">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -69,441 +87,448 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_rounded_teal"
+                android:gravity="center"
+                android:paddingHorizontal="18dp"
                 android:text="All"
                 android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:background="@drawable/bg_circle_grey"
-                android:backgroundTint="@color/black"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginEnd="8dp"/>
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_pill_gray"
+                android:gravity="center"
+                android:paddingHorizontal="18dp"
                 android:text="People"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:background="@drawable/bg_circle_grey"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginEnd="8dp"/>
+                android:textColor="@color/text_dark"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_pill_gray"
+                android:gravity="center"
+                android:paddingHorizontal="18dp"
                 android:text="Posts"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:background="@drawable/bg_circle_grey"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginEnd="8dp"/>
+                android:textColor="@color/text_dark"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_pill_gray"
+                android:gravity="center"
+                android:paddingHorizontal="18dp"
                 android:text="Groups"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:background="@drawable/bg_circle_grey"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp" />
+                android:textColor="@color/text_dark"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_pill_gray"
+                android:gravity="center"
+                android:paddingHorizontal="18dp"
                 android:text="Marketplace"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:background="@drawable/bg_circle_grey"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp" />
+                android:textColor="@color/text_dark"
+                android:textSize="13sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </HorizontalScrollView>
 
+    <View
+        android:id="@+id/filterDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0DDD7"
+        app:layout_constraintTop_toBottomOf="@id/filterScroll" />
+
+    <!-- Scrollable Search Results -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/searchFiltersScroll"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filterDivider">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="32dp">
+            android:paddingBottom="24dp">
 
-
-            <!-- == PEOPLE == -->
+            <!-- Section: People -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
                 android:text="People"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"/>
+                android:textColor="@color/text_dark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
+            <!-- Person 1: Omar Farooq -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:gravity="center_vertical">
+                android:paddingVertical="10dp">
 
-                <ImageView
+                <TextView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/round_account_circle_24" />
+                    android:background="@drawable/bg_circle_teal"
+                    android:gravity="center"
+                    android:text="OF"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Omar Farooq"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
+                        android:textColor="@color/text_dark"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Friend. Lives in Karachi"
-                        android:textColor="#808080"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="2dp"
+                        android:text="Friend · Lives in Karachi"
+                        android:textColor="@color/text_gray"
+                        android:textSize="13sp" />
                 </LinearLayout>
-
-
             </LinearLayout>
 
-            <!-- People Item 1 -->
+            <!-- Person 2: Omar Siddiqui -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:gravity="center_vertical">
+                android:paddingVertical="10dp">
 
-                <ImageView
+                <TextView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/round_account_circle_24" />
+                    android:background="@drawable/bg_circle_teal"
+                    android:backgroundTint="@color/accent_slate"
+                    android:gravity="center"
+                    android:text="OS"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Omar Siddiqui"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
+                        android:textColor="@color/text_dark"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12 ,utual friends. FAST NUCES"
-                        android:textColor="#808080"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="2dp"
+                        android:text="12 mutual friends · FAST-NUCES"
+                        android:textColor="@color/text_gray"
+                        android:textSize="13sp" />
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add"
-                    android:textColor="@color/white"
-                    android:background="@drawable/bg_circle_grey"
-                    android:backgroundTint="#1877F2"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="6dp"
-                    android:textStyle="bold"
-                    android:textSize="14sp"/>
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_pill_gray"
+                    android:contentDescription="Add friend"
+                    android:padding="8dp"
+                    android:src="@drawable/outline_person_add_24"
+                    app:tint="@color/primary_teal" />
             </LinearLayout>
 
-            <!-- People Item 2 -->
+            <!-- Person 3: Omar Tariq -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:gravity="center_vertical">
+                android:paddingVertical="10dp">
 
-                <ImageView
+                <TextView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/round_account_circle_24" />
+                    android:background="@drawable/bg_circle_teal"
+                    android:backgroundTint="@color/accent_rust"
+                    android:gravity="center"
+                    android:text="OT"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Omar Tariq"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
+                        android:textColor="@color/text_dark"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Works at Daraz. 3 mutual friends"
-                        android:textColor="#808080"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="2dp"
+                        android:text="Works at Daraz · 3 mutual friends"
+                        android:textColor="@color/text_gray"
+                        android:textSize="13sp" />
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add"
-                    android:textColor="@color/white"
-                    android:background="@drawable/bg_circle_grey"
-                    android:backgroundTint="#1877F2"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="6dp"
-                    android:textStyle="bold"
-                    android:textSize="14sp"/>
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_pill_gray"
+                    android:contentDescription="Add friend"
+                    android:padding="8dp"
+                    android:src="@drawable/outline_person_add_24"
+                    app:tint="@color/primary_teal" />
             </LinearLayout>
+
+            <!-- See all people button -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Join"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_comment_rounded"
-                android:backgroundTint="@color/text_gray"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="6dp"
-                android:layout_marginHorizontal="10dp"
-                android:textStyle="bold"
-                android:textSize="14sp"/>
+                android:background="@color/white"
+                android:gravity="center"
+                android:paddingVertical="12dp"
+                android:text="See all people"
+                android:textColor="@color/primary_teal"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-            <!-- == GROUPS == -->
+            <!-- Section: Groups -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
                 android:text="Groups"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"/>
+                android:textColor="@color/text_dark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-            <!-- Group item 1 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:gravity="center_vertical">
+                android:paddingVertical="10dp">
 
-                <ImageView
+                <TextView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@drawable/bg_circle_grey"
-                    android:src="@drawable/ic_launcher_foreground"
-                    android:padding="8dp"/>
+                    android:background="@drawable/bg_circle_teal"
+                    android:backgroundTint="@color/accent_purple"
+                    android:gravity="center"
+                    android:text="OP"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Omer's Photography Circle"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
+                        android:text="Omar's Photography Circle"
+                        android:textColor="@color/text_dark"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2.4K Members"
-                        android:textColor="#808080"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="2dp"
+                        android:text="Public · 2.4K members · 10+ posts a..."
+                        android:textColor="@color/text_gray"
+                        android:textSize="13sp" />
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <Button
+                    android:layout_width="72dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_rounded_teal"
+                    android:backgroundTint="@null"
+                    android:padding="0dp"
                     android:text="Join"
+                    android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:background="@drawable/bg_circle_grey"
-                    android:backgroundTint="#1877F2"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="6dp"
-                    android:textStyle="bold"
-                    android:textSize="14sp"/>
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- i== RECENT SEARCHES == -->
+            <!-- Section: Recent searches -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:text="Recent searches"
+                android:textColor="@color/text_dark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="10dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="History"
+                    android:src="@drawable/baseline_access_time_24"
+                    app:tint="@color/text_gray" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:text="Recent"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textColor="@color/black" />
+                    android:text="lina marsh"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Clear"
+                    android:src="@drawable/outline_cancel_24"
+                    app:tint="@color/text_gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="10dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="History"
+                    android:src="@drawable/baseline_access_time_24"
+                    app:tint="@color/text_gray" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="See all"
-                    android:textColor="#1877F2"
-                    android:textSize="14sp" />
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:text="study desk karachi"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Clear"
+                    android:src="@drawable/outline_cancel_24"
+                    app:tint="@color/text_gray" />
             </LinearLayout>
 
-            <!-- Recent item 1 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:gravity="center_vertical">
+                android:paddingVertical="10dp">
 
                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/baseline_access_time_24" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="lina marsh"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-                <ImageButton
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:background="@color/transparent"
-                    android:src="@drawable/outline_cancel_24"
-                    app:tint="#808080" />
-            </LinearLayout>
-            <!-- Recent item 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:gravity="center_vertical">
+                    android:contentDescription="History"
+                    android:src="@drawable/baseline_access_time_24"
+                    app:tint="@color/text_gray" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:text="SMD Class of 2026"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
 
                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/baseline_access_time_24" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="study desk karachi"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <ImageButton
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:background="@color/transparent"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Clear"
                     android:src="@drawable/outline_cancel_24"
-                    app:tint="#808080" />
-            </LinearLayout>
-            <!-- Recent item 3 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/baseline_access_time_24" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="SMD Class of 2026"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-                <ImageButton
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:background="@color/transparent"
-                    android:src="@drawable/outline_cancel_24"
-                    app:tint="#808080" />
+                    app:tint="@color/text_gray" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

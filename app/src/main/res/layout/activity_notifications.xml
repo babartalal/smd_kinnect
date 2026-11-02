@@ -1,415 +1,704 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/bg_warm_offwhite"
     tools:context=".NotificationsActivity">
 
+    <!-- Fixed Header Section -->
     <LinearLayout
-        android:id="@+id/notificationFixedTopSection"
+        android:id="@+id/fixedTopSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-
+        <!-- Top Header Title & Search/Chat Icons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:paddingHorizontal="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="8dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Notifications"
-                android:textStyle="bold"
-                android:textSize="30sp"
-                android:textColor="@color/black"/>
-
-            <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="Notifications"
+                android:textColor="@color/text_dark"
+                android:textSize="26sp"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/notificationsSearchBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_pill_gray"
+                android:contentDescription="Search"
+                android:padding="8dp"
                 android:src="@drawable/outline_search_24"
-                android:background="@drawable/bg_circle_grey"
-                android:padding="8dp" />
+                app:tint="@color/text_dark" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/outline_sms_24"
-                android:background="@drawable/bg_circle_grey"
-                android:padding="8dp" />
+            <FrameLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp">
 
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_pill_gray"
+                    android:contentDescription="Chats"
+                    android:padding="8dp"
+                    android:src="@drawable/outline_sms_24"
+                    app:tint="@color/text_dark" />
+
+                <TextView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="top|end"
+                    android:background="@drawable/bg_circle_red_badge"
+                    android:gravity="center"
+                    android:text="3"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
         </LinearLayout>
 
-
+        <!-- Navigation Tabs Row -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:orientation="horizontal">
 
-            <Space
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true">
 
-            <ImageButton
-                android:id="@+id/notificationsHomeBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_home_24"
-                android:background="@color/transparent" />
+                <ImageView
+                    android:id="@+id/notificationsHomeBtn"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Home"
+                    android:src="@drawable/rounded_home_24"
+                    app:tint="@color/text_gray" />
+            </FrameLayout>
 
-            <Space
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true">
 
-            <ImageButton
-                android:id="@+id/notificationFriendsBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_group_24"
-                android:background="@color/transparent" />
+                <ImageView
+                    android:id="@+id/notificationFriendsBtn"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Friends"
+                    android:src="@drawable/rounded_group_24"
+                    app:tint="@color/text_gray" />
+            </FrameLayout>
 
-            <Space
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true">
 
-            <ImageButton
-                android:id="@+id/notificationMarketplaceBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_add_business_24"
-                android:background="@color/transparent" />
+                <ImageView
+                    android:id="@+id/notificationMarketplaceBtn"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Marketplace"
+                    android:src="@drawable/rounded_add_business_24"
+                    app:tint="@color/text_gray" />
+            </FrameLayout>
 
-            <Space
+            <!-- Notifications Tab (Selected with '5' Badge) -->
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true">
 
-            <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_notifications_24"
-                android:background="@color/transparent" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-            <Space
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Notifications"
+                        android:src="@drawable/rounded_notifications_24"
+                        app:tint="@color/primary_teal" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/primary_teal" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_circle_red_badge"
+                    android:gravity="center"
+                    android:text="5"
+                    android:textColor="@color/white"
+                    android:textSize="9sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true">
 
-            <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/outline_menu_24"
-                android:background="@color/transparent" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Menu"
+                    android:src="@drawable/outline_menu_24"
+                    app:tint="@color/text_gray" />
+            </FrameLayout>
         </LinearLayout>
 
-        <!--Dividing line-->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#D3D3D3" />
+            android:background="#E0DDD7" />
     </LinearLayout>
 
-
-    <View
-        android:id="@+id/headerDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#D3D3D3"
-        app:layout_constraintTop_toBottomOf="@id/notificationFixedTopSection"/>
-
-    <!-- 3. MAIN SCROLLABLE CONTENT -->
+    <!-- Scrollable Notifications Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/headerDivider"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fixedTopSection">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="32dp">
+            android:paddingBottom="24dp">
 
-            <!-- ================= TODAY SECTION ================= -->
+            <!-- Section Header: New -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="14dp"
+                android:paddingBottom="8dp"
                 android:text="New"
-                android:textStyle="bold"
+                android:textColor="@color/text_dark"
                 android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"/>
+                android:textStyle="bold" />
 
-            <!-- Notification 1: Like (Unread with blue tint) -->
+            <!-- Notification 1: Aisha Khan Reaction -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#E6F2F2"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:background="#E8F4FD"
-                android:gravity="center_vertical">
+                android:paddingVertical="12dp">
 
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/round_account_circle_24" />
+                <FrameLayout
+                    android:layout_width="52dp"
+                    android:layout_height="52dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_circle_teal"
+                        android:backgroundTint="@color/accent_rust"
+                        android:gravity="center"
+                        android:text="AK"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/bg_circle_teal"
+                        android:contentDescription="Heart"
+                        android:padding="3dp"
+                        android:src="@drawable/rounded_ecg_heart_24"
+                        app:tint="@color/badge_red" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Aisha Khan and 32 others reacted to your photo."
+                        android:textColor="@color/text_dark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="5m"
+                        android:textColor="@color/primary_teal"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Aisha Khan and 32 others"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2 hours ago"
-                    android:textColor="@color/primary_teal"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"/>
+                    android:padding="8dp"
+                    android:text="•••"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- Post Thumbnail for context -->
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:scaleType="centerCrop"
-                android:layout_marginStart="12dp"
-                android:src="@drawable/landscape1" />
-        </LinearLayout>
-
-        <!-- Notification 2: Comment -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:background="#E8F4FD"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/round_account_circle_24" />
-
+            <!-- Notification 2: Sara Iqbal Friend Request -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="David Chen commented: 'This looks amazing!'"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="4 hours ago"
-                    android:textColor="@color/primary_teal"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-
-            <!-- Post Thumbnail -->
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:scaleType="centerCrop"
-                android:layout_marginStart="12dp"
-                android:src="@drawable/landscape1" />
-        </LinearLayout>
-
-        <!-- ================= EARLIER SECTION ================= -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Earlier"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Notification 3: Group Invite (Contains Action Button) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/round_account_circle_24" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Zain Raza replied to your comment"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Next time invite us"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Yesterday"
-                    android:textColor="#808080"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-
-            <!-- Join Button -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="..."
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_comment_rounded"
-                android:backgroundTint="@color/white"
+                android:background="#E6F2F2"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_marginStart="12dp"/>
-        </LinearLayout>
+                android:paddingVertical="12dp">
 
-        <!-- Notification 4: Tagged in a post -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:gravity="center_vertical">
+                <FrameLayout
+                    android:layout_width="52dp"
+                    android:layout_height="52dp">
 
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/round_account_circle_24" />
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_circle_teal"
+                        android:backgroundTint="@color/accent_slate"
+                        android:gravity="center"
+                        android:text="SI"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/bg_circle_teal"
+                        android:contentDescription="Request"
+                        android:padding="3dp"
+                        android:src="@drawable/outline_person_add_24"
+                        app:tint="@color/white" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sara Iqbal sent you a friend request."
+                        android:textColor="@color/text_dark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="20m"
+                        android:textColor="@color/primary_teal"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_rounded_teal"
+                            android:backgroundTint="@null"
+                            android:padding="0dp"
+                            android:text="Confirm"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_pill_gray"
+                            android:backgroundTint="#EFECE6"
+                            android:padding="0dp"
+                            android:text="Delete"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_dark"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Post in SMD Class of 2026"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Assignment should be extended"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Oct 4"
-                    android:textColor="#808080"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_gravity="top"
+                    android:padding="8dp"
+                    android:text="•••"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="..."
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_comment_rounded"
-                android:backgroundTint="@color/white"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_marginStart="12dp"/>
-        </LinearLayout>
-
+            <!-- Section Header: Earlier -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="See Previous Notifications"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_comment_rounded"
-                android:backgroundTint="@color/text_gray"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="15dp"
-                android:textStyle="bold"
-                android:textSize="14sp"/>
+                android:paddingTop="14dp"
+                android:paddingBottom="8dp"
+                android:text="Earlier"
+                android:textColor="@color/text_dark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-    </LinearLayout>
-</ScrollView>
+            <!-- Notification 3: Zain Raza Reply -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <FrameLayout
+                    android:layout_width="52dp"
+                    android:layout_height="52dp">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_circle_teal"
+                        android:backgroundTint="@color/accent_slate"
+                        android:gravity="center"
+                        android:text="ZR"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/bg_circle_teal"
+                        android:contentDescription="Reply"
+                        android:padding="3dp"
+                        android:src="@drawable/sharp_mode_comment_24"
+                        app:tint="@color/white" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Zain Raza replied to your comment: &quot;next time invite the rest of us&quot;"
+                        android:textColor="@color/text_dark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="2h"
+                        android:textColor="@color/text_gray"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="•••"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Notification 4: SMD Group Post -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
+
+                <FrameLayout
+                    android:layout_width="52dp"
+                    android:layout_height="52dp">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_circle_teal"
+                        android:backgroundTint="@color/accent_mustard"
+                        android:gravity="center"
+                        android:text="DC"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/bg_circle_teal"
+                        android:contentDescription="Group"
+                        android:padding="3dp"
+                        android:src="@drawable/rounded_group_24"
+                        app:tint="@color/white" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New post in SMD Class of 2026: &quot;Assignment 1 is out. Start early.&quot;"
+                        android:textColor="@color/text_dark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="5h"
+                        android:textColor="@color/text_gray"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="•••"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Notification 5: Hamza Tag -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
+
+                <FrameLayout
+                    android:layout_width="52dp"
+                    android:layout_height="52dp">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_circle_teal"
+                        android:backgroundTint="@color/accent_rust"
+                        android:gravity="center"
+                        android:text="HA"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/bg_circle_teal"
+                        android:backgroundTint="@color/accent_mustard"
+                        android:contentDescription="Tag"
+                        android:padding="3dp"
+                        android:src="@drawable/outline_star_24"
+                        app:tint="@color/white" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hamza Ali tagged you in a post."
+                        android:textColor="@color/text_dark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Yesterday"
+                        android:textColor="@color/text_gray"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="•••"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Notification 6: Lina Story Like -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp">
+
+                <FrameLayout
+                    android:layout_width="52dp"
+                    android:layout_height="52dp">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_circle_teal"
+                        android:backgroundTint="@color/accent_purple"
+                        android:gravity="center"
+                        android:text="LM"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/bg_circle_teal"
+                        android:contentDescription="Like"
+                        android:padding="3dp"
+                        android:src="@drawable/outline_hand_bones_24"
+                        app:tint="@color/white" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lina Marsh liked your story."
+                        android:textColor="@color/text_dark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="2d"
+                        android:textColor="@color/text_gray"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="•••"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- See Previous Notifications Button -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@color/white"
+                android:gravity="center"
+                android:paddingVertical="14dp"
+                android:text="See previous notifications"
+                android:textColor="@color/primary_teal"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

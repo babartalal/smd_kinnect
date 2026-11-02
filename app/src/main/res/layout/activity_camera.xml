@@ -1,169 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/black"
+    tools:context=".CameraActivity">
 
-    <!-- Fake Camera-->
-    <ImageView
+    <!-- Viewfinder Background -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:alpha="0.5"
-        android:src="@drawable/landscape1" />
+        android:layout_height="0dp"
+        android:layout_marginBottom="60dp"
+        android:background="#8A9E80"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Top Controls -->
     <ImageButton
         android:id="@+id/flashLightCameraBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
         android:layout_margin="16dp"
-        android:background="@color/transparent"
+        android:background="@drawable/bg_circle_grey"
+        android:backgroundTint="#40000000"
+        android:contentDescription="Flash"
+        android:padding="10dp"
         android:src="@drawable/outline_sunny_24"
-        app:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:tint="@color/white" />
 
     <ImageButton
         android:id="@+id/cancelCameraBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
         android:layout_margin="16dp"
-        android:background="@color/transparent"
-        android:src="@drawable/outline_cancel_24"
-        app:tint="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <!-- The Shutter Button -->
-    <View
-        android:id="@+id/shutterBtn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="58dp"
         android:background="@drawable/bg_circle_grey"
-        android:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:backgroundTint="#40000000"
+        android:contentDescription="Close"
+        android:padding="10dp"
+        android:src="@drawable/outline_cancel_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
 
-
-    <ImageButton
-        android:id="@+id/flipCameraBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="82dp"
-        android:background="@color/transparent"
-        android:src="@drawable/rounded_repeat_24"
-        app:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/shutterBtn"
-        app:layout_constraintTop_toTopOf="@id/shutterBtn"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <ImageButton
-        android:id="@+id/smileyBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
-        android:background="@color/transparent"
-        android:src="@drawable/outline_sentiment_very_satisfied_24"
-        app:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/shutterBtn"
-        app:layout_constraintTop_toTopOf="@id/shutterBtn"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/flipCameraBtn"/>
-
-    <ImageButton
-        android:id="@+id/boltBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="82dp"
-        android:background="@color/transparent"
-        android:src="@drawable/outline_bolt_24"
-        app:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/shutterBtn"
-        app:layout_constraintTop_toTopOf="@id/shutterBtn"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <ImageButton
-        android:id="@+id/picSelectBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
-        android:background="@color/transparent"
-        android:src="@drawable/outline_image_24"
-        app:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/shutterBtn"
-        app:layout_constraintTop_toTopOf="@id/shutterBtn"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/boltBtn"/>
-
-    <!-- BOTTOM FIXED SECTION -->
-    <HorizontalScrollView
-        android:id="@+id/cameraModesScroll"
+    <!-- Bottom Controls Row -->
+    <LinearLayout
+        android:id="@+id/shutterControlsRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:paddingVertical="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/black">
+        android:layout_marginBottom="72dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
+        <ImageButton
+            android:id="@+id/picSelectBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_pill_gray"
+            android:backgroundTint="#40000000"
+            android:contentDescription="Gallery"
+            android:padding="8dp"
+            android:src="@drawable/outline_image_24"
+            app:tint="@color/white" />
+
+        <ImageButton
+            android:id="@+id/boltBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/bg_circle_grey"
+            android:backgroundTint="#40000000"
+            android:contentDescription="Flash toggle"
+            android:padding="8dp"
+            android:src="@drawable/outline_bolt_24"
+            app:tint="@color/white" />
+
+        <!-- Outer Ring Shutter Button -->
+        <FrameLayout
+            android:id="@+id/shutterBtn"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginHorizontal="20dp">
+
+            <View
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/outline_button"
+                android:backgroundTint="@color/white" />
+
+            <View
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_circle_teal"
+                android:backgroundTint="@color/white" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/flipCameraBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_circle_grey"
+            android:backgroundTint="#40000000"
+            android:contentDescription="Flip camera"
+            android:padding="8dp"
+            android:src="@drawable/rounded_repeat_24"
+            app:tint="@color/white" />
+
+        <ImageButton
+            android:id="@+id/smileyBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_grey"
+            android:backgroundTint="#40000000"
+            android:contentDescription="Filter"
+            android:padding="8dp"
+            android:src="@drawable/outline_sentiment_very_satisfied_24"
+            app:tint="@color/white" />
+    </LinearLayout>
+
+    <!-- Bottom Mode Strip Bar -->
+    <LinearLayout
+        android:id="@+id/cameraModesBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/black"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="TEXT"
+            android:textColor="#A0FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="LIVE"
+            android:textColor="#A0FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <!-- STORY (Active) -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="32dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TEXT"
-                android:textColor="#80FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="24dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="LIVE"
-                android:textColor="#80FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="24dp"/>
+            android:layout_marginEnd="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="STORY"
                 android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="24dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="POST"
-                android:textColor="#80FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="24dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BOOMERANG"
-                android:textColor="#80FFFFFF"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textStyle="bold" />
+
+            <View
+                android:layout_width="32dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/white" />
         </LinearLayout>
-    </HorizontalScrollView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="POST"
+            android:textColor="#A0FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BOOMERANG"
+            android:textColor="#A0FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

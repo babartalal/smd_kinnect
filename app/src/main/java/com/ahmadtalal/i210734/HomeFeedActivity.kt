@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
@@ -17,115 +18,90 @@ class HomeFeedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_home_feed)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val mainView = findViewById<View>(R.id.main)
+        if (mainView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
         }
 
-        val friendsBtn = findViewById<ImageButton>(R.id.friendsBtn)
-
-        friendsBtn.setOnClickListener {
-            val intent = Intent(this, FriendsActivity::class.java)
-            startActivity(intent)
+        // Top Header Navigation Buttons
+        findViewById<ImageButton>(R.id.homeFeedSearchBtn)?.setOnClickListener {
+            startActivity(Intent(this, SearchActivity::class.java))
         }
 
-        val woymTxtField = findViewById<EditText>(R.id.woym)
-        woymTxtField.setOnClickListener {
-            val intent = Intent(this, CreatePostActivity::class.java)
-            startActivity(intent)
+        findViewById<FrameLayout>(R.id.homeFeedChatsBtn)?.setOnClickListener {
+            startActivity(Intent(this, ChatsActivity::class.java))
         }
 
-
-        val commentBtn = findViewById<Button>(R.id.commentBtn)
-        commentBtn.setOnClickListener {
-            val intent = Intent(this, CommentsActivity::class.java)
-            startActivity(intent)
+        findViewById<FrameLayout>(R.id.friendsBtn)?.setOnClickListener {
+            startActivity(Intent(this, FriendsActivity::class.java))
         }
 
+        findViewById<FrameLayout>(R.id.homeFeedMarketplaceBtn)?.setOnClickListener {
+            startActivity(Intent(this, MarketplaceActivity::class.java))
+        }
+
+        findViewById<FrameLayout>(R.id.homeFeedNotificationsBtn)?.setOnClickListener {
+            startActivity(Intent(this, NotificationsActivity::class.java))
+        }
+
+        findViewById<FrameLayout>(R.id.homeFeedMenuBtn)?.setOnClickListener {
+            startActivity(Intent(this, MenuActivity::class.java))
+        }
+
+        // Post Creation Trigger
+        findViewById<EditText>(R.id.woym)?.setOnClickListener {
+            startActivity(Intent(this, CreatePostActivity::class.java))
+        }
+
+        findViewById<ImageButton>(R.id.homeFeedPhotoPickerBtn)?.setOnClickListener {
+            startActivity(Intent(this, PhotoPickerActivity::class.java))
+        }
+
+        // Stories Navigation
+        findViewById<View>(R.id.createStoryCard)?.setOnClickListener {
+            startActivity(Intent(this, StoryEditorActivity::class.java))
+        }
+
+        findViewById<View>(R.id.storyCard2)?.setOnClickListener {
+            startActivity(Intent(this, StoryViewerActivity::class.java))
+        }
+
+        findViewById<View>(R.id.viewMyStoryCard)?.setOnClickListener {
+            startActivity(Intent(this, YourStoryActivity::class.java))
+        }
+
+        // Reaction Picker Popup Overlay Logic
+        val reactionPicker = findViewById<LinearLayout>(R.id.reactionPicker)
+        reactionPicker?.visibility = View.GONE
 
         val likeBtn = findViewById<Button>(R.id.likeBtn)
-        val reactionPicker = findViewById<LinearLayout>(R.id.reactionPicker)
-
-        reactionPicker.visibility = View.GONE
-
-        likeBtn.setOnClickListener {
-
-            reactionPicker.visibility = View.VISIBLE
+        likeBtn?.setOnClickListener {
+            if (reactionPicker?.visibility == View.VISIBLE) {
+                reactionPicker.visibility = View.GONE
+            } else {
+                reactionPicker?.visibility = View.VISIBLE
+            }
         }
 
-        val homeFeedSearchBtn = findViewById<ImageButton>(R.id.homeFeedSearchBtn)
-
-        homeFeedSearchBtn.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
+        val commentBtn = findViewById<Button>(R.id.commentBtn)
+        commentBtn?.setOnClickListener {
+            startActivity(Intent(this, CommentsActivity::class.java))
         }
 
-        val homeFeedMarketplaceBtn = findViewById<ImageButton>(R.id.homeFeedMarketplaceBtn)
-
-        homeFeedMarketplaceBtn.setOnClickListener {
-            val intent = Intent(this, MarketplaceActivity::class.java)
-            startActivity(intent)
+        val hideReactionPicker = View.OnClickListener {
+            reactionPicker?.visibility = View.GONE
         }
 
-        val homeFeedNotificationsBtn = findViewById<ImageButton>(R.id.homeFeedNotificationsBtn)
-
-        homeFeedNotificationsBtn.setOnClickListener {
-            val intent = Intent(this, NotificationsActivity::class.java)
-            startActivity(intent)
-        }
-
-        val homeFeedPhotoPickerBtn = findViewById<ImageButton>(R.id.homeFeedPhotoPickerBtn)
-
-        homeFeedPhotoPickerBtn.setOnClickListener {
-            val intent = Intent(this, PhotoPickerActivity::class.java)
-            startActivity(intent)
-        }
-
-
-        val storyCard2 = findViewById<LinearLayout>(R.id.storyCard2)
-
-        storyCard2.setOnClickListener {
-            val intent = Intent(this, StoryViewerActivity::class.java)
-            startActivity(intent)
-        }
-
-        val viewMyStoryCard = findViewById<LinearLayout>(R.id.viewMyStoryCard)
-        viewMyStoryCard.setOnClickListener {
-            val intent = Intent(this, YourStoryActivity::class.java)
-            startActivity(intent)
-        }
-
-
-        val createStoryCard = findViewById<LinearLayout>(R.id.createStoryCard)
-
-        createStoryCard.setOnClickListener {
-            val intent = Intent(this, StoryEditorActivity::class.java)
-            startActivity(intent)
-        }
-
-        val happyReactionBtn = findViewById<ImageButton>(R.id.happyReaction)
-
-        happyReactionBtn.setOnClickListener {
-            reactionPicker.visibility = View.GONE
-        }
-
-        val wowReactionBtn = findViewById<ImageButton>(R.id.wowReaction)
-
-        wowReactionBtn.setOnClickListener {
-            reactionPicker.visibility = View.GONE
-        }
-
-        val sadReactionBtn = findViewById<ImageButton>(R.id.sadReaction)
-
-        sadReactionBtn.setOnClickListener {
-            reactionPicker.visibility = View.GONE
-        }
-
-        val angryReactionBtn = findViewById<ImageButton>(R.id.angryReaction)
-
-        angryReactionBtn.setOnClickListener {
-            reactionPicker.visibility = View.GONE
-        }
+        findViewById<ImageButton>(R.id.likeReaction)?.setOnClickListener(hideReactionPicker)
+        findViewById<ImageButton>(R.id.loveReaction)?.setOnClickListener(hideReactionPicker)
+        findViewById<ImageButton>(R.id.happyReaction)?.setOnClickListener(hideReactionPicker)
+        findViewById<ImageButton>(R.id.wowReaction)?.setOnClickListener(hideReactionPicker)
+        findViewById<ImageButton>(R.id.sadReaction)?.setOnClickListener(hideReactionPicker)
+        findViewById<ImageButton>(R.id.angryReaction)?.setOnClickListener(hideReactionPicker)
     }
 }

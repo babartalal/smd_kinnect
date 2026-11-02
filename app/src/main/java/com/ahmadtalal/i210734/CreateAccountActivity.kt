@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -23,61 +24,39 @@ class CreateAccountActivity : AppCompatActivity() {
         }
 
         val daySpinner = findViewById<Spinner>(R.id.daySpinner)
-
         val days = (1..31).toList()
-
-        val dayAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            days
-        )
-
+        val dayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, days)
         dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
-        daySpinner.adapter = dayAdapter
-
+        daySpinner?.adapter = dayAdapter
 
         val monthSpinner = findViewById<Spinner>(R.id.monthSpinner)
-
         val months = arrayOf(
             "January", "February", "March", "April",
             "May", "June", "July", "August",
             "September", "October", "November", "December"
         )
-
-        val monthAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            months
-        )
-
+        val monthAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, months)
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
-        monthSpinner.adapter = monthAdapter
-
+        monthSpinner?.adapter = monthAdapter
 
         val yearSpinner = findViewById<Spinner>(R.id.yearSpinner)
-
         val years = (1950..2026).toList()
-
-        val yearAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            years
-        )
-
+        val yearAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, years)
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
-        yearSpinner.adapter = yearAdapter
+        yearSpinner?.adapter = yearAdapter
 
-
-        val loginLink = findViewById<TextView>(R.id.loginLink)
-
-        loginLink.setOnClickListener {
+        findViewById<TextView>(R.id.loginLink)?.setOnClickListener {
             finish()
         }
 
-        val backToLoginBtn = findViewById<Button>(R.id.backToLoginBtn)
-
-        backToLoginBtn.setOnClickListener {
+        findViewById<ImageView>(R.id.backToLoginBtn)?.setOnClickListener {
             finish()
+        }
+
+        findViewById<Button>(R.id.createAccBtn)?.setOnClickListener {
+            val intent = Intent(this, HomeFeedActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
     }
 }

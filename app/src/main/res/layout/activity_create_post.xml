@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -9,298 +8,404 @@
     android:background="@color/white"
     tools:context=".CreatePostActivity">
 
-
+    <!-- Top Header Bar -->
     <LinearLayout
         android:id="@+id/createPostHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="52dp"
         android:gravity="center_vertical"
-        android:padding="12dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/createPostbackBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="@color/transparent"
-            android:src="@drawable/outline_cancel_24" />
+            android:contentDescription="Close"
+            android:src="@drawable/outline_cancel_24"
+            app:tint="@color/text_dark" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create post"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginStart="16dp"
-            android:textColor="@color/black" />
-
-        <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:text="Create post"
+            android:textColor="@color/text_dark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/postBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="POST"
-            android:backgroundTint="@color/primary_teal"
-            android:textColor="@color/white" />
+            android:layout_width="76dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_rounded_teal"
+            android:backgroundTint="@null"
+            android:padding="0dp"
+            android:text="Post"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <View
         android:id="@+id/headerDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#D3D3D3"
-        app:layout_constraintTop_toBottomOf="@id/createPostHeader"/>
+        android:background="#E0DDD7"
+        app:layout_constraintTop_toBottomOf="@id/createPostHeader" />
 
-    <!--USER INFO ROW -->
+    <!-- User Info Row -->
     <LinearLayout
         android:id="@+id/userInfoRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerDivider">
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/round_account_circle_24" />
+        <TextView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_circle_teal"
+            android:gravity="center"
+            android:text="JW"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginStart="12dp"
-            android:gravity="center_vertical">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jacob West"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
+                android:textColor="@color/text_dark"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-            <!-- Privacy Button (Friends) -->
+            <!-- Pill Buttons Row -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/bg_comment_rounded"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@drawable/rounded_group_24"
-                    app:tint="@color/text_gray" />
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Friends"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/outline_button"
+                    android:gravity="center"
+                    android:paddingHorizontal="10dp"
+                    android:text="🌐 Public ∨"
+                    android:textColor="@color/primary_teal"
                     android:textSize="12sp"
-                    android:layout_marginStart="4dp"
-                    android:textColor="@color/text_gray"/>
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:background="@drawable/outline_button"
+                    android:gravity="center"
+                    android:paddingHorizontal="10dp"
+                    android:text="+ Album ∨"
+                    android:textColor="@color/primary_teal"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <!--BOTTOM ATTACHMENTS MENU-->
-    <LinearLayout
-        android:id="@+id/attachmentsMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/white"
-        android:elevation="8dp"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D3D3D3" />
-
-        <!-- Photo/Video Row -->
-        <LinearLayout
-            android:id="@+id/pickPhotoCreatePost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/outline_image_24"
-                app:tint="#4CAF50" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Photo/video"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/rounded_group_24"
-                app:tint="#1877F2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tag people"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/outline_sentiment_very_satisfied_24"
-                app:tint="@color/yellow" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Feeling/activity"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/outline_image_24"
-                app:tint="#4CAF50" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Check in"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/outline_image_24"
-                app:tint="#4CAF50" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Live video"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/openCamera"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/outline_image_24"
-                app:tint="#4CAF50" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Camera"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/outline_image_24"
-                app:tint="#4CAF50" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Create event"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!--THE INPUT CANVAS-->
+    <!-- Main Post Input Area -->
     <EditText
         android:id="@+id/postInput"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:hint="What's on your mind?"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@null"
         android:gravity="top|start"
-        android:padding="16dp"
-        android:textSize="18sp"
-        android:background="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/userInfoRow"
-        app:layout_constraintBottom_toTopOf="@id/attachmentsMenu"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:hint="What's on your mind?"
+        android:lineSpacingExtra="4dp"
+        android:text="Weekend plan: coffee, sketching, and absolutely no email."
+        android:textColor="@color/text_dark"
+        android:textColorHint="@color/text_gray"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toTopOf="@id/colorPaletteBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userInfoRow" />
+
+    <!-- Color Palette Row -->
+    <LinearLayout
+        android:id="@+id/colorPaletteBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        app:layout_constraintBottom_toTopOf="@id/attachmentsMenu">
+
+        <!-- Aa Icon Button -->
+        <TextView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/outline_button"
+            android:gravity="center"
+            android:text="Aa"
+            android:textColor="@color/text_dark"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Color Circles -->
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_circle_teal" />
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_circle_red_badge" />
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_circle_teal" />
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_circle_online" />
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_circle_red_badge" />
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_circle_teal" />
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/bg_circle_teal" />
+    </LinearLayout>
+
+    <!-- Bottom Attachments Menu Sheet -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/attachmentsMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="16dp">
+
+            <!-- Drag Handle Bar -->
+            <View
+                android:layout_width="40dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:background="#D6D2CA" />
+
+            <!-- Photo/Video Row -->
+            <LinearLayout
+                android:id="@+id/pickPhotoCreatePost"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Photo"
+                    android:src="@drawable/outline_image_24"
+                    app:tint="@color/primary_teal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text="Photo/video"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <!-- Tag People Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Tag"
+                    android:src="@drawable/outline_person_add_24"
+                    app:tint="#1877F2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text="Tag people"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <!-- Feeling/Activity Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Feeling"
+                    android:src="@drawable/outline_sentiment_very_satisfied_24"
+                    app:tint="#F4B400" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text="Feeling/activity"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <!-- Check In Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Check in"
+                    android:src="@drawable/rounded_home_24"
+                    app:tint="@color/accent_rust" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text="Check in"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <!-- Live Video Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Live video"
+                    android:src="@drawable/outline_camera_roll_24"
+                    app:tint="#DB4437" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text="Live video"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <!-- Camera Row -->
+            <LinearLayout
+                android:id="@+id/openCamera"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Camera"
+                    android:src="@drawable/outline_photo_camera_24"
+                    app:tint="@color/primary_teal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text="Camera"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <!-- Create Event Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Create event"
+                    android:src="@drawable/baseline_access_time_24"
+                    app:tint="@color/accent_purple" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text="Create event"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
