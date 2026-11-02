@@ -1,13 +1,11 @@
-package com.ahmadtalal.i210734
+package com.ahmadtalal.i210734_i210819
 
 import android.os.Bundle
-import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

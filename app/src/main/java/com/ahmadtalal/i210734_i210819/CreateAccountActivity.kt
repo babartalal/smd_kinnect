@@ -1,6 +1,5 @@
-package com.ahmadtalal.i210734
+package com.ahmadtalal.i210734_i210819
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button

@@ -1,10 +1,8 @@
-package com.ahmadtalal.i210734
+package com.ahmadtalal.i210734_i210819
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat

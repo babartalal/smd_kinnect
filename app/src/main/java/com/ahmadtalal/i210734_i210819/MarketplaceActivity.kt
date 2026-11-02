@@ -1,4 +1,4 @@
-package com.ahmadtalal.i210734
+package com.ahmadtalal.i210734_i210819
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,42 +8,43 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class NotificationsActivity : AppCompatActivity() {
+class MarketplaceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_notifications)
+        setContentView(R.layout.activity_marketplace)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val notificationsSearchBtn = findViewById<ImageButton>(R.id.notificationsSearchBtn)
+        val marketplaceSearchBtn = findViewById<ImageButton>(R.id.marketplaceSearchBtn)
 
-        notificationsSearchBtn.setOnClickListener {
+        marketplaceSearchBtn.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
         }
 
-        val notificationsHomeBtn = findViewById<ImageButton>(R.id.notificationsHomeBtn)
+        val marketplaceHomeBtn = findViewById<ImageButton>(R.id.marketplaceHomeBtn)
 
-        notificationsHomeBtn.setOnClickListener {
+        marketplaceHomeBtn.setOnClickListener {
             finish()
         }
 
-        val notificationFriendsBtn = findViewById<ImageButton>(R.id.notificationFriendsBtn)
 
-        notificationFriendsBtn.setOnClickListener {
+        val marketplaceFriendsBtn = findViewById<ImageButton>(R.id.marketplaceFriendsBtn)
+
+        marketplaceFriendsBtn.setOnClickListener {
             val intent = Intent(this, FriendsActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        val notificationMarketplaceBtn = findViewById<ImageButton>(R.id.notificationMarketplaceBtn)
+        val marketplaceNotificationsBtn = findViewById<ImageButton>(R.id.marketplaceNotificationsBtn)
 
-        notificationMarketplaceBtn.setOnClickListener {
-            val intent = Intent(this, MarketplaceActivity::class.java)
+        marketplaceNotificationsBtn.setOnClickListener {
+            val intent = Intent(this, NotificationsActivity::class.java)
             startActivity(intent)
             finish()
         }
