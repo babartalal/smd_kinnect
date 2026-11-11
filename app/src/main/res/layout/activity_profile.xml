@@ -32,11 +32,12 @@
             app:tint="@color/text_dark" />
 
         <TextView
+            android:id="@+id/profileTitleName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="Jacob West"
+            android:text="My Profile"
             android:textColor="@color/text_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -97,11 +98,12 @@
                     android:layout_marginBottom="8dp">
 
                     <TextView
+                        android:id="@+id/profileAvatar"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:background="@drawable/bg_circle_teal"
                         android:gravity="center"
-                        android:text="JW"
+                        android:text="U"
                         android:textColor="@color/white"
                         android:textSize="36sp"
                         android:textStyle="bold" />
@@ -129,26 +131,29 @@
                 android:paddingBottom="16dp">
 
                 <TextView
+                    android:id="@+id/profileNameTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jacob West"
+                    android:text="User Name"
                     android:textColor="@color/text_dark"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/profileFriendsCountTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="834 friends"
+                    android:text="0 friends"
                     android:textColor="@color/text_gray"
                     android:textSize="13sp" />
 
                 <TextView
+                    android:id="@+id/profileBioTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Digital goodies designer. Everything is designed."
+                    android:text="No bio available."
                     android:textColor="@color/text_dark"
                     android:textSize="14sp" />
 
@@ -404,9 +409,10 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/profileFriendsSectionCountTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="834 friends"
+                            android:text="0 friends"
                             android:textColor="@color/text_gray"
                             android:textSize="13sp" />
                     </LinearLayout>
