@@ -64,15 +64,16 @@ class StoryAdapter(
                     "${author.firstName} ${author.lastName}".trim().ifEmpty { author.username }
                 } ?: "User"
 
-                if (story?.userId == currentUserId) {
+                if (story != null && story.userId == currentUserId) {
                     binding.storyAuthorName.text = "Your Story"
                 } else {
                     binding.storyAuthorName.text = displayName
                 }
 
-                if (!story?.imageBase64.isNullOrEmpty()) {
+                val imageBase64 = story?.imageBase64
+                if (!imageBase64.isNullOrEmpty()) {
                     try {
-                        val imageBytes = Base64.decode(story?.imageBase64, Base64.DEFAULT)
+                        val imageBytes = Base64.decode(imageBase64, Base64.DEFAULT)
                         val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                         binding.storyAuthorAvatar.visibility = View.VISIBLE
                         binding.storyAuthorInitials.visibility = View.GONE
@@ -85,14 +86,14 @@ class StoryAdapter(
                 }
 
                 binding.root.setOnClickListener {
-                    if (story?.userId == currentUserId) {
+                    if (story != null && story.userId == currentUserId) {
                         val intent = Intent(context, YourStoryActivity::class.java)
-                        intent.putExtra("storyId", story?.storyId)
+                        intent.putExtra("storyId", story.storyId)
                         context.startActivity(intent)
-                    } else {
+                    } else if (story != null) {
                         val intent = Intent(context, StoryViewerActivity::class.java)
-                        intent.putExtra("storyId", story?.storyId)
-                        intent.putExtra("userId", story?.userId)
+                        intent.putExtra("storyId", story.storyId)
+                        intent.putExtra("userId", story.userId)
                         context.startActivity(intent)
                     }
                 }
