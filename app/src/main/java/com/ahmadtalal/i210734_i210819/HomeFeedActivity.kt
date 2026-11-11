@@ -2,149 +2,129 @@ package com.ahmadtalal.i210734_i210819
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.ahmadtalal.i210734_i210819.databinding.ActivityHomeFeedBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class HomeFeedActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityHomeFeedBinding
+    private lateinit var postAdapter: PostAdapter
+    private val feedPostList = mutableListOf<Post>()
+
+    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+    private val dbRef = FirebaseDatabase.getInstance().reference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_home_feed)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        binding = ActivityHomeFeedBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val friendsBtn = findViewById<ImageButton>(R.id.friendsBtn)
+        setupRecyclerView()
+        setupClickListeners()
+        loadHomeFeedPosts()
+    }
 
-        friendsBtn.setOnClickListener {
-            val intent = Intent(this, FriendsActivity::class.java)
-            startActivity(intent)
+    private fun setupRecyclerView() {
+        postAdapter = PostAdapter(this, feedPostList)
+        binding.postsRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.postsRecyclerView.adapter = postAdapter
+    }
+
+    private fun setupClickListeners() {
+        binding.friendsBtn.setOnClickListener {
+            startActivity(Intent(this, FriendsActivity::class.java))
         }
 
-        val woymTxtField = findViewById<EditText>(R.id.woym)
-        woymTxtField.setOnClickListener {
-            val intent = Intent(this, CreatePostActivity::class.java)
-            startActivity(intent)
+        binding.woym.setOnClickListener {
+            startActivity(Intent(this, CreatePostActivity::class.java))
         }
 
-        val homeFeedProfileAvatar = findViewById<ImageView>(R.id.homeFeedProfileAvatar)
-        homeFeedProfileAvatar?.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
+        binding.homeFeedProfileAvatar.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-
-        val commentBtn = findViewById<Button>(R.id.commentBtn)
-        commentBtn.setOnClickListener {
-            val intent = Intent(this, CommentsActivity::class.java)
-            startActivity(intent)
+        binding.homeFeedSearchBtn.setOnClickListener {
+            startActivity(Intent(this, SearchActivity::class.java))
         }
 
-
-        val likeBtn = findViewById<Button>(R.id.likeBtn)
-        val reactionPicker = findViewById<LinearLayout>(R.id.reactionPicker)
-
-        reactionPicker.visibility = View.GONE
-
-        likeBtn.setOnClickListener {
-
-            reactionPicker.visibility = View.VISIBLE
+        binding.homeFeedChatsBtn.setOnClickListener {
+            startActivity(Intent(this, ChatsActivity::class.java))
         }
 
-        val homeFeedSearchBtn = findViewById<ImageButton>(R.id.homeFeedSearchBtn)
-
-        homeFeedSearchBtn.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
+        binding.homeFeedMarketplaceBtn.setOnClickListener {
+            startActivity(Intent(this, MarketplaceActivity::class.java))
         }
 
-        val homeFeedChatsBtn = findViewById<ImageButton>(R.id.homeFeedChatsBtn)
-        homeFeedChatsBtn?.setOnClickListener {
-            val intent = Intent(this, ChatsActivity::class.java)
-            startActivity(intent)
+        binding.homeFeedNotificationsBtn.setOnClickListener {
+            startActivity(Intent(this, NotificationsActivity::class.java))
         }
 
-        val homeFeedMarketplaceBtn = findViewById<ImageButton>(R.id.homeFeedMarketplaceBtn)
-
-        homeFeedMarketplaceBtn.setOnClickListener {
-            val intent = Intent(this, MarketplaceActivity::class.java)
-            startActivity(intent)
+        binding.homeFeedMenuBtn.setOnClickListener {
+            startActivity(Intent(this, MenuActivity::class.java))
         }
 
-        val homeFeedNotificationsBtn = findViewById<ImageButton>(R.id.homeFeedNotificationsBtn)
-
-        homeFeedNotificationsBtn.setOnClickListener {
-            val intent = Intent(this, NotificationsActivity::class.java)
-            startActivity(intent)
+        binding.homeFeedPhotoPickerBtn.setOnClickListener {
+            startActivity(Intent(this, CreatePostActivity::class.java))
         }
 
-        val homeFeedMenuBtn = findViewById<ImageButton>(R.id.homeFeedMenuBtn)
-        homeFeedMenuBtn?.setOnClickListener {
-            val intent = Intent(this, MenuActivity::class.java)
-            startActivity(intent)
+        binding.storyCard2.setOnClickListener {
+            startActivity(Intent(this, StoryViewerActivity::class.java))
         }
 
-        val homeFeedPhotoPickerBtn = findViewById<ImageButton>(R.id.homeFeedPhotoPickerBtn)
-
-        homeFeedPhotoPickerBtn.setOnClickListener {
-            val intent = Intent(this, PhotoPickerActivity::class.java)
-            startActivity(intent)
+        binding.viewMyStoryCard.setOnClickListener {
+            startActivity(Intent(this, YourStoryActivity::class.java))
         }
 
-
-        val storyCard2 = findViewById<LinearLayout>(R.id.storyCard2)
-
-        storyCard2.setOnClickListener {
-            val intent = Intent(this, StoryViewerActivity::class.java)
-            startActivity(intent)
+        binding.createStoryCard.setOnClickListener {
+            startActivity(Intent(this, CameraActivity::class.java))
         }
+    }
 
-        val viewMyStoryCard = findViewById<LinearLayout>(R.id.viewMyStoryCard)
-        viewMyStoryCard.setOnClickListener {
-            val intent = Intent(this, YourStoryActivity::class.java)
-            startActivity(intent)
-        }
+    private fun loadHomeFeedPosts() {
+        if (currentUserId.isEmpty()) return
 
+        dbRef.child("friends").child(currentUserId)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(friendsSnap: DataSnapshot) {
+                    val friendIds = friendsSnap.children.mapNotNull { it.key }.toSet()
+                    val allowedAuthorIds = friendIds + currentUserId
 
-        val createStoryCard = findViewById<LinearLayout>(R.id.createStoryCard)
+                    dbRef.child("posts")
+                        .addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(postsSnap: DataSnapshot) {
+                                feedPostList.clear()
+                                for (child in postsSnap.children) {
+                                    val post = child.getValue(Post::class.java)
+                                    if (post != null && allowedAuthorIds.contains(post.authorId)) {
+                                        feedPostList.add(post)
+                                    }
+                                }
 
-        createStoryCard.setOnClickListener {
-            val intent = Intent(this, CameraActivity::class.java)
-            startActivity(intent)
-        }
+                                feedPostList.sortByDescending { it.timestamp }
+                                postAdapter.updateData(feedPostList)
+                            }
 
-        val happyReactionBtn = findViewById<ImageButton>(R.id.happyReaction)
+                            override fun onCancelled(error: DatabaseError) {}
+                        })
+                }
 
-        happyReactionBtn.setOnClickListener {
-            reactionPicker.visibility = View.GONE
-        }
-
-        val wowReactionBtn = findViewById<ImageButton>(R.id.wowReaction)
-
-        wowReactionBtn.setOnClickListener {
-            reactionPicker.visibility = View.GONE
-        }
-
-        val sadReactionBtn = findViewById<ImageButton>(R.id.sadReaction)
-
-        sadReactionBtn.setOnClickListener {
-            reactionPicker.visibility = View.GONE
-        }
-
-        val angryReactionBtn = findViewById<ImageButton>(R.id.angryReaction)
-
-        angryReactionBtn.setOnClickListener {
-            reactionPicker.visibility = View.GONE
-        }
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 }

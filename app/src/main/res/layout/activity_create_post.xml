@@ -288,6 +288,17 @@
 
     </LinearLayout>
 
+    <!-- SELECTED PHOTOS PREVIEW RECYCLERVIEW -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selectedPhotosRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:paddingHorizontal="16dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/attachmentsMenu"
+        android:visibility="gone" />
+
     <!--THE INPUT CANVAS-->
     <EditText
         android:id="@+id/postInput"
@@ -299,7 +310,7 @@
         android:textSize="18sp"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@id/userInfoRow"
-        app:layout_constraintBottom_toTopOf="@id/attachmentsMenu"
+        app:layout_constraintBottom_toTopOf="@id/selectedPhotosRecyclerView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
