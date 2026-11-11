@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/storyCardContainer"
+    android:layout_width="120dp"
+    android:layout_height="200dp"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:padding="8dp"
+    android:background="@drawable/landscape1"
+    android:clickable="true"
+    android:focusable="true">
+
+    <FrameLayout
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="top|start">
+
+        <ImageView
+            android:id="@+id/storyAuthorAvatar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_circle_teal"
+            android:src="@drawable/round_account_circle_24"
+            android:contentDescription="Author Avatar" />
+
+        <TextView
+            android:id="@+id/storyAuthorInitials"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_circle_teal"
+            android:gravity="center"
+            android:text="U"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/createStoryIcon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/outline_add_2_24"
+            app:tint="@color/primary_teal"
+            android:visibility="gone"
+            android:contentDescription="Create Story" />
+    </FrameLayout>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/storyAuthorName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Name"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:maxLines="2" />
+</LinearLayout>

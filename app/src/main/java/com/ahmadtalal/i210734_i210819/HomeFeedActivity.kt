@@ -18,7 +18,10 @@ class HomeFeedActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeFeedBinding
     private lateinit var postAdapter: PostAdapter
+    private lateinit var storyAdapter: StoryAdapter
+
     private val feedPostList = mutableListOf<Post>()
+    private val storyItemList = mutableListOf<StoryModel>()
 
     private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
     private val dbRef = FirebaseDatabase.getInstance().reference
@@ -35,15 +38,21 @@ class HomeFeedActivity : AppCompatActivity() {
             insets
         }
 
-        setupRecyclerView()
+        setupRecyclerViews()
         setupClickListeners()
         loadHomeFeedPosts()
+        loadHomeFeedStories()
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerViews() {
         postAdapter = PostAdapter(this, feedPostList)
         binding.postsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.postsRecyclerView.adapter = postAdapter
+
+        storyAdapter = StoryAdapter(this, storyItemList)
+        binding.storiesRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.storiesRecyclerView.adapter = storyAdapter
     }
 
     private fun setupClickListeners() {
@@ -82,18 +91,6 @@ class HomeFeedActivity : AppCompatActivity() {
         binding.homeFeedPhotoPickerBtn.setOnClickListener {
             startActivity(Intent(this, CreatePostActivity::class.java))
         }
-
-        binding.storyCard2.setOnClickListener {
-            startActivity(Intent(this, StoryViewerActivity::class.java))
-        }
-
-        binding.viewMyStoryCard.setOnClickListener {
-            startActivity(Intent(this, YourStoryActivity::class.java))
-        }
-
-        binding.createStoryCard.setOnClickListener {
-            startActivity(Intent(this, CameraActivity::class.java))
-        }
     }
 
     private fun loadHomeFeedPosts() {
@@ -118,6 +115,85 @@ class HomeFeedActivity : AppCompatActivity() {
 
                                 feedPostList.sortByDescending { it.timestamp }
                                 postAdapter.updateData(feedPostList)
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {}
+                        })
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+
+    private fun loadHomeFeedStories() {
+        if (currentUserId.isEmpty()) return
+
+        dbRef.child("friends").child(currentUserId)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(friendsSnap: DataSnapshot) {
+                    val friendIds = friendsSnap.children.mapNotNull { it.key }.toSet()
+                    val allowedUserIds = friendIds + currentUserId
+
+                    dbRef.child("stories")
+                        .addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(storiesSnap: DataSnapshot) {
+                                storyItemList.clear()
+
+                                storyItemList.add(StoryModel(isCreateStory = true))
+
+                                val currentTime = System.currentTimeMillis()
+                                val activeStories = mutableListOf<Pair<Story, User?>>()
+
+                                val targetUserIds = allowedUserIds.filter { storiesSnap.hasChild(it) }
+
+                                if (targetUserIds.isEmpty()) {
+                                    storyAdapter.updateData(storyItemList)
+                                    return
+                                }
+
+                                var fetchedUserCount = 0
+                                for (userId in targetUserIds) {
+                                    val userStoriesSnap = storiesSnap.child(userId)
+
+                                    dbRef.child("users").child(userId)
+                                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                                            override fun onDataChange(userSnap: DataSnapshot) {
+                                                val user = userSnap.getValue(User::class.java)
+
+                                                for (sSnap in userStoriesSnap.children) {
+                                                    val story = sSnap.getValue(Story::class.java)
+                                                    if (story != null) {
+                                                        val age = currentTime - story.timestamp
+                                                        if (age in 0..86400000L) {
+                                                            activeStories.add(Pair(story, user))
+                                                        }
+                                                    }
+                                                }
+
+                                                fetchedUserCount++
+                                                if (fetchedUserCount == targetUserIds.size) {
+                                                    activeStories.sortByDescending { it.first.timestamp }
+                                                    for (pair in activeStories) {
+                                                        storyItemList.add(
+                                                            StoryModel(
+                                                                story = pair.first,
+                                                                author = pair.second,
+                                                                isCreateStory = false
+                                                            )
+                                                        )
+                                                    }
+                                                    storyAdapter.updateData(storyItemList)
+                                                }
+                                            }
+
+                                            override fun onCancelled(error: DatabaseError) {
+                                                fetchedUserCount++
+                                                if (fetchedUserCount == targetUserIds.size) {
+                                                    storyAdapter.updateData(storyItemList)
+                                                }
+                                            }
+                                        })
+                                }
                             }
 
                             override fun onCancelled(error: DatabaseError) {}
