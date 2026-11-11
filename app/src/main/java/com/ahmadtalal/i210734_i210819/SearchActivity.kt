@@ -1,6 +1,8 @@
 package com.ahmadtalal.i210734_i210819
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -24,5 +26,16 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
+        val searchResultPerson1 = findViewById<View>(R.id.searchResultPerson1)
+        searchResultPerson1?.setOnClickListener {
+            val intent = Intent(this, OtherProfileActivity::class.java)
+            startActivity(intent)
+        }
+
+        val searchResultPerson2 = findViewById<View>(R.id.searchResultPerson2)
+        searchResultPerson2?.setOnClickListener {
+            val intent = Intent(this, OtherProfileActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

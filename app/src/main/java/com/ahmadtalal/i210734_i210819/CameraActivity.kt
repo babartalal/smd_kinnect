@@ -1,6 +1,8 @@
 package com.ahmadtalal.i210734_i210819
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +23,12 @@ class CameraActivity : AppCompatActivity() {
         val cancelCameraBtn = findViewById<ImageButton>(R.id.cancelCameraBtn)
         cancelCameraBtn.setOnClickListener {
             finish()
+        }
+
+        val shutterBtn = findViewById<View>(R.id.shutterBtn)
+        shutterBtn?.setOnClickListener {
+            val intent = Intent(this, StoryEditorActivity::class.java)
+            startActivity(intent)
         }
     }
 }

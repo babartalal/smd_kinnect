@@ -48,5 +48,12 @@ class MarketplaceActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        val marketplaceMenuBtn = findViewById<ImageButton>(R.id.marketplaceMenuBtn)
+        marketplaceMenuBtn?.setOnClickListener {
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 }

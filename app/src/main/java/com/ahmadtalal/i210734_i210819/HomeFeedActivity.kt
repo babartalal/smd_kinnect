@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +37,12 @@ class HomeFeedActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val homeFeedProfileAvatar = findViewById<ImageView>(R.id.homeFeedProfileAvatar)
+        homeFeedProfileAvatar?.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
+
 
         val commentBtn = findViewById<Button>(R.id.commentBtn)
         commentBtn.setOnClickListener {
@@ -61,6 +68,12 @@ class HomeFeedActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val homeFeedChatsBtn = findViewById<ImageButton>(R.id.homeFeedChatsBtn)
+        homeFeedChatsBtn?.setOnClickListener {
+            val intent = Intent(this, ChatsActivity::class.java)
+            startActivity(intent)
+        }
+
         val homeFeedMarketplaceBtn = findViewById<ImageButton>(R.id.homeFeedMarketplaceBtn)
 
         homeFeedMarketplaceBtn.setOnClickListener {
@@ -72,6 +85,12 @@ class HomeFeedActivity : AppCompatActivity() {
 
         homeFeedNotificationsBtn.setOnClickListener {
             val intent = Intent(this, NotificationsActivity::class.java)
+            startActivity(intent)
+        }
+
+        val homeFeedMenuBtn = findViewById<ImageButton>(R.id.homeFeedMenuBtn)
+        homeFeedMenuBtn?.setOnClickListener {
+            val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
         }
 
@@ -100,7 +119,7 @@ class HomeFeedActivity : AppCompatActivity() {
         val createStoryCard = findViewById<LinearLayout>(R.id.createStoryCard)
 
         createStoryCard.setOnClickListener {
-            val intent = Intent(this, StoryEditorActivity::class.java)
+            val intent = Intent(this, CameraActivity::class.java)
             startActivity(intent)
         }
 

@@ -47,5 +47,12 @@ class NotificationsActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        val notificationsMenuBtn = findViewById<ImageButton>(R.id.notificationsMenuBtn)
+        notificationsMenuBtn?.setOnClickListener {
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 }

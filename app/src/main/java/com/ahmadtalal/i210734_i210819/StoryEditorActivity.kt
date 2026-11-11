@@ -1,6 +1,8 @@
 package com.ahmadtalal.i210734_i210819
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +23,13 @@ class StoryEditorActivity : AppCompatActivity() {
         val closeStoryBtn = findViewById<ImageButton>(R.id.closeStoryBtn)
 
         closeStoryBtn.setOnClickListener {
+            finish()
+        }
+
+        val shareToStoryBtn = findViewById<View>(R.id.shareToStoryBtn)
+        shareToStoryBtn?.setOnClickListener {
+            val intent = Intent(this, YourStoryActivity::class.java)
+            startActivity(intent)
             finish()
         }
     }
