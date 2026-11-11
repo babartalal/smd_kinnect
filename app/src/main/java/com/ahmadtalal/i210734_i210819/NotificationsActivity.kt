@@ -1,4 +1,4 @@
-package com.ahmadtalal.i210734
+package com.ahmadtalal.i210734_i210819
 
 import android.content.Intent
 import android.os.Bundle
@@ -44,6 +44,13 @@ class NotificationsActivity : AppCompatActivity() {
 
         notificationMarketplaceBtn.setOnClickListener {
             val intent = Intent(this, MarketplaceActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        val notificationsMenuBtn = findViewById<ImageButton>(R.id.notificationsMenuBtn)
+        notificationsMenuBtn?.setOnClickListener {
+            val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
             finish()
         }

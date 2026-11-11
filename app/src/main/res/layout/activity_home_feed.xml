@@ -48,6 +48,7 @@
                 android:padding="8dp" />
 
             <ImageButton
+                android:id="@+id/homeFeedChatsBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/outline_sms_24"
@@ -115,6 +116,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
+                android:id="@+id/homeFeedMenuBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/outline_menu_24"
@@ -161,6 +163,7 @@
 
 
                 <ImageView
+                    android:id="@+id/homeFeedProfileAvatar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/round_account_circle_24"

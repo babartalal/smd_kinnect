@@ -1,8 +1,8 @@
-package com.ahmadtalal.i210734
+package com.ahmadtalal.i210734_i210819
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
+import android.view.View
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -45,6 +45,19 @@ class FriendsActivity : AppCompatActivity() {
             val intent = Intent(this, NotificationsActivity::class.java)
             startActivity(intent)
             finish()
+        }
+
+        val friendsMenuBtn = findViewById<ImageButton>(R.id.friendsMenuBtn)
+        friendsMenuBtn?.setOnClickListener {
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        val friendRequestItem1 = findViewById<View>(R.id.friendRequestItem1)
+        friendRequestItem1?.setOnClickListener {
+            val intent = Intent(this, OtherProfileActivity::class.java)
+            startActivity(intent)
         }
     }
 }

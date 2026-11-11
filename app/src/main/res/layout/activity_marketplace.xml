@@ -115,6 +115,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
+                android:id="@+id/marketplaceMenuBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/outline_menu_24"

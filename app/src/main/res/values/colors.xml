@@ -2,14 +2,25 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary_teal">#0B5F63</color>
+    <color name="primary_teal">#0A5C61</color>
+    <color name="primary_teal_dark">#084A4E</color>
+    <color name="text_dark">#1C1E21</color>
     <color name="text_gray">#65676B</color>
-    <color name="input_bg">#F0F2F5</color>
-    <color name="login_background">#DBDBDB</color>
+    <color name="input_bg">#FFFFFF</color>
+    <color name="login_background">#F4F0EA</color>
+    <color name="bg_warm_offwhite">#F4F0EA</color>
+    <color name="card_bg_light">#EFECE6</color>
+    <color name="home_feed_background">#F4F0EA</color>
     <color name="transparent">#00000000</color>
-    <color name="card_background">#F5F5F5</color>
-    <color name="home_feed_background">#F0F2F5</color>
-    <color name="button_gray">#EEEEEE</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="button_gray">#EFECE6</color>
+    <color name="accent_rust">#994537</color>
+    <color name="accent_slate">#2D3C4D</color>
+    <color name="accent_purple">#654D74</color>
+    <color name="accent_green">#3B6E53</color>
+    <color name="accent_mustard">#C88E18</color>
+    <color name="badge_red">#E41E3F</color>
+    <color name="online_green">#31A24C</color>
     <color name="yellow">#FFFF00</color>
     <color name="red">#FF0000</color>
 </resources>

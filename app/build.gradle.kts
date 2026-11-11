@@ -3,13 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ahmadtalal.i210734"
-    compileSdk {
-        version = release(37)
-    }
+    namespace = "com.ahmadtalal.i210734_i210819"
+    compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.ahmadtalal.i210734"
+        applicationId = "com.ahmadtalal.i210734_i210819"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
@@ -20,9 +18,11 @@ android {
 
     buildTypes {
         release {
-            optimization {
-                enable = false
-            }
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
