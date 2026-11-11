@@ -13,7 +13,7 @@ credentialsPlayServicesAuth = "1.6.0"
 googleid = "1.1.1"
 googleGmsGoogleServices = "4.5.0"
 firebaseBom = "33.10.0"
-agoraRtc = "4.5.0"
+agoraRtc = "4.3.0"
 glide = "4.16.0"
 
 [libraries]
