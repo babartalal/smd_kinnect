@@ -106,6 +106,7 @@
                     android:textColor="@color/text_gray"/>
 
                 <EditText
+                    android:id="@+id/firstNameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"/>
@@ -128,6 +129,7 @@
                     android:textColor="@color/text_gray"/>
 
                 <EditText
+                    android:id="@+id/lastNameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text" />
@@ -290,6 +292,7 @@
                 android:textColor="@color/text_gray" />
 
             <EditText
+                android:id="@+id/emailInputText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress" />
@@ -314,9 +317,19 @@
                 android:textColor="@color/text_gray" />
 
             <EditText
+                android:id="@+id/passwordInputText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/passwordStrengthTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password strength: Too short"
+                android:textColor="@color/text_gray"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
 
         </LinearLayout>
 

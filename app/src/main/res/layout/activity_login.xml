@@ -62,6 +62,7 @@
             app:layout_constraintTop_toBottomOf="@id/recentLoginTxt">
 
             <ImageView
+                android:id="@+id/recentLoginAvatar"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:contentDescription="Profile image"
@@ -75,6 +76,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/recentLoginName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
@@ -127,6 +129,7 @@
                 android:textColor="@color/text_gray" />
 
             <EditText
+                android:id="@+id/loginEmailInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter email"
@@ -157,6 +160,7 @@
                 android:textColor="@color/text_gray" />
 
             <EditText
+                android:id="@+id/loginPasswordInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"

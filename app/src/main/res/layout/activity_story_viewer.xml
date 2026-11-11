@@ -167,7 +167,7 @@
             app:tint="@color/white" />
 
         <ImageButton
-            android:id="@+id/likeStoryBtn"
+            android:id="@+id/likeStoryBtn2"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="12dp"

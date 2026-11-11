@@ -166,7 +166,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/highlightBtn"
+            android:id="@+id/highlightBtn2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -189,7 +189,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/highlightBtn"
+            android:id="@+id/highlightBtn3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"

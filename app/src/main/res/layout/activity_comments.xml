@@ -459,7 +459,7 @@
 
 
                     <LinearLayout
-                        android:id="@+id/reply1"
+                        android:id="@+id/reply1_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -526,7 +526,7 @@
 
 
                     <LinearLayout
-                        android:id="@+id/reply2"
+                        android:id="@+id/reply2_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -668,7 +668,7 @@
 
 
                     <LinearLayout
-                        android:id="@+id/reply1"
+                        android:id="@+id/reply1_3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -735,7 +735,7 @@
 
 
                     <LinearLayout
-                        android:id="@+id/reply2"
+                        android:id="@+id/reply2_3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -877,7 +877,7 @@
 
 
                     <LinearLayout
-                        android:id="@+id/reply1"
+                        android:id="@+id/reply1_4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -944,7 +944,7 @@
 
 
                     <LinearLayout
-                        android:id="@+id/reply2"
+                        android:id="@+id/reply2_4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">

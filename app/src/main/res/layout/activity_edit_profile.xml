@@ -94,23 +94,25 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/editProfilePicBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:text="Edit"
                     android:textColor="@color/primary_teal"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <ImageView
+                    android:id="@+id/profilePicImageView"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:background="@drawable/bg_circle_teal"
-                    android:gravity="center"
-                    android:text="JW"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Profile Picture"
+                    android:src="@drawable/logo" />
             </LinearLayout>
 
             <View
@@ -138,9 +140,12 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/editCoverPhotoBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:text="Edit"
                     android:textColor="@color/primary_teal"
                     android:textSize="15sp"
@@ -150,6 +155,13 @@
                     android:layout_width="80dp"
                     android:layout_height="48dp"
                     android:background="#A3BAC0">
+
+                    <ImageView
+                        android:id="@+id/coverImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Cover Photo" />
 
                     <ImageView
                         android:layout_width="20dp"
@@ -189,11 +201,12 @@
                         android:textSize="12sp" />
 
                     <EditText
+                        android:id="@+id/editNameInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:paddingTop="4dp"
-                        android:text="Jacob West"
+                        android:hint="Name"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp" />
                 </LinearLayout>
@@ -218,11 +231,12 @@
                         android:textSize="12sp" />
 
                     <EditText
+                        android:id="@+id/editUsernameInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:paddingTop="4dp"
-                        android:text="jacob.west"
+                        android:hint="Username"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp" />
                 </LinearLayout>
@@ -247,6 +261,7 @@
                         android:textSize="12sp" />
 
                     <EditText
+                        android:id="@+id/editWebsiteInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
@@ -276,11 +291,12 @@
                         android:textSize="12sp" />
 
                     <EditText
+                        android:id="@+id/editBioInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:paddingTop="4dp"
-                        android:text="Digital goodies designer."
+                        android:hint="Bio"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp" />
                 </LinearLayout>
@@ -334,12 +350,13 @@
                         android:textSize="12sp" />
 
                     <EditText
+                        android:id="@+id/editEmailInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:inputType="textEmailAddress"
                         android:paddingTop="4dp"
-                        android:text="jacob.west@mail.com"
+                        android:hint="Email"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp" />
                 </LinearLayout>
@@ -363,12 +380,13 @@
                         android:textSize="12sp" />
 
                     <EditText
+                        android:id="@+id/editPhoneInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:inputType="phone"
                         android:paddingTop="4dp"
-                        android:text="+92 300 1234567"
+                        android:hint="Phone"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp" />
                 </LinearLayout>
@@ -392,11 +410,12 @@
                         android:textSize="12sp" />
 
                     <EditText
+                        android:id="@+id/editGenderInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:paddingTop="4dp"
-                        android:text="Male"
+                        android:hint="Gender"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp" />
                 </LinearLayout>
