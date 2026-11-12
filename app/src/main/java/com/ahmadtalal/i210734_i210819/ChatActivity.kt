@@ -2,6 +2,7 @@ package com.ahmadtalal.i210734_i210819
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.ContentObserver
@@ -45,12 +46,14 @@ class ChatActivity : AppCompatActivity() {
 
     private var activeReplyToMsg: Message? = null
     private var selectedImageBase64: String? = null
+    private var incomingCallDialog: AlertDialog? = null
 
     private val messageList = mutableListOf<Message>()
     private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
     private val dbRef = FirebaseDatabase.getInstance().reference
 
     private var screenshotObserver: ContentObserver? = null
+    private var lastScreenshotTime = 0L
 
     private val screenCaptureCallback by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -102,6 +105,7 @@ class ChatActivity : AppCompatActivity() {
         loadCurrentUserDetails()
         loadRecipientDetails()
         loadMessages()
+        listenForIncomingCalls()
     }
 
     override fun onStart() {
@@ -153,9 +157,11 @@ class ChatActivity : AppCompatActivity() {
         binding.chatBackBtn.setOnClickListener { finish() }
 
         binding.voiceCallBtn.setOnClickListener {
-            val intent = Intent(this, VoiceCallActivity::class.java)
-            intent.putExtra("recipientId", recipientId)
-            startActivity(intent)
+            startOutboundCall(type = "audio")
+        }
+
+        binding.videoCallBtn.setOnClickListener {
+            startOutboundCall(type = "video")
         }
 
         binding.cancelMessageReplyBtn.setOnClickListener {
@@ -173,6 +179,78 @@ class ChatActivity : AppCompatActivity() {
         binding.chatSendBtn.setOnClickListener {
             sendMessage()
         }
+    }
+
+    private fun startOutboundCall(type: String) {
+        if (recipientId.isEmpty()) return
+
+        val callMap = hashMapOf<String, Any>(
+            "callerId" to currentUserId,
+            "callerName" to currentUserName,
+            "channelName" to chatId,
+            "type" to type,
+            "status" to "ringing"
+        )
+
+        dbRef.child("calls").child(recipientId).setValue(callMap)
+
+        val intent = Intent(this, VoiceCallActivity::class.java)
+        intent.putExtra("channelName", chatId)
+        intent.putExtra("type", type)
+        intent.putExtra("isCaller", true)
+        intent.putExtra("recipientId", recipientId)
+        startActivity(intent)
+    }
+
+    private fun listenForIncomingCalls() {
+        if (currentUserId.isEmpty()) return
+
+        dbRef.child("calls").child(currentUserId)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        incomingCallDialog?.dismiss()
+                        incomingCallDialog = null
+                        return
+                    }
+
+                    val callerName = snapshot.child("callerName").getValue(String::class.java) ?: "Someone"
+                    val channelName = snapshot.child("channelName").getValue(String::class.java).orEmpty()
+                    val callType = snapshot.child("type").getValue(String::class.java) ?: "audio"
+                    val status = snapshot.child("status").getValue(String::class.java) ?: "ringing"
+                    val callerId = snapshot.child("callerId").getValue(String::class.java).orEmpty()
+
+                    if (status == "ringing" && incomingCallDialog == null) {
+                        incomingCallDialog = AlertDialog.Builder(this@ChatActivity)
+                            .setTitle("Incoming ${callType.replaceFirstChar { it.uppercase() }} Call")
+                            .setMessage("$callerName is calling you...")
+                            .setPositiveButton("Accept") { _, _ ->
+                                dbRef.child("calls").child(currentUserId).child("status").setValue("accepted")
+                                incomingCallDialog = null
+
+                                val intent = Intent(this@ChatActivity, VoiceCallActivity::class.java)
+                                intent.putExtra("channelName", channelName)
+                                intent.putExtra("type", callType)
+                                intent.putExtra("isCaller", false)
+                                intent.putExtra("recipientId", callerId)
+                                startActivity(intent)
+                            }
+                            .setNegativeButton("Decline") { _, _ ->
+                                dbRef.child("calls").child(currentUserId).child("status").setValue("ended")
+                                dbRef.child("calls").child(currentUserId).removeValue()
+                                incomingCallDialog = null
+                            }
+                            .setCancelable(false)
+                            .create()
+                        incomingCallDialog?.show()
+                    } else if (status == "ended") {
+                        incomingCallDialog?.dismiss()
+                        incomingCallDialog = null
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 
     private fun resetReplyState() {
@@ -412,6 +490,12 @@ class ChatActivity : AppCompatActivity() {
 
     private fun onScreenshotDetected() {
         if (chatId.isEmpty()) return
+
+        val now = System.currentTimeMillis()
+        if (now - lastScreenshotTime < 2000L) {
+            return
+        }
+        lastScreenshotTime = now
 
         val systemMsgId = dbRef.child("messages").child(chatId).push().key ?: return
         val text = "$currentUserName took a screenshot"

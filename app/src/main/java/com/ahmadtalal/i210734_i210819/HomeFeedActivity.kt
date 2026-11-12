@@ -1,5 +1,6 @@
 package com.ahmadtalal.i210734_i210819
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -22,6 +23,7 @@ class HomeFeedActivity : AppCompatActivity() {
 
     private val feedPostList = mutableListOf<Post>()
     private val storyItemList = mutableListOf<StoryModel>()
+    private var incomingCallDialog: AlertDialog? = null
 
     private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
     private val dbRef = FirebaseDatabase.getInstance().reference
@@ -42,6 +44,7 @@ class HomeFeedActivity : AppCompatActivity() {
         setupClickListeners()
         loadHomeFeedPosts()
         loadHomeFeedStories()
+        listenForIncomingCalls()
     }
 
     private fun setupRecyclerViews() {
@@ -91,6 +94,57 @@ class HomeFeedActivity : AppCompatActivity() {
         binding.homeFeedPhotoPickerBtn.setOnClickListener {
             startActivity(Intent(this, CreatePostActivity::class.java))
         }
+    }
+
+    private fun listenForIncomingCalls() {
+        if (currentUserId.isEmpty()) return
+
+        dbRef.child("calls").child(currentUserId)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        incomingCallDialog?.dismiss()
+                        incomingCallDialog = null
+                        return
+                    }
+
+                    val callerName = snapshot.child("callerName").getValue(String::class.java) ?: "Someone"
+                    val channelName = snapshot.child("channelName").getValue(String::class.java).orEmpty()
+                    val callType = snapshot.child("type").getValue(String::class.java) ?: "audio"
+                    val status = snapshot.child("status").getValue(String::class.java) ?: "ringing"
+                    val callerId = snapshot.child("callerId").getValue(String::class.java).orEmpty()
+
+                    if (status == "ringing" && incomingCallDialog == null) {
+                        incomingCallDialog = AlertDialog.Builder(this@HomeFeedActivity)
+                            .setTitle("Incoming ${callType.replaceFirstChar { it.uppercase() }} Call")
+                            .setMessage("$callerName is calling you...")
+                            .setPositiveButton("Accept") { _, _ ->
+                                dbRef.child("calls").child(currentUserId).child("status").setValue("accepted")
+                                incomingCallDialog = null
+
+                                val intent = Intent(this@HomeFeedActivity, VoiceCallActivity::class.java)
+                                intent.putExtra("channelName", channelName)
+                                intent.putExtra("type", callType)
+                                intent.putExtra("isCaller", false)
+                                intent.putExtra("recipientId", callerId)
+                                startActivity(intent)
+                            }
+                            .setNegativeButton("Decline") { _, _ ->
+                                dbRef.child("calls").child(currentUserId).child("status").setValue("ended")
+                                dbRef.child("calls").child(currentUserId).removeValue()
+                                incomingCallDialog = null
+                            }
+                            .setCancelable(false)
+                            .create()
+                        incomingCallDialog?.show()
+                    } else if (status == "ended") {
+                        incomingCallDialog?.dismiss()
+                        incomingCallDialog = null
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 
     private fun loadHomeFeedPosts() {
