@@ -68,6 +68,9 @@ dependencies {
     // Glide for image loading
     implementation(libs.glide)
 
+    // OkHttp for FCM Push Notifications
+    implementation(libs.okhttp)
+
     implementation(libs.googleid)
     implementation(libs.material)
     testImplementation(libs.junit)

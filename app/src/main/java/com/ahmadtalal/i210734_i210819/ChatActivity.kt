@@ -396,6 +396,7 @@ class ChatActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val previewText = if (!selectedImageBase64.isNullOrEmpty()) "📷 Photo" else text
                     updateChatSummary(previewText)
+                    sendNotificationToRecipient(currentUserName, previewText)
 
                     binding.chatMessageInput.setText("")
                     selectedImageBase64 = null
@@ -488,6 +489,21 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun sendNotificationToRecipient(title: String, messageText: String) {
+        if (recipientId.isEmpty()) return
+        dbRef.child("users").child(recipientId).child("fcmToken")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val token = snapshot.getValue(String::class.java).orEmpty()
+                    if (token.isNotEmpty()) {
+                        NotificationUtil.sendPushNotification(token, title, messageText)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+
     private fun onScreenshotDetected() {
         if (chatId.isEmpty()) return
 
@@ -510,6 +526,7 @@ class ChatActivity : AppCompatActivity() {
         )
 
         dbRef.child("messages").child(chatId).child(systemMsgId).setValue(systemMsgMap)
+        sendNotificationToRecipient("Screenshot Alert", text)
         Toast.makeText(this, "Screenshot detected", Toast.LENGTH_SHORT).show()
     }
 }

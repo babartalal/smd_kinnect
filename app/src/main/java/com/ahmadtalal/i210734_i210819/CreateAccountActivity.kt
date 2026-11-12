@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.ahmadtalal.i210734_i210819.databinding.ActivityCreateAccountBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 
 class CreateAccountActivity : AppCompatActivity() {
 
@@ -84,19 +85,19 @@ class CreateAccountActivity : AppCompatActivity() {
             password.length in 6..8 -> {
                 if (password.any { it.isDigit() } || password.any { !it.isLetterOrDigit() }) {
                     indicator.text = "Password strength: Medium"
-                    indicator.setTextColor(Color.parseColor("#F57C00")) // Orange
+                    indicator.setTextColor(Color.parseColor("#F57C00"))
                 } else {
                     indicator.text = "Password strength: Weak"
                     indicator.setTextColor(Color.RED)
                 }
             }
-            else -> { // length > 8
+            else -> {
                 val hasDigit = password.any { it.isDigit() }
                 val hasLetter = password.any { it.isLetter() }
                 val hasSpecial = password.any { !it.isLetterOrDigit() }
                 if (hasDigit && hasLetter && hasSpecial) {
                     indicator.text = "Password strength: Strong"
-                    indicator.setTextColor(Color.parseColor("#388E3C")) // Green
+                    indicator.setTextColor(Color.parseColor("#388E3C"))
                 } else if (hasDigit && hasLetter) {
                     indicator.text = "Password strength: Medium"
                     indicator.setTextColor(Color.parseColor("#F57C00"))
@@ -175,6 +176,8 @@ class CreateAccountActivity : AppCompatActivity() {
                         "isOnline" to true
                     )
 
+                    saveFcmToken(userId)
+
                     FirebaseDatabase.getInstance().getReference("users")
                         .child(userId)
                         .setValue(userMap)
@@ -193,5 +196,16 @@ class CreateAccountActivity : AppCompatActivity() {
                     Toast.makeText(this, "Sign up failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                 }
             }
+    }
+
+    private fun saveFcmToken(userId: String) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful && task.result != null) {
+                FirebaseDatabase.getInstance().getReference("users")
+                    .child(userId)
+                    .child("fcmToken")
+                    .setValue(task.result)
+            }
+        }
     }
 }
