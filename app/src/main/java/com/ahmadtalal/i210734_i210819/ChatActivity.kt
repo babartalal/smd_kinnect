@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.view.View
 import android.widget.Toast
@@ -174,6 +176,17 @@ class ChatActivity : AppCompatActivity() {
         binding.chatSendBtn.setOnClickListener {
             sendMessage()
         }
+
+        // Like icon while the input is empty (as in the design), send icon once there is text.
+        binding.chatMessageInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                binding.chatSendBtn.setImageResource(
+                    if (s.isNullOrBlank()) R.drawable.k_ic_like else R.drawable.k_ic_send
+                )
+            }
+        })
     }
 
     /** Ask the server to ring the other person, then open the call screen. */
@@ -227,6 +240,11 @@ class ChatActivity : AppCompatActivity() {
             }
 
             binding.chatRecipientAvatar.text = initialsOf(name)
+
+            // Large centred contact intro above the messages, and the bubbles' small avatar.
+            binding.chatIntroAvatar.text = initialsOf(name)
+            binding.chatIntroNameTxt.text = name
+            messageAdapter.peerName = name
         }
 
     /** The conversation, polled every few seconds so new messages appear by themselves. */
@@ -249,6 +267,10 @@ class ChatActivity : AppCompatActivity() {
         messageAdapter.updateData(visible)
         if (visible.isNotEmpty()) {
             binding.messagesRecyclerView.scrollToPosition(visible.size - 1)
+            // The list sits under the contact intro inside one scroll view: jump to the newest message.
+            binding.chatScroll.post {
+                binding.chatScroll.scrollTo(0, binding.chatScrollContent.height)
+            }
         }
     }
 

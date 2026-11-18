@@ -2,9 +2,11 @@ package com.ahmadtalal.i210734_i210819
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
+import android.view.View
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -19,20 +21,34 @@ class NotificationsActivity : AppCompatActivity() {
             insets
         }
 
-        val notificationsSearchBtn = findViewById<ImageButton>(R.id.notificationsSearchBtn)
+        // The sample notification rows mark names with <b>…</b> in the layout.
+        val notificationTexts = intArrayOf(
+            R.id.notifText1, R.id.notifText2, R.id.notifText3,
+            R.id.notifText4, R.id.notifText5, R.id.notifText6
+        )
+        for (id in notificationTexts) {
+            val textView = findViewById<TextView>(id)
+            textView.text = HtmlCompat.fromHtml(textView.text.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
+        }
+
+        val notificationsSearchBtn = findViewById<View>(R.id.notificationsSearchBtn)
 
         notificationsSearchBtn.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
         }
 
-        val notificationsHomeBtn = findViewById<ImageButton>(R.id.notificationsHomeBtn)
+        findViewById<View>(R.id.notificationsChatsBtn).setOnClickListener {
+            startActivity(Intent(this, ChatsActivity::class.java))
+        }
+
+        val notificationsHomeBtn = findViewById<View>(R.id.notificationsHomeBtn)
 
         notificationsHomeBtn.setOnClickListener {
             finish()
         }
 
-        val notificationFriendsBtn = findViewById<ImageButton>(R.id.notificationFriendsBtn)
+        val notificationFriendsBtn = findViewById<View>(R.id.notificationFriendsBtn)
 
         notificationFriendsBtn.setOnClickListener {
             val intent = Intent(this, FriendsActivity::class.java)
@@ -40,7 +56,7 @@ class NotificationsActivity : AppCompatActivity() {
             finish()
         }
 
-        val notificationMarketplaceBtn = findViewById<ImageButton>(R.id.notificationMarketplaceBtn)
+        val notificationMarketplaceBtn = findViewById<View>(R.id.notificationMarketplaceBtn)
 
         notificationMarketplaceBtn.setOnClickListener {
             val intent = Intent(this, MarketplaceActivity::class.java)
@@ -48,7 +64,7 @@ class NotificationsActivity : AppCompatActivity() {
             finish()
         }
 
-        val notificationsMenuBtn = findViewById<ImageButton>(R.id.notificationsMenuBtn)
+        val notificationsMenuBtn = findViewById<View>(R.id.notificationsMenuBtn)
         notificationsMenuBtn?.setOnClickListener {
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)

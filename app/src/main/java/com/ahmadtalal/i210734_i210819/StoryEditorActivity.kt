@@ -41,6 +41,10 @@ class StoryEditorActivity : AppCompatActivity() {
             insets
         }
 
+        // Round the preview's corners (the XML attribute only works on Android 12+).
+        binding.storyFrame.clipToOutline = true
+        showMyInitials()
+
         binding.closeStoryBtn.setOnClickListener { finish() }
 
         binding.storyPreviewImage.setOnClickListener {
@@ -61,6 +65,16 @@ class StoryEditorActivity : AppCompatActivity() {
 
         // Auto open gallery picker on start if no image loaded
         pickImageLauncher.launch("image/*")
+    }
+
+    /** Shows my initials in the "Your story" pill. */
+    private fun showMyInitials() {
+        if (!Session.isLoggedIn) return
+        Api.get("users/get.php", mapOf("user_id" to Session.userId)) { result ->
+            if (!result.ok || isFinishing || isDestroyed) return@get
+            val name = User.fromJson(result.obj()).displayName()
+            if (name.isNotEmpty()) binding.storyOwnerInitials.text = initialsOf(name)
+        }
     }
 
     private fun processImageUri(uri: Uri) {

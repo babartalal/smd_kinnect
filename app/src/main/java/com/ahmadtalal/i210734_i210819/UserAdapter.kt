@@ -47,6 +47,7 @@ class UserAdapter(
             val displayName = user.displayName()
             binding.userNameTxt.text = displayName
 
+            binding.userAvatarImage.clipToOutline = true
             bindAvatar(user.profilePic, displayName, binding.userAvatarImage, binding.userAvatarInitials)
 
             val isMe = currentUserId.isEmpty() || user.userId == currentUserId
@@ -56,7 +57,13 @@ class UserAdapter(
                 binding.actionBtn.visibility = View.GONE
             } else {
                 binding.actionBtn.visibility = View.VISIBLE
-                binding.actionBtn.text = Friendship.buttonLabel(user.friendState, addLabel = "+ Add")
+                // "Add" is the round icon button from the design; other states show a text pill.
+                val label = Friendship.buttonLabel(user.friendState, addLabel = "")
+                binding.actionBtn.text = label
+                binding.actionBtn.setBackgroundResource(
+                    if (label.isEmpty()) R.drawable.people_bg_add_friend_round
+                    else R.drawable.k_bg_pill_teal_tint
+                )
                 binding.actionBtn.setOnClickListener {
                     Friendship.toggle(user.userId, user.friendState) { newState ->
                         val index = userList.indexOfFirst { it.userId == user.userId }

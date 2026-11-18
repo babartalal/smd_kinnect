@@ -1,214 +1,328 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- 04 · Home feed -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".HomeFeedActivity">
 
-
+    <!-- Fixed header: wordmark, search, messenger, tab row -->
     <LinearLayout
         android:id="@+id/fixedTopSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="4dp">
 
             <TextView
+                style="@style/Kinnect.Text.PageTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kinnect"
-                android:textStyle="bold"
-                android:textSize="30sp"
-                android:textColor="@color/primary_teal"/>
+                android:letterSpacing="-0.03"
+                android:text="kinnect"
+                android:textColor="@color/primary_teal"
+                android:textSize="30sp" />
 
             <Space
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="1dp"
                 android:layout_weight="1" />
 
             <ImageButton
                 android:id="@+id/homeFeedSearchBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/outline_search_24"
-                android:background="@drawable/bg_circle_grey"
-                android:padding="8dp" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/k_bg_circle_gray"
+                android:contentDescription="Search"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/k_ic_search"
+                app:tint="@color/k_text_primary" />
 
             <ImageButton
                 android:id="@+id/homeFeedChatsBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/outline_sms_24"
-                android:background="@drawable/bg_circle_grey"
-                android:padding="8dp" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/k_bg_circle_gray"
+                android:contentDescription="Chats"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/k_ic_messenger"
+                app:tint="@color/k_text_primary" />
 
+            <!-- count badge overlapping the messenger button (negative margin) -->
+            <TextView
+                style="@style/Kinnect.Text.Badge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="top"
+                android:layout_marginStart="-14dp"
+                android:text="3" />
         </LinearLayout>
 
-
+        <!-- Tab row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Space
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_home_24"
-                android:background="@color/transparent" />
+                <ImageButton
+                    android:id="@+id/homeFeedHomeBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@color/transparent"
+                    android:contentDescription="Home"
+                    android:padding="9dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/k_ic_home"
+                    app:tint="@color/primary_teal" />
 
-            <Space
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/primary_teal" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/friendsBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_group_24"
-                android:background="@color/transparent" />
+                <ImageButton
+                    android:id="@+id/friendsBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@color/transparent"
+                    android:contentDescription="Friends"
+                    android:padding="9dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/k_ic_friends"
+                    app:tint="@color/k_text_secondary" />
 
-            <Space
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/homeFeedMarketplaceBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_add_business_24"
-                android:background="@color/transparent" />
+                <ImageButton
+                    android:id="@+id/homeFeedMarketplaceBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@color/transparent"
+                    android:contentDescription="Marketplace"
+                    android:padding="9dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/k_ic_store"
+                    app:tint="@color/k_text_secondary" />
 
-            <Space
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/homeFeedNotificationsBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_notifications_24"
-                android:background="@color/transparent" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
 
-            <Space
+                    <ImageButton
+                        android:id="@+id/homeFeedNotificationsBtn"
+                        android:layout_width="46dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:contentDescription="Notifications"
+                        android:padding="9dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/k_ic_bell"
+                        app:tint="@color/k_text_secondary" />
+
+                    <!-- count badge overlapping the bell (negative margin) -->
+                    <TextView
+                        style="@style/Kinnect.Text.Badge"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="top"
+                        android:layout_marginStart="-20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="2dp"
+                        android:text="5" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/homeFeedMenuBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/outline_menu_24"
-                android:background="@color/transparent" />
+                <ImageButton
+                    android:id="@+id/homeFeedMenuBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@color/transparent"
+                    android:contentDescription="Menu"
+                    android:padding="9dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/k_ic_menu"
+                    app:tint="@color/k_text_secondary" />
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!--Dividing line-->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#D3D3D3" />
+            android:background="@color/k_divider" />
     </LinearLayout>
-
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/fixedTopSection"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <!-- ScrollView must have exactly ONE direct child -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/home_feed_background">
+            android:background="@color/white"
+            android:orientation="vertical">
 
+            <!-- Composer row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="16dp"
-                android:background="@color/white"
-                android:gravity="center_vertical">
-
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="12dp">
 
                 <ImageView
                     android:id="@+id/homeFeedProfileAvatar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/round_account_circle_24"
-                    android:layout_weight="1"/>
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/k_bg_circle_teal"
+                    android:contentDescription="Your profile"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/homeFeedProfileInitials"
+                    style="@style/Kinnect.Text.AvatarInitials"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/k_bg_circle_teal"
+                    android:text="JW"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/woym"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/feed_bg_pill_outline"
+                    android:hint="What's on your mind, Jacob?"
+                    android:importantForAutofill="no"
                     android:inputType="text"
-                    android:hint="Whats on your mind?"
-                    android:layout_weight="5"
-                    android:background="@drawable/woym_round_border"
-                    android:padding="8dp"/>
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:singleLine="true"
+                    android:textColor="@color/k_text_primary"
+                    android:textColorHint="@color/k_text_secondary"
+                    android:textSize="16sp" />
 
                 <ImageButton
                     android:id="@+id/homeFeedPhotoPickerBtn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/outline_image_24"
+                    android:layout_marginStart="4dp"
                     android:background="@color/transparent"
-                    android:layout_weight="1"/>
-
+                    android:contentDescription="Photo"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/k_ic_image"
+                    app:tint="@color/primary_teal" />
             </LinearLayout>
 
+            <!-- thick divider band -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="@color/k_chip_gray" />
 
+            <!-- Stories ("Create story" card first) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/storiesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:background="@color/white"
+                android:clipToPadding="false"
                 android:orientation="horizontal"
-                android:paddingVertical="8dp"
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="12dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="@color/k_chip_gray" />
+
+            <!-- Posts -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/postsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginTop="8dp" />
-
-
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
     </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

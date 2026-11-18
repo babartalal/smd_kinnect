@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sample cover illustration from the design (sky, sun, hills). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="330dp"
+    android:height="110dp"
+    android:viewportWidth="330"
+    android:viewportHeight="110">
+    <path android:pathData="M0,0 H330 V110 H0 Z" android:fillColor="#BFD6D6" />
+    <path android:pathData="M206,-10 a32,32 0 1 0 64,0 a32,32 0 1 0 -64,0 Z" android:fillColor="#F0E0C4" />
+    <path android:pathData="M10,110 Q92,40 174,110 Z" android:fillColor="#7FA8A6" />
+    <path android:pathData="M296,110 Q316,96 330,80 V110 Z" android:fillColor="#7FA8A6" />
+</vector>

@@ -1,78 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 13 Search: one person row (also used for the friends list on 14 Friends). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingHorizontal="16dp"
-    android:paddingVertical="12dp"
+    android:paddingVertical="7dp"
     android:gravity="center_vertical"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
 
-    <FrameLayout
+    <!-- Avatar: bindAvatar() shows exactly one of these two views. -->
+    <ImageView
+        android:id="@+id/userAvatarImage"
         android:layout_width="48dp"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/k_bg_circle_green"
+        android:contentDescription="User avatar"
+        android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/userAvatarImage"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/bg_circle_teal"
-            android:src="@drawable/round_account_circle_24"
-            android:contentDescription="User Avatar" />
-
-        <TextView
-            android:id="@+id/userAvatarInitials"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/bg_circle_teal"
-            android:gravity="center"
-            android:text="U"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-    </FrameLayout>
+    <TextView
+        android:id="@+id/userAvatarInitials"
+        style="@style/Kinnect.Text.AvatarInitials"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/k_bg_circle_green"
+        android:text="OF"
+        android:textSize="17sp" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginStart="12dp">
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/userNameTxt"
+            style="@style/Kinnect.Text.Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User Name"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Omar Farooq" />
 
         <TextView
             android:id="@+id/userInfoTxt"
+            style="@style/Kinnect.Text.Secondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 mutual friends"
-            android:textColor="#808080"
-            android:textSize="14sp" />
+            android:layout_marginTop="3dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Friend · Lives in Karachi"
+            android:textSize="13sp" />
     </LinearLayout>
 
-    <Button
+    <!-- Round add-friend button; UserAdapter swaps it to a text pill for other states. -->
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/actionBtn"
+        style="@style/Kinnect.Button"
         android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:text="Add"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:background="@drawable/bg_circle_grey"
-        android:backgroundTint="#1877F2"
-        android:paddingHorizontal="16dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="12dp"
+        android:minWidth="38dp"
+        android:paddingHorizontal="14dp"
         android:paddingVertical="0dp"
-        android:textStyle="bold"
-        android:textSize="14sp"/>
+        android:background="@drawable/people_bg_add_friend_round"
+        android:textColor="@color/primary_teal"
+        android:textSize="14sp"
+        android:contentDescription="Add friend" />
 </LinearLayout>

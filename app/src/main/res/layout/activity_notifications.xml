@@ -1,416 +1,802 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".NotificationsActivity">
 
+    <!-- Shared header: page title, search + messenger buttons, 5-tab icon row -->
     <LinearLayout
-        android:id="@+id/notificationFixedTopSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="6dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Notifications"
-                android:textStyle="bold"
-                android:textSize="30sp"
-                android:textColor="@color/black"/>
-
-            <Space
+                style="@style/Kinnect.Text.PageTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="Notifications" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/notificationsSearchBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/outline_search_24"
-                android:background="@drawable/bg_circle_grey"
-                android:padding="8dp" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/k_bg_circle_gray"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Search"
+                android:padding="10dp"
+                android:src="@drawable/k_ic_search"
+                app:tint="@color/k_text_primary" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/outline_sms_24"
-                android:background="@drawable/bg_circle_grey"
-                android:padding="8dp" />
+            <ImageView
+                android:id="@+id/notificationsChatsBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/k_bg_circle_gray"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Chats"
+                android:padding="9dp"
+                android:src="@drawable/k_ic_messenger"
+                app:tint="@color/k_text_primary" />
 
+            <!-- red count badge overlapping the messenger button (negative margin) -->
+            <TextView
+                style="@style/Kinnect.Text.Badge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="top"
+                android:layout_marginStart="-14dp"
+                android:layout_marginEnd="-4dp"
+                android:text="3" />
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <ImageButton
+            <LinearLayout
                 android:id="@+id/notificationsHomeBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_home_24"
-                android:background="@color/transparent" />
-
-            <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Home"
+                android:orientation="vertical">
 
-            <ImageButton
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/k_ic_home"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/notificationFriendsBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_group_24"
-                android:background="@color/transparent" />
-
-            <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Friends"
+                android:orientation="vertical">
 
-            <ImageButton
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/k_ic_friends"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/notificationMarketplaceBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_add_business_24"
-                android:background="@color/transparent" />
-
-            <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Marketplace"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_notifications_24"
-                android:background="@color/transparent" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-            <Space
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/k_ic_store"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:contentDescription="Notifications"
+                android:orientation="vertical">
 
-            <ImageButton
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/k_ic_bell"
+                        app:tint="@color/primary_teal" />
+
+                    <!-- count badge overlaps the icon's top-right corner (negative margin) -->
+                    <TextView
+                        style="@style/Kinnect.Text.Badge"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="top"
+                        android:layout_marginStart="-12dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="-6dp"
+                        android:text="5" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/primary_teal" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/notificationsMenuBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/outline_menu_24"
-                android:background="@color/transparent" />
-
-            <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Menu"
+                android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/k_ic_menu"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!--Dividing line-->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#D3D3D3" />
+            android:background="@color/k_divider" />
     </LinearLayout>
 
-
-    <View
-        android:id="@+id/headerDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#D3D3D3"
-        app:layout_constraintTop_toBottomOf="@id/notificationFixedTopSection"/>
-
-    <!-- 3. MAIN SCROLLABLE CONTENT -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/headerDivider"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="32dp">
+            android:paddingBottom="24dp">
 
-            <!-- ================= TODAY SECTION ================= -->
             <TextView
+                style="@style/Kinnect.Text.Section"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="8dp"
                 android:text="New"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"/>
+                android:textSize="18sp" />
 
-            <!-- Notification 1: Like (Unread with blue tint) -->
+            <!-- "New" notifications sit on a teal-tinted band -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:background="#E8F4FD"
-                android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/round_account_circle_24" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:background="@color/k_teal_tint"
                 android:orientation="vertical"
-                android:layout_marginStart="12dp">
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Aisha Khan and 32 others"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                    <!-- avatar with a small type badge overlapping its bottom-right (negative margin) -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/Kinnect.Text.AvatarInitials"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/k_bg_circle_maroon"
+                            android:text="AK"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="-22dp"
+                            android:background="@drawable/k_bg_circle_white"
+                            android:padding="2dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/k_bg_circle_white"
+                                android:backgroundTint="@color/k_reaction_love"
+                                android:importantForAccessibility="no"
+                                android:padding="5dp"
+                                android:src="@drawable/k_ic_heart_filled"
+                                app:tint="@color/white" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- bold parts are applied in NotificationsActivity (Html.fromHtml) -->
+                        <TextView
+                            android:id="@+id/notifText1"
+                            style="@style/Kinnect.Text.Body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="3dp"
+                            android:text="&lt;b&gt;Aisha Khan&lt;/b&gt; and &lt;b&gt;32 others&lt;/b&gt; reacted to your photo." />
+
+                        <TextView
+                            style="@style/Kinnect.Text.Link"
+                            android:textSize="14sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="5m" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="More"
+                        android:padding="5dp"
+                        android:src="@drawable/k_ic_more"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="2 hours ago"
-                    android:textColor="@color/primary_teal"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"/>
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp">
+
+                    <!-- avatar with a small type badge overlapping its bottom-right (negative margin) -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/Kinnect.Text.AvatarInitials"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/k_bg_circle_indigo"
+                            android:text="SI"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="-22dp"
+                            android:background="@drawable/k_bg_circle_white"
+                            android:padding="2dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/k_bg_circle_white"
+                                android:backgroundTint="@color/primary_teal"
+                                android:importantForAccessibility="no"
+                                android:padding="5dp"
+                                android:src="@drawable/k_ic_person"
+                                app:tint="@color/white" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- bold parts are applied in NotificationsActivity (Html.fromHtml) -->
+                        <TextView
+                            android:id="@+id/notifText2"
+                            style="@style/Kinnect.Text.Body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="3dp"
+                            android:text="&lt;b&gt;Sara Iqbal&lt;/b&gt; sent you a friend request." />
+
+                        <TextView
+                            style="@style/Kinnect.Text.Link"
+                            android:textSize="14sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="20m" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="2dp"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/notifConfirmBtn"
+                                style="@style/Kinnect.Button.Teal"
+                                android:layout_width="0dp"
+                                android:layout_height="36dp"
+                                android:layout_weight="1"
+                                android:text="Confirm" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/notifDeleteBtn"
+                                style="@style/Kinnect.Button.Gray"
+                                android:layout_width="0dp"
+                                android:layout_height="36dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:text="Delete" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="More"
+                        android:padding="5dp"
+                        android:src="@drawable/k_ic_more"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Post Thumbnail for context -->
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:scaleType="centerCrop"
-                android:layout_marginStart="12dp"
-                android:src="@drawable/landscape1" />
-        </LinearLayout>
-
-        <!-- Notification 2: Comment -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:background="#E8F4FD"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/round_account_circle_24" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="David Chen commented: 'This looks amazing!'"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="4 hours ago"
-                    android:textColor="@color/primary_teal"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-
-            <!-- Post Thumbnail -->
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:scaleType="centerCrop"
-                android:layout_marginStart="12dp"
-                android:src="@drawable/landscape1" />
-        </LinearLayout>
-
-        <!-- ================= EARLIER SECTION ================= -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Earlier"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Notification 3: Group Invite (Contains Action Button) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/round_account_circle_24" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Zain Raza replied to your comment"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Next time invite us"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Yesterday"
-                    android:textColor="#808080"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-
-            <!-- Join Button -->
             <TextView
+                style="@style/Kinnect.Text.Section"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="..."
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_comment_rounded"
-                android:backgroundTint="@color/white"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_marginStart="12dp"/>
-        </LinearLayout>
-
-        <!-- Notification 4: Tagged in a post -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/round_account_circle_24" />
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="4dp"
+                android:text="Earlier"
+                android:textSize="18sp" />
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="New Post in SMD Class of 2026"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Assignment should be extended"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Oct 4"
-                    android:textColor="#808080"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="..."
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_comment_rounded"
-                android:backgroundTint="@color/white"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_marginStart="12dp"/>
-        </LinearLayout>
-
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="See Previous Notifications"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_comment_rounded"
-                android:backgroundTint="@color/text_gray"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="15dp"
-                android:textStyle="bold"
-                android:textSize="14sp"/>
+                android:orientation="vertical">
 
-    </LinearLayout>
-</ScrollView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- avatar with a small type badge overlapping its bottom-right (negative margin) -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/Kinnect.Text.AvatarInitials"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/k_bg_circle_slate"
+                            android:text="ZR"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="-22dp"
+                            android:background="@drawable/k_bg_circle_white"
+                            android:padding="2dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/k_bg_circle_white"
+                                android:backgroundTint="@color/k_avatar_green"
+                                android:importantForAccessibility="no"
+                                android:padding="5dp"
+                                android:src="@drawable/k_ic_comment"
+                                app:tint="@color/white" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- bold parts are applied in NotificationsActivity (Html.fromHtml) -->
+                        <TextView
+                            android:id="@+id/notifText3"
+                            style="@style/Kinnect.Text.Body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="3dp"
+                            android:text="&lt;b&gt;Zain Raza&lt;/b&gt; replied to your comment: “next time invite the rest of us”" />
+
+                        <TextView
+                            style="@style/Kinnect.Text.Secondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="2h" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="More"
+                        android:padding="5dp"
+                        android:src="@drawable/k_ic_more"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp">
+
+                    <!-- avatar with a small type badge overlapping its bottom-right (negative margin) -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/Kinnect.Text.AvatarInitials"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/k_bg_circle_olive"
+                            android:text="DC"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="-22dp"
+                            android:background="@drawable/k_bg_circle_white"
+                            android:padding="2dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/k_bg_circle_white"
+                                android:backgroundTint="@color/k_avatar_indigo"
+                                android:importantForAccessibility="no"
+                                android:padding="5dp"
+                                android:src="@drawable/k_ic_friends"
+                                app:tint="@color/white" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- bold parts are applied in NotificationsActivity (Html.fromHtml) -->
+                        <TextView
+                            android:id="@+id/notifText4"
+                            style="@style/Kinnect.Text.Body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="3dp"
+                            android:text="New post in &lt;b&gt;SMD Class of 2026&lt;/b&gt;: “Assignment 1 is out. Start early.”" />
+
+                        <TextView
+                            style="@style/Kinnect.Text.Secondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="5h" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="More"
+                        android:padding="5dp"
+                        android:src="@drawable/k_ic_more"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp">
+
+                    <!-- avatar with a small type badge overlapping its bottom-right (negative margin) -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/Kinnect.Text.AvatarInitials"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/k_bg_circle_brown"
+                            android:text="HA"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="-22dp"
+                            android:background="@drawable/k_bg_circle_white"
+                            android:padding="2dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/k_bg_circle_white"
+                                android:backgroundTint="@color/k_reaction_yellow"
+                                android:importantForAccessibility="no"
+                                android:padding="5dp"
+                                android:src="@drawable/k_ic_tag"
+                                app:tint="@color/white" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- bold parts are applied in NotificationsActivity (Html.fromHtml) -->
+                        <TextView
+                            android:id="@+id/notifText5"
+                            style="@style/Kinnect.Text.Body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="3dp"
+                            android:text="&lt;b&gt;Hamza Ali&lt;/b&gt; tagged you in a post." />
+
+                        <TextView
+                            style="@style/Kinnect.Text.Secondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="Yesterday" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="More"
+                        android:padding="5dp"
+                        android:src="@drawable/k_ic_more"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp">
+
+                    <!-- avatar with a small type badge overlapping its bottom-right (negative margin) -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/Kinnect.Text.AvatarInitials"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/k_bg_circle_purple"
+                            android:text="LM"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="-22dp"
+                            android:background="@drawable/k_bg_circle_white"
+                            android:padding="2dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/k_bg_circle_white"
+                                android:backgroundTint="@color/primary_teal"
+                                android:importantForAccessibility="no"
+                                android:padding="5dp"
+                                android:src="@drawable/k_ic_like"
+                                app:tint="@color/white" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- bold parts are applied in NotificationsActivity (Html.fromHtml) -->
+                        <TextView
+                            android:id="@+id/notifText6"
+                            style="@style/Kinnect.Text.Body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="3dp"
+                            android:text="&lt;b&gt;Lina Marsh&lt;/b&gt; liked your story." />
+
+                        <TextView
+                            style="@style/Kinnect.Text.Secondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="2d" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="More"
+                        android:padding="5dp"
+                        android:src="@drawable/k_ic_more"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/seePreviousNotificationsBtn"
+                style="@style/Kinnect.Button.Gray"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:text="See previous notifications" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

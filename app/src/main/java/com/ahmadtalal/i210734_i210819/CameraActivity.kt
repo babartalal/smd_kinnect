@@ -20,7 +20,10 @@ class CameraActivity : AppCompatActivity() {
             insets
         }
 
-        val cancelCameraBtn = findViewById<ImageButton>(R.id.cancelCameraBtn)
+        // Round the preview's corners (the XML attribute only works on Android 12+).
+        findViewById<View>(R.id.cameraFrame).clipToOutline = true
+
+        val cancelCameraBtn =findViewById<ImageButton>(R.id.cancelCameraBtn)
         cancelCameraBtn.setOnClickListener {
             finish()
         }

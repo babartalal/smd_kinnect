@@ -3,19 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:paddingVertical="8dp"
-    android:paddingHorizontal="16dp">
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <TextView
         android:id="@+id/systemMessageTxt"
+        style="@style/Kinnect.Text.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_comment_rounded"
-        android:backgroundTint="#F0F2F5"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="6dp"
+        android:gravity="center"
+        android:letterSpacing="0.04"
         android:text="System message"
-        android:textColor="@color/text_gray"
         android:textSize="12sp"
-        android:textStyle="italic" />
+        android:textStyle="bold" />
 </LinearLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Round teal-tint button with the add-friend icon centred (search results). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/k_teal_tint" />
+        </shape>
+    </item>
+    <item
+        android:width="22dp"
+        android:height="22dp"
+        android:gravity="center"
+        android:drawable="@drawable/people_ic_add_friend_teal" />
+</layer-list>

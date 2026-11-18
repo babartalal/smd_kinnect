@@ -49,14 +49,29 @@ class CommentAdapter(
                 binding.commentAuthorAvatar, binding.commentAuthorInitials
             )
 
-            if (comment.replyToCommentId.isNotEmpty()) {
+            val isReply = comment.replyToCommentId.isNotEmpty()
+            if (isReply) {
                 binding.replyingToTagTxt.visibility = View.VISIBLE
-                binding.replyingToTagTxt.text = "Replying to ${comment.replyToAuthorName.ifEmpty { "User" }}"
-                binding.commentContainerLayout.setPadding(48, 12, 16, 12)
+                binding.replyingToTagTxt.text = "@${comment.replyToAuthorName.ifEmpty { "User" }}"
             } else {
                 binding.replyingToTagTxt.visibility = View.GONE
-                binding.commentContainerLayout.setPadding(16, 12, 16, 12)
             }
+
+            // Replies are indented under their parent and use a smaller avatar.
+            val density = context.resources.displayMetrics.density
+            binding.commentContainerLayout.setPadding(
+                ((if (isReply) 56 else 16) * density).toInt(), (6 * density).toInt(),
+                (16 * density).toInt(), (6 * density).toInt()
+            )
+            val avatarSize = ((if (isReply) 28 else 36) * density).toInt()
+            for (avatarView in listOf(binding.commentAuthorAvatar, binding.commentAuthorInitials)) {
+                avatarView.layoutParams = avatarView.layoutParams.apply {
+                    width = avatarSize
+                    height = avatarSize
+                }
+            }
+            binding.commentAuthorAvatar.clipToOutline = true
+            binding.commentImagePreview.clipToOutline = true
 
             binding.commentReplyBtn.setOnClickListener {
                 onReplyClicked(comment, authorName)
@@ -87,6 +102,7 @@ class CommentAdapter(
 
         private fun setupLikes(comment: Comment) {
             binding.commentLikesCountTxt.text = "${comment.likeCount}"
+            binding.commentLikePill.visibility = if (comment.likeCount > 0) View.VISIBLE else View.GONE
 
             val tealColor = ContextCompat.getColor(context, R.color.primary_teal)
             val grayColor = ContextCompat.getColor(context, R.color.text_gray)

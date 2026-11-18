@@ -1,239 +1,375 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<!-- 12 · Your story -->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/k_story_bg_dark"
+    android:orientation="vertical"
     tools:context=".YourStoryActivity">
 
-
-    <ImageView
-        android:id="@+id/myStoryMedia"
+    <!-- Rounded story. FrameLayout: progress, header, label and reactions are drawn on top of the story image. -->
+    <FrameLayout
+        android:id="@+id/storyFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/landscape1" />
-
-    <!-- Top Gradient Scrim -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#66000000"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Bottom Gradient Scrim -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="#99000000"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <!--TOP PROGRESS BARS -->
-    <LinearLayout
-        android:id="@+id/progressContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
-            android:layout_height="4dp"
-            android:layout_weight="1"
-            android:progressDrawable="@drawable/bg_circle_grey"
-            android:progressTint="@color/white"
-            android:progress="100" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/storyHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/progressContainer">
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/story_k_bg_frame"
+        android:clipToOutline="true"
+        tools:targetApi="s">
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@drawable/round_account_circle_24" />
+            android:id="@+id/myStoryMedia"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Your story"
+            android:scaleType="centerCrop"
+            android:src="@drawable/landscape1" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <!-- Single progress bar, most of the way through -->
+            <LinearLayout
+                android:id="@+id/progressContainer"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/story_k_bg_progress_track"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:background="@drawable/story_k_bg_progress_fill" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <!-- Header row -->
+            <LinearLayout
+                android:id="@+id/storyHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="10dp">
+
+                <TextView
+                    android:id="@+id/myStoryInitials"
+                    style="@style/Kinnect.Text.AvatarInitials"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/k_bg_circle_teal"
+                    android:includeFontPadding="false"
+                    android:text="JW"
+                    android:textSize="13sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:text="Your story"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/myStoryMeta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:includeFontPadding="false"
+                        android:text="11h · Close friends"
+                        android:textColor="#E6FFFFFF"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/closeMyStoryBtn"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:clickable="true"
+                    android:contentDescription="Close"
+                    android:focusable="true"
+                    android:padding="3dp"
+                    android:src="@drawable/k_ic_close"
+                    app:tint="@color/white" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Text label: rust-red tag -->
             <TextView
+                android:id="@+id/myStoryTextLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Your Story"
-                android:textStyle="bold"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="22dp"
+                android:background="@drawable/story_k_bg_label_rust"
+                android:fontFamily="sans-serif-black"
+                android:includeFontPadding="false"
+                android:paddingStart="14dp"
+                android:paddingTop="9dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="9dp"
+                android:rotation="2"
+                android:text="Saturday plans"
                 android:textColor="@color/white"
-                android:textSize="14sp"
-                android:layout_marginStart="12dp" />
+                android:textSize="21sp"
+                android:textStyle="bold" />
 
-            <TextView
+            <!-- Floating love reactions (sample content) -->
+            <LinearLayout
+                android:id="@+id/floatingReactions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="14m"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp"
-                android:layout_marginStart="8dp" />
+                android:layout_marginTop="56dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical">
 
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="28dp"
+                    android:alpha="0.35"
+                    android:background="@drawable/story_k_bg_circle_love"
+                    android:padding="5dp"
+                    android:src="@drawable/k_ic_heart_filled"
+                    app:tint="@color/white" />
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="11dp"
+                    android:alpha="0.5"
+                    android:background="@drawable/story_k_bg_circle_love"
+                    android:padding="5dp"
+                    android:src="@drawable/k_ic_heart_filled"
+                    app:tint="@color/white" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="10dp"
+                    android:alpha="0.7"
+                    android:background="@drawable/story_k_bg_circle_love"
+                    android:padding="6dp"
+                    android:src="@drawable/k_ic_heart_filled"
+                    app:tint="@color/white" />
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="9dp"
+                    android:alpha="0.9"
+                    android:background="@drawable/story_k_bg_circle_love"
+                    android:padding="6dp"
+                    android:src="@drawable/k_ic_heart_filled"
+                    app:tint="@color/white" />
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="33dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/story_k_bg_circle_love"
+                    android:padding="7dp"
+                    android:src="@drawable/k_ic_heart_filled"
+                    app:tint="@color/white" />
+            </LinearLayout>
         </LinearLayout>
+    </FrameLayout>
 
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/closeMyStoryBtn"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@color/transparent"
-            android:src="@drawable/outline_cancel_24"
-            app:tint="@color/white" />
-    </LinearLayout>
-
-    <!-- FIXED FOOTER SECTION -->
+    <!-- Bottom bar: viewers and actions -->
     <LinearLayout
         android:id="@+id/storyBottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="bottom"
-        android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="18dp">
 
         <LinearLayout
             android:id="@+id/viewersBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <!-- Overlapping viewer avatars -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Kinnect.Text.AvatarInitials"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:background="@drawable/k_bg_circle_maroon"
+                    android:text="AK"
+                    android:textSize="7sp" />
+
+                <TextView
+                    style="@style/Kinnect.Text.AvatarInitials"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="-5dp"
+                    android:background="@drawable/k_bg_circle_purple"
+                    android:text="LM"
+                    android:textSize="7sp" />
+
+                <TextView
+                    style="@style/Kinnect.Text.AvatarInitials"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="-5dp"
+                    android:background="@drawable/k_bg_circle_green"
+                    android:text="OF"
+                    android:textSize="7sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/seenByTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:includeFontPadding="false"
+                android:text="Seen by 24"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/createBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/round_account_circle_24"
+                android:src="@drawable/k_ic_reels"
                 app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Activity"
+                android:layout_marginTop="6dp"
+                android:includeFontPadding="false"
+                android:text="Create"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
+                android:textSize="12sp" />
         </LinearLayout>
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
 
         <LinearLayout
             android:id="@+id/highlightBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginEnd="24dp">
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/outline_camera_roll_24"
+                android:src="@drawable/k_ic_heart"
                 app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Create"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/highlightBtn2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginEnd="24dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/rounded_ecg_heart_24"
-                app:tint="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:includeFontPadding="false"
                 android:text="Highlight"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/highlightBtn3"
-            android:layout_width="wrap_content"
+            android:id="@+id/sendBtn"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginEnd="24dp">
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/outline_send_24"
+                android:src="@drawable/k_ic_send"
                 app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:includeFontPadding="false"
                 android:text="Send"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
+                android:textSize="12sp" />
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/moreOptionsBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/outline_menu_24"
+                android:src="@drawable/k_ic_more"
                 app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:includeFontPadding="false"
                 android:text="More"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
+                android:textSize="12sp" />
         </LinearLayout>
-
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

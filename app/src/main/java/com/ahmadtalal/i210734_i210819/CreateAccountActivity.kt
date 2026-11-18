@@ -2,18 +2,24 @@ package com.ahmadtalal.i210734_i210819
 
 import android.R
 import android.content.Intent
-import android.graphics.Color
+import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.PasswordTransformationMethod
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.ahmadtalal.i210734_i210819.databinding.ActivityCreateAccountBinding
+import com.ahmadtalal.i210734_i210819.R as AppR
 
 class CreateAccountActivity : AppCompatActivity() {
 
@@ -38,7 +44,7 @@ class CreateAccountActivity : AppCompatActivity() {
 
     private fun setupSpinners() {
         val days = (1..31).toList()
-        val dayAdapter = ArrayAdapter(this, R.layout.simple_spinner_item, days)
+        val dayAdapter = ArrayAdapter(this, AppR.layout.auth_spinner_item, days)
         dayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.daySpinner.adapter = dayAdapter
 
@@ -47,14 +53,26 @@ class CreateAccountActivity : AppCompatActivity() {
             "May", "June", "July", "August",
             "September", "October", "November", "December"
         )
-        val monthAdapter = ArrayAdapter(this, R.layout.simple_spinner_item, months)
+        // The narrow card shows the short month ("Mar"); the list and the saved value keep the full name.
+        val monthAdapter = object : ArrayAdapter<String>(this, AppR.layout.auth_spinner_item, months) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                (view as? TextView)?.text = months[position].take(3)
+                return view
+            }
+        }
         monthAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.monthSpinner.adapter = monthAdapter
 
         val years = (1950..2026).toList().reversed()
-        val yearAdapter = ArrayAdapter(this, R.layout.simple_spinner_item, years)
+        val yearAdapter = ArrayAdapter(this, AppR.layout.auth_spinner_item, years)
         yearAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.yearSpinner.adapter = yearAdapter
+
+        // Tapping anywhere on a birthday card opens its dropdown.
+        binding.dayCard.setOnClickListener { binding.daySpinner.performClick() }
+        binding.monthCard.setOnClickListener { binding.monthSpinner.performClick() }
+        binding.yearCard.setOnClickListener { binding.yearSpinner.performClick() }
     }
 
     private fun setupPasswordWatcher() {
@@ -68,46 +86,63 @@ class CreateAccountActivity : AppCompatActivity() {
     }
 
     private fun updatePasswordStrength(password: String) {
-        val indicator = binding.passwordStrengthTxt
-        when {
-            password.isEmpty() -> {
-                indicator.text = "Password strength: Empty"
-                indicator.setTextColor(Color.GRAY)
+        val hasDigit = password.any { it.isDigit() }
+        val hasLetter = password.any { it.isLetter() }
+        val hasSpecial = password.any { !it.isLetterOrDigit() }
+
+        // Same rules as before: 0 = empty, 1 = weak, 2 = medium, 3 = strong
+        val level = when {
+            password.isEmpty() -> 0
+            password.length < 6 -> 1
+            password.length in 6..8 -> if (hasDigit || hasSpecial) 2 else 1
+            hasDigit && hasLetter && hasSpecial -> 3
+            hasDigit && hasLetter -> 2
+            else -> 1
+        }
+        val label = when (level) {
+            1 -> "Weak"
+            2 -> "Medium"
+            3 -> "Strong"
+            else -> ""
+        }
+        val color = getColor(
+            when (level) {
+                1 -> AppR.color.k_call_red
+                2 -> AppR.color.k_badge_red
+                3 -> AppR.color.k_online_green
+                else -> AppR.color.k_divider
             }
-            password.length < 6 -> {
-                indicator.text = "Password strength: Weak (Too short)"
-                indicator.setTextColor(Color.RED)
-            }
-            password.length in 6..8 -> {
-                if (password.any { it.isDigit() } || password.any { !it.isLetterOrDigit() }) {
-                    indicator.text = "Password strength: Medium"
-                    indicator.setTextColor(Color.parseColor("#F57C00"))
-                } else {
-                    indicator.text = "Password strength: Weak"
-                    indicator.setTextColor(Color.RED)
-                }
-            }
-            else -> {
-                val hasDigit = password.any { it.isDigit() }
-                val hasLetter = password.any { it.isLetter() }
-                val hasSpecial = password.any { !it.isLetterOrDigit() }
-                if (hasDigit && hasLetter && hasSpecial) {
-                    indicator.text = "Password strength: Strong"
-                    indicator.setTextColor(Color.parseColor("#388E3C"))
-                } else if (hasDigit && hasLetter) {
-                    indicator.text = "Password strength: Medium"
-                    indicator.setTextColor(Color.parseColor("#F57C00"))
-                } else {
-                    indicator.text = "Password strength: Weak"
-                    indicator.setTextColor(Color.RED)
-                }
-            }
+        )
+        val off = getColor(AppR.color.k_divider)
+
+        // Label plus the three bar segments under the password card.
+        binding.passwordStrengthTxt.text = label
+        binding.passwordStrengthTxt.setTextColor(color)
+        val segments = listOf(binding.strengthSegment1, binding.strengthSegment2, binding.strengthSegment3)
+        segments.forEachIndexed { index, segment ->
+            segment.backgroundTintList = ColorStateList.valueOf(if (index < level) color else off)
         }
     }
 
     private fun setupClickListeners() {
         binding.loginLink.setOnClickListener { finish() }
         binding.backToLoginBtn.setOnClickListener { finish() }
+
+        // Eye icon: show / hide the typed password.
+        binding.passwordToggle.setOnClickListener {
+            val input = binding.passwordInputText
+            val hidden = input.transformationMethod is PasswordTransformationMethod
+            input.transformationMethod = if (hidden) null else PasswordTransformationMethod.getInstance()
+            input.setSelection(input.text.length)
+        }
+
+        // The selected gender card shows its label in bold.
+        binding.genderRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+            for (i in 0 until group.childCount) {
+                val option = group.getChildAt(i) as? RadioButton ?: continue
+                option.typeface = if (option.id == checkedId) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+            }
+        }
 
         binding.createAccBtn.setOnClickListener {
             registerUser()

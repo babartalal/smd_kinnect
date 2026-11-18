@@ -3,7 +3,10 @@ package com.ahmadtalal.i210734_i210819
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -37,12 +40,15 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupLanguageSpinner() {
-        val languages = arrayOf("English", "Urdu", "Arabic", "Spanish")
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            languages
-        )
+        val languages = arrayOf("English (UK)", "Urdu", "Arabic", "Spanish")
+        // Flat grey text for the closed spinner, as in the design.
+        val adapter = object : ArrayAdapter<String>(this, R.layout.auth_spinner_item, languages) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                (view as? TextView)?.setTextColor(this@LoginActivity.getColor(R.color.k_text_secondary))
+                return view
+            }
+        }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.languageSpinner.adapter = adapter
     }
@@ -55,7 +61,9 @@ class LoginActivity : AppCompatActivity() {
         if (!lastEmail.isNullOrEmpty()) {
             binding.recentLoginCard.visibility = View.VISIBLE
             binding.recentLoginTxt.visibility = View.VISIBLE
-            binding.recentLoginName.text = if (!lastName.isNullOrEmpty()) lastName else lastEmail
+            val shownName = if (!lastName.isNullOrEmpty()) lastName else lastEmail
+            binding.recentLoginName.text = shownName
+            binding.recentLoginAvatar.text = initialsOf(shownName)
 
             binding.recentLoginCard.setOnClickListener {
                 binding.loginEmailInput.setText(lastEmail)
@@ -75,6 +83,14 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginBtn.setOnClickListener {
             performLogin()
+        }
+
+        // Eye icon: show / hide the typed password.
+        binding.loginPasswordToggle.setOnClickListener {
+            val input = binding.loginPasswordInput
+            val hidden = input.transformationMethod is PasswordTransformationMethod
+            input.transformationMethod = if (hidden) null else PasswordTransformationMethod.getInstance()
+            input.setSelection(input.text.length)
         }
 
         binding.forgotPasswordLink.setOnClickListener {

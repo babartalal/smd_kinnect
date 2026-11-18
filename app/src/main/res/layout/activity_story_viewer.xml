@@ -1,189 +1,282 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<!-- 11 · Story viewer -->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/k_story_bg_dark"
+    android:orientation="vertical"
     tools:context=".StoryViewerActivity">
 
-
-    <ImageView
-        android:id="@+id/storyMedia"
+    <!-- Rounded story. FrameLayout: progress, author and label are drawn on top of the story image. -->
+    <FrameLayout
+        android:id="@+id/storyFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/landscape1" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#66000000"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#66000000"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <!-- TOP PROGRESS BARS -->
-    <LinearLayout
-        android:id="@+id/progressContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
-            android:layout_height="4dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:progressDrawable="@drawable/bg_circle_grey"
-            android:progressTint="@color/white"
-            android:progress="100" />
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
-            android:layout_height="4dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:progressDrawable="@drawable/bg_circle_grey"
-            android:progressTint="@color/white"
-            android:progress="40" />
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
-            android:layout_height="4dp"
-            android:layout_weight="1"
-            android:progressDrawable="@drawable/bg_circle_grey"
-            android:progressTint="#80FFFFFF"
-            android:progress="0" />
-    </LinearLayout>
-
-    <!-- 3. USER HEADER -->
-    <LinearLayout
-        android:id="@+id/storyHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/progressContainer">
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/story_k_bg_frame"
+        android:clipToOutline="true"
+        tools:targetApi="s">
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@drawable/round_account_circle_24" />
+            android:id="@+id/storyMedia"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Story"
+            android:scaleType="centerCrop"
+            android:src="@drawable/landscape1" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <!-- Segmented progress: two seen, third half way, fourth pending -->
+            <LinearLayout
+                android:id="@+id/progressContainer"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="horizontal">
 
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/story_k_bg_progress_fill" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/story_k_bg_progress_fill" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/story_k_bg_progress_track"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/story_k_bg_progress_fill" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/story_k_bg_progress_track" />
+            </LinearLayout>
+
+            <!-- Author row -->
+            <LinearLayout
+                android:id="@+id/storyHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="10dp">
+
+                <TextView
+                    android:id="@+id/storyAuthorInitials"
+                    style="@style/Kinnect.Text.AvatarInitials"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/k_bg_circle_green"
+                    android:includeFontPadding="false"
+                    android:text="OF"
+                    android:textSize="13sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/storyAuthorName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:text="Omar Farooq"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/storyTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
+                            android:text="5h"
+                            android:textColor="#E6FFFFFF"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
+                            android:text=" · "
+                            android:textColor="#E6FFFFFF"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:contentDescription="Public"
+                            android:src="@drawable/k_ic_globe"
+                            app:tint="#E6FFFFFF" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/moreOptionsBtn"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="More"
+                    android:padding="4dp"
+                    android:src="@drawable/k_ic_more"
+                    app:tint="@color/white" />
+
+                <ImageView
+                    android:id="@+id/closeStoryBtn"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="14dp"
+                    android:clickable="true"
+                    android:contentDescription="Close"
+                    android:focusable="true"
+                    android:padding="3dp"
+                    android:src="@drawable/k_ic_close"
+                    app:tint="@color/white" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="2" />
+
+            <!-- Text label: white rounded tag -->
             <TextView
+                android:id="@+id/storyTextLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Omer Farooq"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:layout_marginStart="12dp" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/story_k_bg_label_white"
+                android:fontFamily="sans-serif-black"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:paddingStart="16dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="10dp"
+                android:rotation="-3"
+                android:text="Karachi nights"
+                android:textColor="@color/k_text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="5h"
-                android:textColor="#CCFFFFFF"
-                android:textSize="14sp"
-                android:layout_marginStart="8dp" />
-
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="3" />
         </LinearLayout>
+    </FrameLayout>
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/moreOptionsBtn"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@color/transparent"
-            android:src="@drawable/outline_menu_24"
-            app:tint="@color/white" />
-
-        <ImageButton
-            android:id="@+id/closeStoryBtn"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="8dp"
-            android:background="@color/transparent"
-            android:src="@drawable/outline_cancel_24"
-        app:tint="@color/white" />
-    </LinearLayout>
-
-    <!-- 4. BOTTOM INTERACTION BAR -->
+    <!-- Bottom row: message input and quick reactions -->
     <LinearLayout
         android:id="@+id/storyBottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="22dp">
 
-        <!-- Message Input -->
         <EditText
             android:id="@+id/replyInput"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="44dp"
             android:layout_weight="1"
+            android:background="@drawable/story_k_bg_pill_outline_white"
             android:hint="Send message..."
-            android:textColorHint="@color/white"
+            android:importantForAutofill="no"
+            android:inputType="textShortMessage"
+            android:maxLines="1"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
             android:textColor="@color/white"
-            android:paddingHorizontal="20dp"
-            android:background="@drawable/woym_round_border"
-            android:backgroundTint="#4DFFFFFF"
-            android:inputType="textShortMessage" />
+            android:textColorHint="#99FFFFFF"
+            android:textSize="15sp" />
 
-        <!-- Like/Heart Icon -->
-        <ImageButton
+        <ImageView
             android:id="@+id/likeStoryBtn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
-            android:background="@color/transparent"
-            android:src="@drawable/outline_hand_bones_24"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="14dp"
+            android:background="@drawable/k_bg_circle_teal"
+            android:contentDescription="Like"
+            android:padding="7dp"
+            android:src="@drawable/k_ic_like"
             app:tint="@color/white" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/likeStoryBtn2"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
-            android:background="@color/transparent"
-            android:src="@drawable/rounded_ecg_heart_24"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="14dp"
+            android:background="@drawable/story_k_bg_circle_love"
+            android:contentDescription="Love"
+            android:padding="7dp"
+            android:src="@drawable/k_ic_heart_filled"
             app:tint="@color/white" />
 
-        <!-- Share/Send Icon -->
-        <ImageButton
+        <ImageView
             android:id="@+id/shareStoryBtn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@color/transparent"
-            android:src="@drawable/outline_sentiment_very_satisfied_24"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="14dp"
+            android:background="@drawable/story_k_bg_circle_yellow"
+            android:contentDescription="Haha"
+            android:padding="6dp"
+            android:src="@drawable/k_ic_smile"
             app:tint="@color/white" />
-
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

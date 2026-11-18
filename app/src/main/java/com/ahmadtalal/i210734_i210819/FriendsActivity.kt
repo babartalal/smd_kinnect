@@ -86,6 +86,10 @@ class FriendsActivity : AppCompatActivity() {
             startActivity(Intent(this, SearchActivity::class.java))
         }
 
+        binding.friendsMessengerBtn.setOnClickListener {
+            startActivity(Intent(this, ChatsActivity::class.java))
+        }
+
         binding.homeFeedBtn.setOnClickListener {
             finish()
         }

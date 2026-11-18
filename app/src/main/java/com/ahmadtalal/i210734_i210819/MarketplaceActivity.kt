@@ -2,7 +2,7 @@ package com.ahmadtalal.i210734_i210819
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -19,21 +19,25 @@ class MarketplaceActivity : AppCompatActivity() {
             insets
         }
 
-        val marketplaceSearchBtn = findViewById<ImageButton>(R.id.marketplaceSearchBtn)
+        val marketplaceSearchBtn = findViewById<View>(R.id.marketplaceSearchBtn)
 
         marketplaceSearchBtn.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
         }
 
-        val marketplaceHomeBtn = findViewById<ImageButton>(R.id.marketplaceHomeBtn)
+        findViewById<View>(R.id.marketplaceChatsBtn).setOnClickListener {
+            startActivity(Intent(this, ChatsActivity::class.java))
+        }
+
+        val marketplaceHomeBtn = findViewById<View>(R.id.marketplaceHomeBtn)
 
         marketplaceHomeBtn.setOnClickListener {
             finish()
         }
 
 
-        val marketplaceFriendsBtn = findViewById<ImageButton>(R.id.marketplaceFriendsBtn)
+        val marketplaceFriendsBtn = findViewById<View>(R.id.marketplaceFriendsBtn)
 
         marketplaceFriendsBtn.setOnClickListener {
             val intent = Intent(this, FriendsActivity::class.java)
@@ -41,7 +45,7 @@ class MarketplaceActivity : AppCompatActivity() {
             finish()
         }
 
-        val marketplaceNotificationsBtn = findViewById<ImageButton>(R.id.marketplaceNotificationsBtn)
+        val marketplaceNotificationsBtn = findViewById<View>(R.id.marketplaceNotificationsBtn)
 
         marketplaceNotificationsBtn.setOnClickListener {
             val intent = Intent(this, NotificationsActivity::class.java)
@@ -49,7 +53,7 @@ class MarketplaceActivity : AppCompatActivity() {
             finish()
         }
 
-        val marketplaceMenuBtn = findViewById<ImageButton>(R.id.marketplaceMenuBtn)
+        val marketplaceMenuBtn = findViewById<View>(R.id.marketplaceMenuBtn)
         marketplaceMenuBtn?.setOnClickListener {
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)

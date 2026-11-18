@@ -1,427 +1,499 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_warm_offwhite"
+    android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".EditProfileActivity">
 
-    <!-- Top Bar -->
+    <!-- Toolbar: Cancel / Edit profile / Save -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingHorizontal="16dp">
 
         <TextView
             android:id="@+id/cancelEditBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Kinnect.Text.Body"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
             android:clickable="true"
             android:focusable="true"
-            android:text="Cancel"
-            android:textColor="@color/text_dark"
-            android:textSize="16sp" />
+            android:gravity="center_vertical|start"
+            android:text="Cancel" />
 
         <TextView
+            style="@style/Kinnect.Text.ToolbarTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Edit profile"
-            android:textColor="@color/text_dark"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/saveEditBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Kinnect.Text.Link"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
             android:clickable="true"
             android:focusable="true"
-            android:text="Save"
-            android:textColor="@color/primary_teal"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical|end"
+            android:text="Save" />
     </LinearLayout>
 
     <View
         android:id="@+id/headerDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E0DDD7"
-        app:layout_constraintTop_toBottomOf="@id/topBar" />
+        android:background="@color/k_divider" />
 
-    <!-- Scrollable Edit Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerDivider">
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingHorizontal="16dp"
             android:paddingBottom="32dp">
 
-            <!-- Profile Picture Section -->
+            <!-- Profile picture -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:layout_marginTop="14dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="14dp">
+                android:orientation="horizontal">
 
                 <TextView
+                    style="@style/Kinnect.Text.Section"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="sans-serif-black"
                     android:text="Profile picture"
-                    android:textColor="@color/text_dark"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/editProfilePicBtn"
+                    style="@style/Kinnect.Text.Link"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:clickable="true"
                     android:focusable="true"
+                    android:paddingVertical="4dp"
+                    android:paddingStart="12dp"
                     android:text="Edit"
-                    android:textColor="@color/primary_teal"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/profilePicImageView"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_circle_teal"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="Profile Picture"
-                    android:src="@drawable/logo" />
+                    tools:ignore="RtlSymmetry" />
             </LinearLayout>
+
+            <!-- Initials circle is shown until the user has a picture; then the image replaces it -->
+            <TextView
+                android:id="@+id/profileInitials"
+                style="@style/Kinnect.Text.AvatarInitials"
+                android:layout_width="104dp"
+                android:layout_height="104dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/k_bg_circle_teal"
+                android:text="JW"
+                android:textSize="34sp" />
+
+            <ImageView
+                android:id="@+id/profilePicImageView"
+                android:layout_width="104dp"
+                android:layout_height="104dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/k_bg_circle_teal"
+                android:contentDescription="Profile picture"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <!-- Cover photo -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Kinnect.Text.Section"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Cover photo"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/editCoverPhotoBtn"
+                    style="@style/Kinnect.Text.Link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingVertical="4dp"
+                    android:paddingStart="12dp"
+                    android:text="Edit"
+                    android:textSize="15sp"
+                    tools:ignore="RtlSymmetry" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/coverImageView"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/k_bg_image_rounded"
+                android:contentDescription="Cover photo"
+                android:scaleType="centerCrop"
+                android:src="@drawable/auth_cover_placeholder" />
+
+            <!-- Camera button sits over the cover's bottom-right corner (negative margin) -->
+            <ImageView
+                android:id="@+id/coverCameraBtn"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="-44dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/k_bg_circle_white"
+                android:clickable="true"
+                android:contentDescription="Change cover photo"
+                android:focusable="true"
+                android:padding="8dp"
+                android:src="@drawable/k_ic_camera"
+                app:tint="@color/k_text_primary" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0DDD7" />
+                android:layout_marginTop="14dp"
+                android:background="@color/k_divider" />
 
-            <!-- Cover Photo Section -->
+            <!-- Name -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="14dp">
+                android:orientation="horizontal">
 
                 <TextView
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textSize="14sp" />
+
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Cover photo"
-                    android:textColor="@color/text_dark"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/editCoverPhotoBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:text="Edit"
-                    android:textColor="@color/primary_teal"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <FrameLayout
-                    android:layout_width="80dp"
-                    android:layout_height="48dp"
-                    android:background="#A3BAC0">
-
-                    <ImageView
-                        android:id="@+id/coverImageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:contentDescription="Cover Photo" />
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="bottom|end"
-                        android:layout_margin="4dp"
-                        android:background="@drawable/bg_circle_teal"
-                        android:contentDescription="Camera"
-                        android:padding="3dp"
-                        android:src="@drawable/outline_photo_camera_24"
-                        app:tint="@color/white" />
-                </FrameLayout>
-            </LinearLayout>
-
-            <!-- Editable Fields Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp">
-
-                <!-- Name Field -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Name"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
+                    android:orientation="vertical">
 
                     <EditText
                         android:id="@+id/editNameInput"
+                        style="@style/Kinnect.Text.Body"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="47dp"
                         android:background="@null"
-                        android:paddingTop="4dp"
                         android:hint="Name"
-                        android:textColor="@color/text_dark"
-                        android:textSize="15sp" />
-                </LinearLayout>
+                        android:importantForAutofill="no"
+                        android:inputType="textPersonName|textCapWords"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/k_text_hint" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0DDD7" />
-
-                <!-- Username Field -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Username"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
-
-                    <EditText
-                        android:id="@+id/editUsernameInput"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:paddingTop="4dp"
-                        android:hint="Username"
-                        android:textColor="@color/text_dark"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0DDD7" />
-
-                <!-- Website Field -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Website"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
-
-                    <EditText
-                        android:id="@+id/editWebsiteInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:paddingTop="4dp"
-                        android:hint="Website"
-                        android:textColor="@color/text_dark"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0DDD7" />
-
-                <!-- Bio Field -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Bio"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
-
-                    <EditText
-                        android:id="@+id/editBioInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:paddingTop="4dp"
-                        android:hint="Bio"
-                        android:textColor="@color/text_dark"
-                        android:textSize="15sp" />
+                        android:layout_height="1dp"
+                        android:background="@color/k_divider" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Switch to Professional Mode Link -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:text="Switch to professional mode"
-                android:textColor="@color/primary_teal"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <!-- Private Information Header -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@color/white"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
-                android:text="Private information"
-                android:textColor="@color/text_dark"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <!-- Private Info Fields -->
+            <!-- Username -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                android:paddingBottom="8dp">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textSize="14sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="10dp">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <EditText
+                        android:id="@+id/editUsernameInput"
+                        style="@style/Kinnect.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="47dp"
+                        android:background="@null"
+                        android:hint="Username"
+                        android:importantForAutofill="no"
+                        android:inputType="text"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/k_text_hint" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/k_divider" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Website -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:text="Website"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/editWebsiteInput"
+                        style="@style/Kinnect.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="47dp"
+                        android:background="@null"
+                        android:hint="Website"
+                        android:importantForAutofill="no"
+                        android:inputType="textUri"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/k_text_hint" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/k_divider" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Bio -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:text="Bio"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/editBioInput"
+                        style="@style/Kinnect.Text.Body"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Email"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="Bio"
+                        android:importantForAutofill="no"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:minHeight="47dp"
+                        android:paddingHorizontal="0dp"
+                        android:paddingVertical="6dp"
+                        android:textColorHint="@color/k_text_hint" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/k_divider" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                style="@style/Kinnect.Text.Link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Switch to professional mode"
+                android:textSize="14sp" />
+
+            <TextView
+                style="@style/Kinnect.Text.Section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Private information"
+                android:textSize="18sp" />
+
+            <!-- Email -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <EditText
                         android:id="@+id/editEmailInput"
+                        style="@style/Kinnect.Text.Body"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="47dp"
                         android:background="@null"
-                        android:inputType="textEmailAddress"
-                        android:paddingTop="4dp"
                         android:hint="Email"
-                        android:textColor="@color/text_dark"
-                        android:textSize="15sp" />
-                </LinearLayout>
+                        android:importantForAutofill="no"
+                        android:inputType="textEmailAddress"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/k_text_hint" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0DDD7" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/k_divider" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Phone -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:text="Phone"
+                    android:textSize="14sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Phone"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <EditText
                         android:id="@+id/editPhoneInput"
+                        style="@style/Kinnect.Text.Body"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="47dp"
                         android:background="@null"
-                        android:inputType="phone"
-                        android:paddingTop="4dp"
                         android:hint="Phone"
-                        android:textColor="@color/text_dark"
-                        android:textSize="15sp" />
-                </LinearLayout>
+                        android:importantForAutofill="no"
+                        android:inputType="phone"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/k_text_hint" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0DDD7" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/k_divider" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Gender -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:text="Gender"
+                    android:textSize="14sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gender"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <EditText
                         android:id="@+id/editGenderInput"
+                        style="@style/Kinnect.Text.Body"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="47dp"
                         android:background="@null"
-                        android:paddingTop="4dp"
                         android:hint="Gender"
-                        android:textColor="@color/text_dark"
-                        android:textSize="15sp" />
+                        android:importantForAutofill="no"
+                        android:inputType="textCapWords"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/k_text_hint" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/k_divider" />
                 </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

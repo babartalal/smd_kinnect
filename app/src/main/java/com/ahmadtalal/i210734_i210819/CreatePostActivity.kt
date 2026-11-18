@@ -48,6 +48,24 @@ class CreatePostActivity : AppCompatActivity() {
 
         setupRecyclerView()
         setupClickListeners()
+        showCurrentUser()
+    }
+
+    /** UI only: my name and initials/picture in the author row. */
+    private fun showCurrentUser() {
+        if (!Session.isLoggedIn) return
+
+        Api.get("users/get.php") { result ->
+            if (!result.ok || isFinishing || isDestroyed) return@get
+
+            val me = User.fromJson(result.obj())
+            val name = me.displayName()
+            if (name.isEmpty()) return@get
+
+            binding.createPostUserName.text = name
+            binding.createPostAvatar.clipToOutline = true
+            bindAvatar(me.profilePic, name, binding.createPostAvatar, binding.createPostInitials)
+        }
     }
 
     private fun setupRecyclerView() {

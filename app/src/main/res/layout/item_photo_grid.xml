@@ -1,25 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- One tile of the photo grid. FrameLayout: the selection circle sits on top of the photo. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="92dp"
     android:layout_margin="1dp">
 
-    <!-- The Actual Photo -->
     <ImageView
         android:id="@+id/gridImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="Photo"
         android:scaleType="centerCrop"
         android:src="@drawable/landscape1" />
 
+    <!-- Controls on top; its background becomes the teal border when the tile is selected. -->
+    <LinearLayout
+        android:id="@+id/gridOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end"
+        android:orientation="vertical"
+        android:padding="6dp">
 
-    <ImageView
-        android:id="@+id/selectionIndicator"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="top|end"
-        android:layout_margin="8dp"
-        android:src="@drawable/outline_circle_24"
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/selectionIndicator"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:background="@drawable/story_k_bg_select_ring"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/gridDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="0:23"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </LinearLayout>
 
 </FrameLayout>

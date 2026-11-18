@@ -1,64 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 04 · Home feed: one story card (also the "Create story" card) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/storyCardContainer"
-    android:layout_width="120dp"
-    android:layout_height="200dp"
-    android:orientation="vertical"
-    android:layout_margin="8dp"
-    android:padding="8dp"
-    android:background="@drawable/landscape1"
+    android:layout_width="100dp"
+    android:layout_height="168dp"
+    android:layout_marginEnd="8dp"
+    android:background="@drawable/k_bg_card_white"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_gravity="top|start">
+    <!-- "Create story" card -->
+    <LinearLayout
+        android:id="@+id/createStoryLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/storyAuthorAvatar"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/bg_circle_teal"
-            android:src="@drawable/round_account_circle_24"
-            android:contentDescription="Author Avatar" />
-
-        <TextView
-            android:id="@+id/storyAuthorInitials"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@drawable/bg_circle_teal"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="112dp"
+            android:background="@color/k_teal_tint"
             android:gravity="center"
-            android:text="U"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/createStoryInitials"
+                style="@style/Kinnect.Text.AvatarInitials"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/k_bg_circle_teal"
+                android:text="JW"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+        <!-- plus button sitting on the boundary (negative margin) -->
         <ImageView
             android:id="@+id/createStoryIcon"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@drawable/outline_add_2_24"
-            app:tint="@color/primary_teal"
-            android:visibility="gone"
-            android:contentDescription="Create Story" />
-    </FrameLayout>
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="-15dp"
+            android:background="@drawable/feed_bg_plus_button"
+            android:contentDescription="Create story"
+            android:padding="7dp"
+            android:src="@drawable/k_ic_plus"
+            app:tint="@color/white" />
 
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        <TextView
+            style="@style/Kinnect.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Create story"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/storyAuthorName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User Name"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:textSize="13sp"
-        android:maxLines="2" />
+    <!-- Story card: image fills the card, avatar ring and name sit on top of it -->
+    <LinearLayout
+        android:id="@+id/storyContentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/storyImage"
+            android:layout_width="match_parent"
+            android:layout_height="168dp"
+            android:contentDescription="Story"
+            android:scaleType="centerCrop"
+            android:src="@drawable/feed_landscape_night" />
+
+        <!-- pulled back up over the image with a negative margin -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="168dp"
+            android:layout_marginTop="-168dp"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/feed_bg_story_ring"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/storyAuthorAvatar"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/k_bg_circle_green"
+                    android:contentDescription="Author"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/storyAuthorInitials"
+                    style="@style/Kinnect.Text.AvatarInitials"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/k_bg_circle_green"
+                    android:text="OF"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/storyAuthorName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:shadowColor="#80000000"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                android:text="Omar Farooq"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

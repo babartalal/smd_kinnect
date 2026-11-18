@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.ahmadtalal.i210734_i210819.databinding.ItemStoryCardBinding
 
 data class StoryModel(
@@ -20,6 +21,14 @@ class StoryAdapter(
 ) : RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
 
     private val currentUserId: String = Session.userId
+
+    /** Name of the signed-in user, for the initials on the "Create story" card. */
+    private var currentUserName: String = ""
+
+    fun setCurrentUserName(name: String) {
+        currentUserName = name
+        notifyDataSetChanged()
+    }
 
     fun updateData(newList: List<StoryModel>) {
         // Copy, because the caller reuses and clears its own list.
@@ -42,29 +51,48 @@ class StoryAdapter(
     inner class StoryViewHolder(private val binding: ItemStoryCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            // Round the card's corners and the avatar picture.
+            binding.storyCardContainer.clipToOutline = true
+            binding.storyAuthorAvatar.clipToOutline = true
+        }
+
         fun bind(item: StoryModel) {
             if (item.isCreateStory) {
-                binding.storyAuthorName.text = "Create Story"
+                binding.createStoryLayout.visibility = View.VISIBLE
+                binding.storyContentLayout.visibility = View.GONE
                 binding.createStoryIcon.visibility = View.VISIBLE
-                binding.storyAuthorAvatar.visibility = View.GONE
-                binding.storyAuthorInitials.visibility = View.GONE
+                binding.createStoryInitials.text = initialsOf(currentUserName)
 
                 binding.root.setOnClickListener {
                     context.startActivity(Intent(context, StoryEditorActivity::class.java))
                 }
             } else {
-                binding.createStoryIcon.visibility = View.GONE
+                binding.createStoryLayout.visibility = View.GONE
+                binding.storyContentLayout.visibility = View.VISIBLE
                 val story = item.story
                 val displayName = item.author?.displayName().orEmpty().ifEmpty { "User" }
 
                 if (story != null && story.userId == currentUserId) {
-                    binding.storyAuthorName.text = "Your Story"
+                    binding.storyAuthorName.text = "Your story"
                 } else {
                     binding.storyAuthorName.text = displayName
                 }
 
-                // The card shows the story's own picture, or the author's initials.
-                bindAvatar(story?.image.orEmpty(), displayName, binding.storyAuthorAvatar, binding.storyAuthorInitials)
+                // The story's own picture fills the card.
+                val storyImage = story?.image.orEmpty()
+                if (storyImage.isNotEmpty()) {
+                    binding.storyImage.loadRemote(storyImage)
+                } else {
+                    Glide.with(context.applicationContext).clear(binding.storyImage)
+                    binding.storyImage.setImageResource(R.drawable.feed_landscape_night)
+                }
+
+                // The author's picture or initials sit in the ring on top of it.
+                bindAvatar(
+                    item.author?.profilePic.orEmpty(), displayName,
+                    binding.storyAuthorAvatar, binding.storyAuthorInitials
+                )
 
                 binding.root.setOnClickListener {
                     if (story != null && story.userId == currentUserId) {

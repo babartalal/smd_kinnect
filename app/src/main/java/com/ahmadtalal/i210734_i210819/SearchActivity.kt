@@ -30,6 +30,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.searchBackBtn.setOnClickListener { finish() }
+        binding.searchClearBtn.setOnClickListener { binding.searchInput.text.clear() }
 
         setupRecyclerView()
         setupSearchTextWatcher()

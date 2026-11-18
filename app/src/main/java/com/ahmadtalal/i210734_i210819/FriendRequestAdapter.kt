@@ -39,6 +39,7 @@ class FriendRequestAdapter(
             val displayName = sender.displayName()
             binding.requestNameTxt.text = displayName
 
+            binding.requestAvatarImage.clipToOutline = true
             bindAvatar(sender.profilePic, displayName, binding.requestAvatarImage, binding.requestAvatarInitials)
             binding.mutualFriendsTxt.text = "${sender.mutualCount} mutual friends"
 

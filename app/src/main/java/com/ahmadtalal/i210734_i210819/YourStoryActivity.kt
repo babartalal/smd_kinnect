@@ -1,6 +1,7 @@
 package com.ahmadtalal.i210734_i210819
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -23,9 +24,14 @@ class YourStoryActivity : AppCompatActivity() {
             insets
         }
 
+        // Round the story's corners (the XML attribute only works on Android 12+).
+        binding.storyFrame.clipToOutline = true
+
         binding.closeMyStoryBtn.setOnClickListener { finish() }
 
         if (!Session.isLoggedIn) return
+
+        showMyInitials()
 
         // With a story id we open that story; without one, my latest story.
         val storyId = intent.getStringExtra("storyId").orEmpty()
@@ -37,6 +43,32 @@ class YourStoryActivity : AppCompatActivity() {
             if (story.image.isNotEmpty()) {
                 binding.myStoryMedia.loadRemote(story.image)
             }
+            binding.myStoryTextLabel.text = story.textLabel
+            binding.myStoryTextLabel.visibility = if (story.textLabel.isEmpty()) View.GONE else View.VISIBLE
+            val audience = if (story.audience == "close_friends") "Close friends" else "Public"
+            binding.myStoryMeta.text =
+                if (story.timestamp > 0) "${storyAge(story.timestamp)} · $audience" else audience
+        }
+    }
+
+    /** Shows my initials in the header avatar. */
+    private fun showMyInitials() {
+        Api.get("users/get.php", mapOf("user_id" to Session.userId)) { result ->
+            if (!result.ok || isFinishing || isDestroyed) return@get
+            val name = User.fromJson(result.obj()).displayName()
+            if (name.isNotEmpty()) binding.myStoryInitials.text = initialsOf(name)
+        }
+    }
+
+    /** "11h"-style age of a story; the timestamp may be in seconds or milliseconds. */
+    private fun storyAge(timestamp: Long): String {
+        val millis = if (timestamp < 100_000_000_000L) timestamp * 1000 else timestamp
+        val minutes = ((System.currentTimeMillis() - millis) / 60_000).coerceAtLeast(0)
+        return when {
+            minutes < 1 -> "Just now"
+            minutes < 60 -> "${minutes}m"
+            minutes < 60 * 24 -> "${minutes / 60}h"
+            else -> "${minutes / (60 * 24)}d"
         }
     }
 }

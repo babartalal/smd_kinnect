@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<!-- 08 · Photo picker -->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,120 +8,239 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".PhotoPickerActivity">
 
-
+    <!-- Toolbar: Cancel · Recents v · Next (2) -->
     <LinearLayout
         android:id="@+id/pickerHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="52dp"
         android:gravity="center_vertical"
-        android:padding="12dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
-        <Button
-            android:id="@+id/closeBtnPhotoPicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:text="Cancel"
-            android:textColor="@color/black"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Photos"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginStart="16dp"
-            android:textColor="@color/black" />
-
-        <Space
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/doneBtn"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/closeBtnPhotoPicker"
+                style="@style/Kinnect.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:text="Cancel"
+                android:textColor="@color/k_text_primary"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/albumSelector"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="DONE"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:textColor="@color/primary_teal" />
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Kinnect.Text.ToolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recents"
+                android:textSize="19sp" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="4dp"
+                android:contentDescription="Choose album"
+                android:src="@drawable/k_ic_chevron_down" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/doneBtn"
+                style="@style/Kinnect.Text.Link"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="Next (2)" />
+        </LinearLayout>
     </LinearLayout>
 
-    <View
-        android:id="@+id/headerDivider"
+    <!-- Large preview. FrameLayout: the expand button and the SELECT MULTIPLE pill sit on top of the image. -->
+    <FrameLayout
+        android:id="@+id/previewContainer"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#D3D3D3"
-        app:layout_constraintTop_toBottomOf="@id/pickerHeader"/>
+        android:layout_height="300dp">
 
-    <ImageView
-        android:id="@+id/selectedImagePreview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1"
-        android:scaleType="centerCrop"
-        android:src="@drawable/landscape1"
-        app:layout_constraintTop_toBottomOf="@id/headerDivider"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <ImageView
+            android:id="@+id/selectedImagePreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Selected photo"
+            android:scaleType="centerCrop"
+            android:src="@drawable/landscape1" />
 
-    <!-- THE PHOTO GRID -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="12dp">
+
+            <ImageView
+                android:id="@+id/expandPreviewBtn"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/k_bg_circle_dark_translucent"
+                android:contentDescription="Expand"
+                android:padding="9dp"
+                android:src="@drawable/k_ic_expand"
+                app:tint="@color/white" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/selectMultipleBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/k_bg_button_teal"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/k_ic_copy"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:includeFontPadding="false"
+                    android:letterSpacing="0.06"
+                    android:text="SELECT MULTIPLE"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- 4-column photo grid -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/photoGridRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/selectedImagePreview"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_weight="1"
+        android:paddingTop="1dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="4"
-        tools:listitem="@layout/item_photo_grid"
-        tools:itemCount="30" />
+        tools:itemCount="16"
+        tools:listitem="@layout/item_photo_grid" />
 
-    <!-- FIXED BOTTOM BAR -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/k_divider" />
+
+    <!-- Bottom tabs: Gallery (selected) · Photo · Video -->
     <LinearLayout
         android:id="@+id/pickerBottomBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
+        android:layout_height="52dp"
         android:background="@color/white"
-        android:gravity="center_vertical"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gallery"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
-        <Space
+        <LinearLayout
+            android:id="@+id/tabGallery"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Photo"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Video"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/primary_teal" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Gallery"
+                android:textColor="@color/primary_teal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tabPhoto"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/transparent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Photo"
+                android:textColor="@color/k_text_secondary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tabVideo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/transparent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Video"
+                android:textColor="@color/k_text_secondary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

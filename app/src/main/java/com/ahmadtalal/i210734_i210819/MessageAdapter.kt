@@ -32,6 +32,9 @@ class MessageAdapter(
 
     private val currentUserId: String = Session.userId
 
+    /** The other person's name, shown as avatar initials and in reply captions (set by the chat screen). */
+    var peerName: String = ""
+
     fun updateData(newList: List<Message>) {
         // Copy, because the caller reuses and clears its own list.
         messageList = newList.toList()
@@ -60,7 +63,7 @@ class MessageAdapter(
         val msg = messageList[position]
         when (holder) {
             is OutgoingViewHolder -> holder.bind(msg)
-            is IncomingViewHolder -> holder.bind(msg)
+            is IncomingViewHolder -> holder.bind(msg, position)
             is SystemViewHolder -> holder.bind(msg)
         }
     }
@@ -75,6 +78,7 @@ class MessageAdapter(
                 msg, isOwnMessage = true, root = binding.root,
                 body = binding.messageBodyTxt, time = binding.messageTimeTxt,
                 editedLabel = binding.editedLabelTxt, replyBubble = binding.replyBubbleTxt,
+                replyCaption = binding.replyCaptionTxt,
                 image = binding.messageImageView, heartBadge = binding.heartReactionBadge
             )
         }
@@ -83,11 +87,18 @@ class MessageAdapter(
     inner class IncomingViewHolder(private val binding: ItemMessageIncomingBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(msg: Message) {
+        fun bind(msg: Message, position: Int) {
+            // Small sender avatar, only beside the last bubble of a run of incoming messages.
+            val next = messageList.getOrNull(position + 1)
+            val lastOfGroup = next == null || next.isSystemMessage || next.senderId == currentUserId
+            binding.incomingAvatarInitials.text = initialsOf(peerName)
+            binding.incomingAvatarInitials.visibility = if (lastOfGroup) View.VISIBLE else View.INVISIBLE
+
             bindBubble(
                 msg, isOwnMessage = false, root = binding.root,
                 body = binding.messageBodyTxt, time = binding.messageTimeTxt,
                 editedLabel = binding.editedLabelTxt, replyBubble = binding.replyBubbleTxt,
+                replyCaption = binding.replyCaptionTxt,
                 image = binding.messageImageView, heartBadge = binding.heartReactionBadge
             )
         }
@@ -110,22 +121,34 @@ class MessageAdapter(
         time: TextView,
         editedLabel: View,
         replyBubble: TextView,
+        replyCaption: TextView,
         image: ImageView,
         heartBadge: View
     ) {
         body.text = msg.text
+        // Photo-only messages show just the rounded image tile, without an empty bubble.
+        body.visibility = if (msg.text.isEmpty()) View.GONE else View.VISIBLE
         time.text = formatTime(msg.timestamp)
         editedLabel.visibility = if (msg.isEdited) View.VISIBLE else View.GONE
 
         if (msg.replyToText.isNotEmpty()) {
+            val peerFirstName = peerName.substringBefore(" ")
             replyBubble.visibility = View.VISIBLE
-            replyBubble.text = "Replying: ${msg.replyToText}"
+            replyBubble.text = msg.replyToText
+            replyCaption.visibility = View.VISIBLE
+            replyCaption.text = when {
+                peerFirstName.isEmpty() -> if (isOwnMessage) "You replied" else "Replied to you"
+                isOwnMessage -> "You replied to $peerFirstName"
+                else -> "$peerFirstName replied to you"
+            }
         } else {
             replyBubble.visibility = View.GONE
+            replyCaption.visibility = View.GONE
         }
 
         if (msg.image.isNotEmpty()) {
             image.visibility = View.VISIBLE
+            image.clipToOutline = true // round the corners to the tile background
             image.loadRemote(msg.image)
         } else {
             image.visibility = View.GONE

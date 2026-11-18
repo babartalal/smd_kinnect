@@ -4,230 +4,280 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/login_background"
+    android:background="@color/k_bg_app"
     android:fillViewport="true"
     tools:context=".LoginActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- System-bar insets are applied as padding on @id/main, so the screen padding lives on the inner column -->
+    <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <!-- Language -->
-        <Spinner
-            android:id="@+id/languageSpinner"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Logo -->
-        <ImageView
-            android:id="@+id/loginLogo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="10dp"
-            android:contentDescription="Kinnect logo"
-            android:src="@drawable/logo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/languageSpinner" />
-
-        <!-- Recent Logins Title -->
-        <TextView
-            android:id="@+id/recentLoginTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginHorizontal="20dp"
-            android:text="RECENT LOGINS"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/loginLogo" />
-
-        <!-- Recent Login Card -->
         <LinearLayout
-            android:id="@+id/recentLoginCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_rounded_white"
-            android:padding="16dp"
-            android:layout_marginVertical="10dp"
-            android:layout_marginHorizontal="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recentLoginTxt">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="26dp">
 
-            <ImageView
-                android:id="@+id/recentLoginAvatar"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:contentDescription="Profile image"
-                android:src="@drawable/logo" />
-
-            <LinearLayout
+            <!-- Language selector -->
+            <Spinner
+                android:id="@+id/languageSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:background="@drawable/auth_bg_spinner_chevron"
+                android:backgroundTint="@color/k_text_secondary"
+                android:dropDownWidth="180dp"
+                android:minHeight="24dp"
+                android:paddingEnd="24dp"
+                tools:ignore="RtlSymmetry" />
+
+            <!-- Logo tile -->
+            <LinearLayout
+                android:id="@+id/loginLogo"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginTop="34dp"
+                android:background="@drawable/k_bg_tile_teal"
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/recentLoginName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="Jacob West"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="10dp"
-                    android:text="Tap to login" />
-
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:contentDescription="Kinnect logo"
+                    android:src="@drawable/k_ic_logo_mark" />
             </LinearLayout>
 
-            <Space
-                android:layout_width="0dp"
+            <!-- Recent login -->
+            <TextView
+                android:id="@+id/recentLoginTxt"
+                style="@style/Kinnect.Text.Secondary"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/transparent"
-                android:text="..."
-                android:textColor="@color/text_gray"
-                android:textSize="20sp"
+                android:layout_marginTop="36dp"
+                android:letterSpacing="0.06"
+                android:text="RECENT LOGIN"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/recentLoginCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/k_bg_card_white"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="12dp">
 
-        <!-- Username -->
-        <LinearLayout
-            android:id="@+id/usernameCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginVertical="20dp"
-            android:layout_marginHorizontal="20dp"
-            android:background="@drawable/bg_rounded_white"
-            android:padding="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recentLoginCard">
+                <TextView
+                    android:id="@+id/recentLoginAvatar"
+                    style="@style/Kinnect.Text.AvatarInitials"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:background="@drawable/k_bg_circle_teal"
+                    android:text="JW"
+                    android:textSize="18sp" />
+
+                <!-- Badge overlaps the avatar's top-right corner (negative margin) -->
+                <TextView
+                    style="@style/Kinnect.Text.Badge"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="top"
+                    android:layout_marginStart="-16dp"
+                    android:layout_marginTop="-2dp"
+                    android:text="2" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/recentLoginName"
+                        style="@style/Kinnect.Text.Name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="Jacob West" />
+
+                    <TextView
+                        style="@style/Kinnect.Text.Secondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Tap to log in" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:contentDescription="More"
+                    android:src="@drawable/k_ic_more"
+                    app:tint="@color/k_text_secondary" />
+            </LinearLayout>
+
+            <!-- Mobile number or email -->
+            <LinearLayout
+                android:id="@+id/usernameCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/k_bg_input"
+                android:orientation="vertical"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="9dp">
+
+                <TextView
+                    style="@style/Kinnect.Text.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mobile number or email"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/loginEmailInput"
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:background="@null"
+                    android:importantForAutofill="no"
+                    android:inputType="textEmailAddress"
+                    android:minHeight="24dp"
+                    android:padding="0dp"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <!-- Password -->
+            <LinearLayout
+                android:id="@+id/passwordCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/k_bg_input"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="8dp"
+                android:paddingVertical="9dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Kinnect.Text.Secondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Password"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/loginPasswordInput"
+                        style="@style/Kinnect.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:background="@null"
+                        android:importantForAutofill="no"
+                        android:inputType="textPassword"
+                        android:minHeight="24dp"
+                        android:padding="0dp"
+                        android:singleLine="true" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/loginPasswordToggle"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:clickable="true"
+                    android:contentDescription="Show password"
+                    android:focusable="true"
+                    android:padding="8dp"
+                    android:src="@drawable/k_ic_eye"
+                    app:tint="@color/k_text_secondary" />
+            </LinearLayout>
+
+            <!-- Log in -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/loginBtn"
+                style="@style/Kinnect.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:text="Log in" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/forgotPasswordLink"
+                style="@style/Kinnect.Text.Link"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="Mobile number or email"
-                android:textColor="@color/text_gray" />
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="12dp"
+                android:text="Forgot password?"
+                android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/loginEmailInput"
+            <!-- Pushes the create-account pill and footer to the bottom of the screen -->
+            <View
                 android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="32dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/createNewAccBtn"
+                style="@style/Kinnect.Button.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Create new account"
+                android:textSize="16sp" />
+
+            <!-- Footer -->
+            <LinearLayout
+                android:id="@+id/footer"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Enter email"
-                android:inputType="textEmailAddress"
-                android:padding="8dp" />
+                android:layout_marginTop="18dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/k_ic_logo_mark"
+                    app:tint="@color/k_text_secondary" />
+
+                <TextView
+                    style="@style/Kinnect.Text.Secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Kinnect · from SMD"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
         </LinearLayout>
-
-        <!-- Password -->
-        <LinearLayout
-            android:id="@+id/passwordCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginVertical="10dp"
-            android:layout_marginHorizontal="20dp"
-            android:background="@drawable/bg_rounded_white"
-            android:padding="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/usernameCard">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="Password"
-                android:textColor="@color/text_gray" />
-
-            <EditText
-                android:id="@+id/loginPasswordInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:padding="8dp" />
-
-        </LinearLayout>
-
-        <!-- Login Button -->
-        <Button
-            android:id="@+id/loginBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Login"
-            android:backgroundTint="@color/primary_teal"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:padding="16dp"
-            android:layout_marginVertical="10dp"
-            android:layout_marginHorizontal="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/passwordCard" />
-
-        <!-- Forgot Password -->
-        <TextView
-            android:id="@+id/forgotPasswordLink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:padding="16dp"
-            android:layout_marginVertical="10dp"
-            android:text="Forgot Password ?"
-            android:textColor="@color/primary_teal"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/loginBtn" />
-
-        <!-- Create Account -->
-        <Button
-            android:id="@+id/createNewAccBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="100dp"
-            android:layout_marginHorizontal="20dp"
-            android:text="Create New Account"
-            android:textColor="@color/primary_teal"
-            android:textStyle="bold"
-            android:background="@drawable/outline_button"
-            android:backgroundTint="@null"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/forgotPasswordLink" />
-
-        <!-- Footer -->
-        <TextView
-            android:id="@+id/footer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Kinnect from SMD"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/createNewAccBtn" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </ScrollView>

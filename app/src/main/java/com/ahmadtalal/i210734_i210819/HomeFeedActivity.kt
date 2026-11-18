@@ -67,7 +67,27 @@ class HomeFeedActivity : AppCompatActivity() {
 
         setupRecyclerViews()
         setupClickListeners()
+        showCurrentUser()
         checkNotificationPermission()
+    }
+
+    /** UI only: my initials/picture in the composer and on the "Create story" card. */
+    private fun showCurrentUser() {
+        if (!Session.isLoggedIn) return
+
+        Api.get("users/get.php") { result ->
+            if (!result.ok || isFinishing || isDestroyed) return@get
+
+            val me = User.fromJson(result.obj())
+            val name = me.displayName()
+            if (name.isEmpty()) return@get
+
+            binding.homeFeedProfileAvatar.clipToOutline = true
+            bindAvatar(me.profilePic, name, binding.homeFeedProfileAvatar, binding.homeFeedProfileInitials)
+            val firstName = me.firstName.ifEmpty { name.substringBefore(' ') }
+            binding.woym.hint = "What's on your mind, $firstName?"
+            storyAdapter.setCurrentUserName(name)
+        }
     }
 
     override fun onStart() {
@@ -120,6 +140,10 @@ class HomeFeedActivity : AppCompatActivity() {
         }
 
         binding.homeFeedProfileAvatar.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
+
+        binding.homeFeedProfileInitials.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 

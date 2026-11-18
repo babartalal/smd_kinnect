@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.ahmadtalal.i210734_i210819.databinding.ActivityProfileBinding
@@ -33,6 +34,15 @@ class ProfileActivity : AppCompatActivity() {
         binding.editProfileBtn.setOnClickListener {
             startActivity(Intent(this, EditProfileActivity::class.java))
         }
+        binding.addToStoryBtn.setOnClickListener {
+            startActivity(Intent(this, StoryEditorActivity::class.java))
+        }
+        binding.profileSearchBtn.setOnClickListener {
+            startActivity(Intent(this, SearchActivity::class.java))
+        }
+
+        // Crop the profile picture to its round background.
+        binding.profileAvatarImage.clipToOutline = true
     }
 
     override fun onStart() {
@@ -51,9 +61,12 @@ class ProfileActivity : AppCompatActivity() {
         binding.profileTitleName.text = displayName
         binding.profileNameTxt.text = displayName
         binding.profileBioTxt.text = user.bio.ifEmpty { "No bio available." }
-        binding.profileAvatar.text = initialsOf(displayName)
+        bindAvatar(user.profilePic, displayName, binding.profileAvatarImage, binding.profileAvatar)
+        if (user.coverPhoto.isNotEmpty()) binding.profileCoverImage.loadRemote(user.coverPhoto)
 
-        binding.profileFriendsCountTxt.text = "${user.friendCount} friends"
+        binding.profileFriendsCountTxt.text = HtmlCompat.fromHtml(
+            "<b>${user.friendCount}</b> friends", HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
         binding.profileFriendsSectionCountTxt.text = "${user.friendCount} friends"
     }
 }

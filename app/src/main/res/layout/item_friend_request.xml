@@ -1,101 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 14 Friends: one friend-request row. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingHorizontal="16dp"
     android:paddingVertical="8dp"
+    android:gravity="center_vertical"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
 
-    <FrameLayout
-        android:layout_width="72dp"
-        android:layout_height="72dp">
+    <!-- Avatar: bindAvatar() shows exactly one of these two views. -->
+    <ImageView
+        android:id="@+id/requestAvatarImage"
+        android:layout_width="74dp"
+        android:layout_height="74dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/k_bg_circle_indigo"
+        android:contentDescription="User avatar"
+        android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/requestAvatarImage"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/bg_circle_teal"
-            android:src="@drawable/round_account_circle_24"
-            android:contentDescription="User Avatar" />
-
-        <TextView
-            android:id="@+id/requestAvatarInitials"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:background="@drawable/bg_circle_teal"
-            android:gravity="center"
-            android:text="U"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-    </FrameLayout>
+    <TextView
+        android:id="@+id/requestAvatarInitials"
+        style="@style/Kinnect.Text.AvatarInitials"
+        android:layout_width="74dp"
+        android:layout_height="74dp"
+        android:background="@drawable/k_bg_circle_indigo"
+        android:text="SI"
+        android:textSize="26sp" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical"
         android:layout_marginStart="12dp"
-        android:gravity="center_vertical">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/requestNameTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User Name"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/mutualFriendsTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0 mutual friends"
-            android:textColor="#808080"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Action Buttons Row -->
+        <!-- Name + time -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/confirmBtn"
+            <TextView
+                android:id="@+id/requestNameTxt"
+                style="@style/Kinnect.Text.Name"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Confirm"
-                android:textAllCaps="false"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_comment_rounded"
-                android:backgroundTint="@color/primary_teal"
-                android:paddingVertical="0dp"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:layout_marginEnd="8dp"/>
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="Sara Iqbal"
+                android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/deleteBtn"
+            <TextView
+                android:id="@+id/requestTimeTxt"
+                style="@style/Kinnect.Text.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="3d"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Two overlapping mutual avatars + count -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <View
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:background="@drawable/k_bg_circle_indigo" />
+
+            <View
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="-6dp"
+                android:background="@drawable/k_bg_circle_brown" />
+
+            <TextView
+                android:id="@+id/mutualFriendsTxt"
+                style="@style/Kinnect.Text.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="8 mutual friends"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Confirm / Delete -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/confirmBtn"
+                style="@style/Kinnect.Button.Teal"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:padding="0dp"
+                android:text="Confirm"
+                android:textSize="15sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/deleteBtn"
+                style="@style/Kinnect.Button.Gray"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:padding="0dp"
                 android:text="Delete"
-                android:textAllCaps="false"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_comment_rounded"
-                android:paddingVertical="0dp"
-                android:textStyle="bold"
-                android:textSize="14sp"/>
+                android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

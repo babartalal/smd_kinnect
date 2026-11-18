@@ -70,6 +70,17 @@ class MenuActivity : AppCompatActivity() {
             finish()
         }
 
+        // The Friends and Marketplace shortcut tiles open the same screens as the tabs.
+        binding.menuFriendsTile.setOnClickListener {
+            startActivity(Intent(this, FriendsActivity::class.java))
+            finish()
+        }
+
+        binding.menuMarketplaceTile.setOnClickListener {
+            startActivity(Intent(this, MarketplaceActivity::class.java))
+            finish()
+        }
+
         binding.menuNotificationsBtn.setOnClickListener {
             startActivity(Intent(this, NotificationsActivity::class.java))
             finish()

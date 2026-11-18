@@ -21,6 +21,7 @@ class SelectedPhotoAdapter(
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val bitmap = photoList[position]
+        holder.binding.selectedPhotoImageView.clipToOutline = true
         Glide.with(context).load(bitmap).into(holder.binding.selectedPhotoImageView)
         holder.binding.removePhotoBtn.setOnClickListener {
             onPhotoRemoved(position)

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ahmadtalal.i210734_i210819.databinding.ItemPostBinding
 
@@ -42,6 +43,11 @@ class PostAdapter(
 
     inner class PostViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            // Crop the author's picture to the round avatar shape.
+            binding.postAuthorAvatar.clipToOutline = true
+        }
 
         fun bind(post: Post) {
             binding.reactionPickerLayout.visibility = View.GONE
@@ -218,6 +224,8 @@ class PostAdapter(
                     binding.likeBtn.setTextColor(grayColor)
                 }
             }
+            // The thumb icon next to the label takes the same colour.
+            TextViewCompat.setCompoundDrawableTintList(binding.likeBtn, binding.likeBtn.textColors)
         }
     }
 }

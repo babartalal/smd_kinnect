@@ -1,169 +1,345 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<!-- 09 · Camera -->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/k_story_bg_dark"
+    android:orientation="vertical"
+    tools:context=".CameraActivity">
 
-    <!-- Fake Camera-->
-    <ImageView
+    <!-- Rounded preview. FrameLayout: the camera controls are drawn on top of the preview image. -->
+    <FrameLayout
+        android:id="@+id/cameraFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:alpha="0.5"
-        android:src="@drawable/landscape1" />
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/story_k_bg_frame"
+        android:clipToOutline="true"
+        tools:targetApi="s">
 
-    <!-- Top Controls -->
-    <ImageButton
-        android:id="@+id/flashLightCameraBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="16dp"
-        android:background="@color/transparent"
-        android:src="@drawable/outline_sunny_24"
-        app:tint="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        <!-- Stand-in for the camera preview -->
+        <ImageView
+            android:id="@+id/cameraPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Camera preview"
+            android:scaleType="centerCrop"
+            android:src="@drawable/landscape1" />
 
-    <ImageButton
-        android:id="@+id/cancelCameraBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="16dp"
-        android:background="@color/transparent"
-        android:src="@drawable/outline_cancel_24"
-        app:tint="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <!-- The Shutter Button -->
-    <View
-        android:id="@+id/shutterBtn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="58dp"
-        android:background="@drawable/bg_circle_grey"
-        android:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+            <!-- Top controls: sun (left), close (right) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="8dp">
 
+                <ImageButton
+                    android:id="@+id/flashLightCameraBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/k_bg_circle_dark_translucent"
+                    android:contentDescription="Brightness"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/k_ic_sun"
+                    app:tint="@color/white" />
 
-    <ImageButton
-        android:id="@+id/flipCameraBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="82dp"
-        android:background="@color/transparent"
-        android:src="@drawable/rounded_repeat_24"
-        app:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/shutterBtn"
-        app:layout_constraintTop_toTopOf="@id/shutterBtn"
-        app:layout_constraintRight_toRightOf="parent" />
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
 
-    <ImageButton
-        android:id="@+id/smileyBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
-        android:background="@color/transparent"
-        android:src="@drawable/outline_sentiment_very_satisfied_24"
-        app:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/shutterBtn"
-        app:layout_constraintTop_toTopOf="@id/shutterBtn"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/flipCameraBtn"/>
+                <ImageButton
+                    android:id="@+id/cancelCameraBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/k_bg_circle_dark_translucent"
+                    android:contentDescription="Close"
+                    android:padding="9dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/k_ic_close"
+                    app:tint="@color/white" />
+            </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/boltBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="82dp"
-        android:background="@color/transparent"
-        android:src="@drawable/outline_bolt_24"
-        app:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/shutterBtn"
-        app:layout_constraintTop_toTopOf="@id/shutterBtn"
-        app:layout_constraintLeft_toLeftOf="parent" />
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-    <ImageButton
-        android:id="@+id/picSelectBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
-        android:background="@color/transparent"
-        android:src="@drawable/outline_image_24"
-        app:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/shutterBtn"
-        app:layout_constraintTop_toTopOf="@id/shutterBtn"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/boltBtn"/>
+            <!-- Bottom controls: gallery · flash · shutter · flip · effects -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp">
 
-    <!-- BOTTOM FIXED SECTION -->
+                <!-- Gallery thumbnail with a white border -->
+                <LinearLayout
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/story_k_bg_thumb_border"
+                    android:orientation="vertical"
+                    android:padding="2dp">
+
+                    <ImageButton
+                        android:id="@+id/picSelectBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:contentDescription="Gallery"
+                        android:padding="0dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/landscape1" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/boltBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/k_bg_circle_dark_translucent"
+                    android:contentDescription="Flash"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/k_ic_flash"
+                    app:tint="@color/white" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <!-- Shutter: white disc inside a translucent ring -->
+                <LinearLayout
+                    android:id="@+id/shutterBtn"
+                    android:layout_width="76dp"
+                    android:layout_height="76dp"
+                    android:background="@drawable/story_k_bg_shutter_ring"
+                    android:clickable="true"
+                    android:contentDescription="Take photo"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/k_bg_circle_white" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/flipCameraBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/k_bg_circle_dark_translucent"
+                    android:contentDescription="Flip camera"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/k_ic_flip"
+                    app:tint="@color/white" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <!-- Effects button with a red dot on its top-right edge -->
+                <LinearLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/smileyBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/k_bg_circle_dark_translucent"
+                        android:contentDescription="Effects"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/k_ic_smile"
+                        app:tint="@color/white" />
+
+                    <View
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
+                        android:layout_marginStart="-13dp"
+                        android:background="@drawable/k_bg_badge_red" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Mode tabs: STORY selected -->
     <HorizontalScrollView
         android:id="@+id/cameraModesScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:paddingVertical="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/black">
+        android:fillViewport="true"
+        android:paddingTop="30dp"
+        android:paddingBottom="34dp"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="32dp">
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TEXT"
-                android:textColor="#80FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="24dp"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.1"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:paddingBottom="8dp"
+                    android:text="TEXT"
+                    android:textColor="#B5B0A8"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LIVE"
-                android:textColor="#80FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="24dp"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.1"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:paddingBottom="8dp"
+                    android:text="LIVE"
+                    android:textColor="#B5B0A8"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="STORY"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="24dp"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.1"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:paddingBottom="8dp"
+                    android:text="STORY"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="POST"
-                android:textColor="#80FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="24dp"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.1"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:paddingBottom="8dp"
+                    android:text="POST"
+                    android:textColor="#B5B0A8"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BOOMERANG"
-                android:textColor="#80FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.1"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:paddingBottom="8dp"
+                    android:text="BOOMERANG"
+                    android:textColor="#B5B0A8"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/transparent" />
+            </LinearLayout>
         </LinearLayout>
     </HorizontalScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

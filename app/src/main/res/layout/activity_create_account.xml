@@ -1,383 +1,638 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/k_bg_app"
     android:fillViewport="true"
-    android:background="@color/login_background"
     tools:context=".CreateAccountActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- System-bar insets are applied as padding on @id/main, so the screen padding lives on the inner column -->
+    <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="24dp">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/header_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginRight="10dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent">
-
-            <Button
-                android:id="@+id/backToLoginBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="back"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:textColor="@color/text_gray"
-                android:backgroundTint="@color/transparent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Create account"
-                android:textColor="@color/black"/>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Step 2 of 3" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/questionBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/header_title"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginHorizontal="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="What's your name and birthday?"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                android:layout_marginLeft="10dp"
-                android:layout_gravity="center_vertical"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/nameInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginVertical="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/questionBar"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:background="@drawable/bg_rounded_white"
-                android:layout_marginHorizontal="10dp"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="First name"
-                    android:textColor="@color/text_gray"/>
-
-                <EditText
-                    android:id="@+id/firstNameInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:background="@drawable/bg_rounded_white"
-                android:layout_marginHorizontal="10dp"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last name"
-                    android:textColor="@color/text_gray"/>
-
-                <EditText
-                    android:id="@+id/lastNameInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/textBirthday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Birthday"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/nameInput"
-            app:layout_constraintLeft_toLeftOf="parent"/>
-
-        <LinearLayout
-            android:id="@+id/birthdayInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginVertical="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/textBirthday"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:background="@drawable/bg_rounded_white"
-                android:layout_marginHorizontal="10dp"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Day"
-                    android:textColor="@color/text_gray" />
-
-                <Spinner
-                    android:id="@+id/daySpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
-
-            </LinearLayout>
-
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:background="@drawable/bg_rounded_white"
-                android:layout_marginHorizontal="10dp"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Month"
-                    android:textColor="@color/text_gray" />
-                <Spinner
-                    android:id="@+id/monthSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:background="@drawable/bg_rounded_white"
-                android:layout_marginHorizontal="10dp"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Year"
-                    android:textColor="@color/text_gray" />
-
-                <Spinner
-                    android:id="@+id/yearSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <RadioGroup
-            android:id="@+id/genderRadioGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginVertical="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/birthdayInput"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-
-            <RadioButton
-                android:id="@+id/radioFemale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Female"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_rounded_white"
-                android:layout_marginHorizontal="10dp"
-                android:padding="8dp"/>
-
-            <RadioButton
-                android:id="@+id/radioMale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Male"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_rounded_white"
-                android:layout_marginHorizontal="10dp"
-                android:padding="8dp" />
-
-            <RadioButton
-                android:id="@+id/radioCustom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Custom"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_rounded_white"
-                android:layout_marginHorizontal="10dp"
-                android:padding="8dp" />
-
-        </RadioGroup>
-
-        <LinearLayout
-            android:id="@+id/emailInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/genderRadioGroup"
-            android:background="@drawable/bg_rounded_white"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="10dp"
-            android:padding="8dp">
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="24dp">
 
-            <TextView
+            <!-- Toolbar -->
+            <LinearLayout
+                android:id="@+id/header_title"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/backToLoginBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="-10dp"
+                    android:clickable="true"
+                    android:contentDescription="Back"
+                    android:focusable="true"
+                    android:padding="8dp"
+                    android:src="@drawable/k_ic_back"
+                    app:tint="@color/k_text_primary" />
+
+                <TextView
+                    style="@style/Kinnect.Text.ToolbarTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_weight="1"
+                    android:text="Create account"
+                    android:textSize="20sp" />
+
+                <TextView
+                    style="@style/Kinnect.Text.Secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Step 2 of 3" />
+            </LinearLayout>
+
+            <!-- Step progress: 2 of 3 -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email"
-                android:textColor="@color/text_gray" />
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/emailInputText"
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/auth_bg_segment"
+                    android:backgroundTint="@color/primary_teal" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/auth_bg_segment"
+                    android:backgroundTint="@color/primary_teal" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/auth_bg_segment" />
+            </LinearLayout>
+
+            <!-- Question + avatar placeholder -->
+            <LinearLayout
+                android:id="@+id/questionBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:layout_marginTop="18dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <TextView
+                    style="@style/Kinnect.Text.PageTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="4dp"
+                    android:text="What's your name and birthday?"
+                    android:textSize="25sp" />
 
-        <LinearLayout
-            android:id="@+id/passwordInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/emailInput"
-            android:background="@drawable/bg_rounded_white"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="10dp"
-            android:padding="8dp">
+                <LinearLayout
+                    android:layout_width="72dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
 
-            <TextView
+                    <LinearLayout
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:background="@drawable/auth_bg_avatar_dashed"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:contentDescription="Profile photo placeholder"
+                            android:src="@drawable/k_ic_person"
+                            app:tint="@color/k_text_secondary" />
+                    </LinearLayout>
+
+                    <!-- Camera badge overlaps the circle's bottom-right (negative margin) -->
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="-26dp"
+                        android:background="@drawable/k_bg_circle_teal"
+                        android:contentDescription="Add photo"
+                        android:padding="6dp"
+                        android:src="@drawable/k_ic_camera"
+                        app:tint="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- First / last name -->
+            <LinearLayout
+                android:id="@+id/nameInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Password"
-                android:textColor="@color/text_gray" />
+                android:layout_marginTop="14dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/passwordInputText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/k_bg_input"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="9dp">
 
-            <TextView
-                android:id="@+id/passwordStrengthTxt"
+                    <TextView
+                        style="@style/Kinnect.Text.Secondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="First name"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/firstNameInput"
+                        style="@style/Kinnect.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:background="@null"
+                        android:importantForAutofill="no"
+                        android:inputType="textPersonName|textCapWords"
+                        android:minHeight="24dp"
+                        android:padding="0dp"
+                        android:singleLine="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/k_bg_input"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="9dp">
+
+                    <TextView
+                        style="@style/Kinnect.Text.Secondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Last name"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/lastNameInput"
+                        style="@style/Kinnect.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:background="@null"
+                        android:importantForAutofill="no"
+                        android:inputType="textPersonName|textCapWords"
+                        android:minHeight="24dp"
+                        android:padding="0dp"
+                        android:singleLine="true" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Birthday -->
+            <LinearLayout
+                android:id="@+id/textBirthday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Password strength: Too short"
-                android:textColor="@color/text_gray"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="14dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <TextView
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Birthday"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-        <CheckBox
-            android:id="@+id/termsCheckbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/passwordInput"
-            android:text="I agree to Kinnect Terms and Policy"
-            android:textColor="@color/black"
-            android:layout_marginHorizontal="10dp" />
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="6dp"
+                    android:contentDescription="Birthday info"
+                    android:src="@drawable/k_ic_info"
+                    app:tint="@color/k_text_secondary" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/createAccBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create Account"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/primary_teal"
-            app:layout_constraintTop_toBottomOf="@+id/termsCheckbox"
-            android:layout_marginHorizontal="10dp"/>
+            <LinearLayout
+                android:id="@+id/birthdayInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/createAccBtn"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="16dp"> <!-- Pushed the footer down slightly -->
+                <LinearLayout
+                    android:id="@+id/dayCard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/k_bg_input"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="10dp"
+                    android:paddingVertical="9dp">
 
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Kinnect.Text.Secondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Day"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/daySpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:background="@null"
+                            android:dropDownWidth="110dp"
+                            android:minHeight="24dp"
+                            android:padding="0dp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/k_ic_chevron_down"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/monthCard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/k_bg_input"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="10dp"
+                    android:paddingVertical="9dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Kinnect.Text.Secondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Month"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/monthSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:background="@null"
+                            android:dropDownWidth="160dp"
+                            android:minHeight="24dp"
+                            android:padding="0dp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/k_ic_chevron_down"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/yearCard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/k_bg_input"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="10dp"
+                    android:paddingVertical="9dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Kinnect.Text.Secondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Year"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/yearSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:background="@null"
+                            android:dropDownWidth="120dp"
+                            android:minHeight="24dp"
+                            android:padding="0dp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/k_ic_chevron_down"
+                        app:tint="@color/k_text_secondary" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Gender -->
             <TextView
+                style="@style/Kinnect.Text.Body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have an Account? "
-                android:textColor="@color/text_gray"/>
+                android:layout_marginTop="14dp"
+                android:text="Gender"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/loginLink"
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:id="@+id/genderRadioGroup"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Log in"
-                android:textStyle="bold"
-                android:textColor="@color/primary_teal"
-                android:clickable="true" />
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioFemale"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/auth_bg_gender_option"
+                    android:button="@null"
+                    android:drawableEnd="@drawable/auth_radio"
+                    android:gravity="center_vertical"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="11dp"
+                    android:singleLine="true"
+                    android:text="Female"
+                    android:textColor="@color/k_text_primary"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/radioMale"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/auth_bg_gender_option"
+                    android:button="@null"
+                    android:drawableEnd="@drawable/auth_radio"
+                    android:gravity="center_vertical"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="11dp"
+                    android:singleLine="true"
+                    android:text="Male"
+                    android:textColor="@color/k_text_primary"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/radioCustom"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/auth_bg_gender_option"
+                    android:button="@null"
+                    android:drawableEnd="@drawable/auth_radio"
+                    android:gravity="center_vertical"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="11dp"
+                    android:singleLine="true"
+                    android:text="Custom"
+                    android:textColor="@color/k_text_primary"
+                    android:textSize="15sp" />
+            </RadioGroup>
+
+            <!-- Email -->
+            <LinearLayout
+                android:id="@+id/emailInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/k_bg_input"
+                android:orientation="vertical"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="9dp">
+
+                <TextView
+                    style="@style/Kinnect.Text.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/emailInputText"
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:background="@null"
+                    android:importantForAutofill="no"
+                    android:inputType="textEmailAddress"
+                    android:minHeight="24dp"
+                    android:padding="0dp"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <!-- New password -->
+            <LinearLayout
+                android:id="@+id/passwordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/k_bg_input"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="8dp"
+                android:paddingVertical="9dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Kinnect.Text.Secondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="New password"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/passwordInputText"
+                        style="@style/Kinnect.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:background="@null"
+                        android:importantForAutofill="no"
+                        android:inputType="textPassword"
+                        android:minHeight="24dp"
+                        android:padding="0dp"
+                        android:singleLine="true" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/passwordToggle"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:clickable="true"
+                    android:contentDescription="Show password"
+                    android:focusable="true"
+                    android:padding="8dp"
+                    android:src="@drawable/k_ic_eye"
+                    app:tint="@color/k_text_secondary" />
+            </LinearLayout>
+
+            <!-- Password strength: 3 segments + label -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/strengthSegment1"
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/auth_bg_segment" />
+
+                <View
+                    android:id="@+id/strengthSegment2"
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/auth_bg_segment" />
+
+                <View
+                    android:id="@+id/strengthSegment3"
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/auth_bg_segment" />
+
+                <TextView
+                    android:id="@+id/passwordStrengthTxt"
+                    style="@style/Kinnect.Text.Secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:gravity="end"
+                    android:minWidth="52dp"
+                    android:text=""
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Terms -->
+            <CheckBox
+                android:id="@+id/termsCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-6dp"
+                android:layout_marginTop="4dp"
+                android:minHeight="40dp"
+                android:text="I agree to the Kinnect Terms and Privacy Policy."
+                android:textColor="@color/k_text_secondary"
+                android:textSize="14sp"
+                app:buttonTint="@color/primary_teal" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/createAccBtn"
+                style="@style/Kinnect.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:text="Create account" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Kinnect.Text.Secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Already have an account? "
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/loginLink"
+                    style="@style/Kinnect.Text.Link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingVertical="10dp"
+                    android:text="Log in"
+                    android:textSize="15sp" />
+            </LinearLayout>
 
         </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </ScrollView>

@@ -1,189 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<!-- 14 Friends -->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/white"
     tools:context=".FriendsActivity">
 
-    <!-- HEADER -->
+    <!-- Title + round search / messenger buttons -->
     <LinearLayout
-        android:id="@+id/friendsFixedTopSection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Friends"
-                android:textStyle="bold"
-                android:textSize="30sp"
-                android:textColor="@color/black"/>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <ImageButton
-                android:id="@+id/friendsSearchBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/outline_search_24"
-                android:background="@drawable/bg_circle_grey"
-                android:padding="8dp" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/outline_sms_24"
-                android:background="@drawable/bg_circle_grey"
-                android:padding="8dp" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <ImageButton
-                android:id="@+id/homeFeedBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_home_24"
-                android:background="@color/transparent" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_group_24"
-                android:background="@color/transparent" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <ImageButton
-                android:id="@+id/friendsMarketplaceBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_add_business_24"
-                android:background="@color/transparent" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <ImageButton
-                android:id="@+id/friendsNotificationsBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/rounded_notifications_24"
-                android:background="@color/transparent" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <ImageButton
-                android:id="@+id/friendsMenuBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/outline_menu_24"
-                android:background="@color/transparent" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D3D3D3" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/friendsFilterRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp"
-        app:layout_constraintTop_toBottomOf="@id/friendsFixedTopSection">
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="6dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/Kinnect.Text.PageTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Suggestions"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:background="@drawable/bg_circle_grey"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:layout_marginEnd="8dp"/>
+            android:layout_weight="1"
+            android:text="Friends" />
 
+        <ImageButton
+            android:id="@+id/friendsSearchBtn"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@drawable/k_bg_circle_gray"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/k_ic_search"
+            android:contentDescription="Search"
+            app:tint="@color/k_text_primary" />
+
+        <ImageButton
+            android:id="@+id/friendsMessengerBtn"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/k_bg_circle_gray"
+            android:padding="9dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/k_ic_messenger"
+            android:contentDescription="Chats"
+            app:tint="@color/k_text_primary" />
+
+        <!-- Badge overlaps the messenger button's top-right corner (negative margin). -->
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your Friends"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:background="@drawable/bg_circle_grey"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"/>
+            style="@style/Kinnect.Text.Badge"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="top"
+            android:layout_marginStart="-12dp"
+            android:layout_marginTop="-3dp"
+            android:text="3" />
+    </LinearLayout>
+
+    <!-- Five-tab icon row, friends selected -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/homeFeedBtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/k_ic_home"
+                android:contentDescription="Home"
+                app:tint="@color/k_text_secondary" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/friendsTabBtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/k_ic_friends"
+                android:contentDescription="Friends"
+                app:tint="@color/primary_teal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/primary_teal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/friendsMarketplaceBtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/k_ic_store"
+                android:contentDescription="Marketplace"
+                app:tint="@color/k_text_secondary" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/friendsNotificationsBtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingStart="8dp">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/k_ic_bell"
+                    android:contentDescription="Notifications"
+                    app:tint="@color/k_text_secondary" />
+
+                <!-- Badge overlaps the bell (negative margin). -->
+                <TextView
+                    style="@style/Kinnect.Text.Badge"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginStart="-9dp"
+                    android:layout_marginTop="4dp"
+                    android:text="5" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/friendsMenuBtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/k_ic_menu"
+                android:contentDescription="Menu"
+                app:tint="@color/k_text_secondary" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <View
         android:id="@+id/headerDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#D3D3D3"
-        app:layout_constraintTop_toBottomOf="@id/friendsFilterRow"/>
+        android:background="@color/k_divider" />
 
-    <!-- SCROLLABLE CONTENT -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/headerDivider"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_weight="1"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -191,74 +222,105 @@
             android:orientation="vertical"
             android:paddingBottom="32dp">
 
-            <!-- === FRIEND REQUESTS === -->
+            <!-- Chips -->
             <LinearLayout
+                android:id="@+id/friendsFilterRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
-                android:gravity="center_vertical">
+                android:paddingTop="12dp">
 
                 <TextView
-                    android:layout_width="0dp"
+                    style="@style/Kinnect.Chip"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Friend Requests"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:textColor="@color/black" />
+                    android:layout_marginEnd="8dp"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:text="Suggestions"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/Kinnect.Chip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:text="Your friends"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Friend requests header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="4dp">
+
+                <TextView
+                    style="@style/Kinnect.Text.Section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Friend requests" />
 
                 <TextView
                     android:id="@+id/friendRequestsCountTxt"
-                    android:layout_width="wrap_content"
+                    style="@style/Kinnect.Text.Section"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:text="0"
-                    android:textColor="@color/red"
-                    android:textSize="14sp" />
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="12"
+                    android:textColor="@color/k_badge_red" />
 
                 <TextView
+                    android:id="@+id/friendRequestsSeeAllBtn"
+                    style="@style/Kinnect.Text.Link"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="See All"
-                    android:textColor="#1877F2"
-                    android:textSize="14sp" />
+                    android:text="See all"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/friendRequestsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
+                android:nestedScrollingEnabled="false"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_friend_request" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E4E6EB"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginVertical="8dp"/>
+                android:layout_marginTop="10dp"
+                android:background="@color/k_divider" />
 
-            <!-- === YOUR FRIENDS === -->
+            <!-- People you may know (the friends list sits below it) -->
             <TextView
+                style="@style/Kinnect.Text.Section"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Your Friends"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="6dp"
+                android:fontFamily="sans-serif-black"
+                android:text="People you may know" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/yourFriendsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
-
+                android:nestedScrollingEnabled="false"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_user_search" />
         </LinearLayout>
     </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

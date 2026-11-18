@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,8 +50,18 @@ class EditProfileActivity : AppCompatActivity() {
             insets
         }
 
+        // Clip the pictures to their background shapes (circle / rounded rectangle).
+        binding.profilePicImageView.clipToOutline = true
+        binding.coverImageView.clipToOutline = true
+
         setupClickListeners()
         loadExistingUserData()
+    }
+
+    /** Swap the initials circle for the real profile picture. */
+    private fun showProfilePicture() {
+        binding.profileInitials.visibility = View.GONE
+        binding.profilePicImageView.visibility = View.VISIBLE
     }
 
     private fun setupClickListeners() {
@@ -71,6 +82,10 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         binding.editCoverPhotoBtn.setOnClickListener {
+            pickCoverImageLauncher.launch("image/*")
+        }
+
+        binding.coverCameraBtn.setOnClickListener {
             pickCoverImageLauncher.launch("image/*")
         }
     }
@@ -100,7 +115,9 @@ class EditProfileActivity : AppCompatActivity() {
             binding.editGenderInput.setText(user.gender)
 
             // Don't replace a photo the user has just picked on this screen.
+            binding.profileInitials.text = initialsOf(user.displayName())
             if (user.profilePic.isNotEmpty() && selectedProfilePicBase64 == null) {
+                showProfilePicture()
                 binding.profilePicImageView.loadRemote(user.profilePic)
             }
             if (user.coverPhoto.isNotEmpty() && selectedCoverPhotoBase64 == null) {
@@ -124,6 +141,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                 if (isProfilePic) {
                     selectedProfilePicBase64 = base64String
+                    showProfilePicture()
                     Glide.with(this).load(scaledBitmap).into(binding.profilePicImageView)
                 } else {
                     selectedCoverPhotoBase64 = base64String
