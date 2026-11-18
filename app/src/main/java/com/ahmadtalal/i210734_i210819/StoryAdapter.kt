@@ -96,7 +96,9 @@ class StoryAdapter(
                 )
 
                 binding.root.setOnClickListener {
-                    if (story != null && story.userId == currentUserId) {
+                    if (story != null && Placeholders.isSample(story.storyId)) {
+                        // Sample stories are for show only.
+                    } else if (story != null && story.userId == currentUserId) {
                         val intent = Intent(context, YourStoryActivity::class.java)
                         intent.putExtra("storyId", story.storyId)
                         context.startActivity(intent)

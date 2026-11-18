@@ -97,6 +97,10 @@ class PostAdapter(
 
             // Comment button listener
             binding.commentBtn.setOnClickListener {
+                if (Placeholders.isSample(post.postId)) {
+                    Toast.makeText(context, "This is a sample post.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 val intent = Intent(context, CommentsActivity::class.java)
                 intent.putExtra("postId", post.postId)
                 context.startActivity(intent)
@@ -176,6 +180,25 @@ class PostAdapter(
 
             // A post that has not reached the server yet cannot be reacted to.
             if (postId.startsWith(LocalDb.PENDING_PREFIX)) return
+
+            // Sample posts react on screen only; nothing is sent to the server.
+            if (Placeholders.isSample(postId)) {
+                val index = postList.indexOfFirst { it.postId == postId }
+                if (index != -1) {
+                    val current = postList[index]
+                    val removing = current.myReaction == selectedReaction
+                    postList[index] = current.copy(
+                        myReaction = if (removing) "" else selectedReaction,
+                        reactionCount = current.reactionCount + when {
+                            removing -> -1
+                            current.myReaction.isEmpty() -> 1
+                            else -> 0
+                        }
+                    )
+                    notifyItemChanged(index)
+                }
+                return
+            }
 
             val body = mapOf("post_id" to postId, "reaction" to selectedReaction)
             Api.post("posts/react.php", body, queueIfOffline = true) { result ->

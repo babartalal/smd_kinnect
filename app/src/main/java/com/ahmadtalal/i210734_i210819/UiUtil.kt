@@ -26,6 +26,13 @@ fun initialsOf(name: String): String =
  * Glide caches it on disk, so pictures already seen also show while offline.
  */
 fun ImageView.loadRemote(path: String) {
+    if (path.startsWith("drawable:")) {
+        // A picture bundled in the app (used by the sample content).
+        val resId = resources.getIdentifier(path.removePrefix("drawable:"), "drawable", context.packageName)
+        Glide.with(context.applicationContext).clear(this)
+        if (resId != 0) setImageResource(resId)
+        return
+    }
     Glide.with(context.applicationContext).load(Api.imageUrl(path)).into(this)
 }
 

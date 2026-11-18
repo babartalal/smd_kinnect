@@ -32,6 +32,7 @@ class HomeFeedActivity : AppCompatActivity() {
         for (i in 0 until posts.length()) {
             feedPostList.add(Post.fromJson(posts.getJSONObject(i)))
         }
+        feedPostList.addAll(Placeholders.posts())
         postAdapter.updateData(feedPostList)
     }
 
@@ -50,6 +51,7 @@ class HomeFeedActivity : AppCompatActivity() {
                 )
             )
         }
+        storyItemList.addAll(Placeholders.stories())
         storyAdapter.updateData(storyItemList)
     }
 
@@ -118,12 +120,15 @@ class HomeFeedActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerViews() {
+        // Sample posts are on screen from the start; real posts are added above them.
+        feedPostList.addAll(Placeholders.posts())
         postAdapter = PostAdapter(this, feedPostList)
         binding.postsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.postsRecyclerView.adapter = postAdapter
 
         // The "Create Story" card is always there, even before stories load.
         storyItemList.add(StoryModel(isCreateStory = true))
+        storyItemList.addAll(Placeholders.stories())
         storyAdapter = StoryAdapter(this, storyItemList)
         binding.storiesRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
