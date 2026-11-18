@@ -1,0 +1,26 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Build output and tool caches
+build/
+.kotlin/
+/.idea/
+
+# Backend runtime files
+backend/kinnect_api/uploads/*
+!backend/kinnect_api/uploads/.gitkeep
+backend/kinnect_api/config.local.php
+backend/kinnect_api/firebase-service-account.json

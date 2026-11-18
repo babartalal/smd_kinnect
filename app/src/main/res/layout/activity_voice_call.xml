@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_teal"
+    tools:context=".VoiceCallActivity">
+
+    <!-- Remote Video Container (Video Calls) -->
+    <FrameLayout
+        android:id="@+id/remoteVideoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:visibility="gone" />
+
+    <!-- Local Video Container Overlay (Video Calls) -->
+    <FrameLayout
+        android:id="@+id/localVideoContainer"
+        android:layout_width="120dp"
+        android:layout_height="160dp"
+        android:layout_margin="16dp"
+        android:background="#40000000"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Top Encryption Header -->
+    <LinearLayout
+        android:id="@+id/encryptionHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:contentDescription="Encrypted"
+            android:src="@drawable/outline_star_24"
+            app:tint="#A0FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="End-to-end encrypted"
+            android:textColor="#A0FFFFFF"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- Center Contact Display Card -->
+    <LinearLayout
+        android:id="@+id/centerContactCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/bottomCallControls"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/encryptionHeader">
+
+        <!-- Avatar with Glow Background -->
+        <FrameLayout
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:gravity="center">
+
+            <View
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:background="@drawable/bg_rounded_teal"
+                android:backgroundTint="#20FFFFFF" />
+
+            <View
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_rounded_teal"
+                android:backgroundTint="#40FFFFFF" />
+
+            <!-- Rounded Square Avatar -->
+            <TextView
+                android:id="@+id/callContactAvatar"
+                android:layout_width="104dp"
+                android:layout_height="104dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_rounded_teal"
+                android:backgroundTint="@color/accent_purple"
+                android:gravity="center"
+                android:text="U"
+                android:textColor="@color/white"
+                android:textSize="38sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <!-- Name Row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/callContactName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calling..."
+                android:textColor="@color/white"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Call Timer / Status -->
+        <TextView
+            android:id="@+id/callTimerTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Connecting..."
+            android:textColor="#C0FFFFFF"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Bottom Call Control Actions Row -->
+    <LinearLayout
+        android:id="@+id/bottomCallControls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Mute Mic Button -->
+        <ImageView
+            android:id="@+id/muteMicBtn"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="12dp"
+            android:background="@drawable/bg_circle_teal"
+            android:backgroundTint="#25000000"
+            android:contentDescription="Mute"
+            android:padding="14dp"
+            android:src="@drawable/outline_bolt_24"
+            app:tint="@color/white" />
+
+        <!-- Toggle Speaker Button -->
+        <ImageView
+            android:id="@+id/toggleSpeakerBtn"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="12dp"
+            android:background="@drawable/bg_circle_teal"
+            android:backgroundTint="#25000000"
+            android:contentDescription="Speaker"
+            android:padding="14dp"
+            android:src="@drawable/rounded_repeat_24"
+            app:tint="@color/white" />
+
+        <!-- Switch Camera Button -->
+        <ImageView
+            android:id="@+id/switchCameraBtn"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="12dp"
+            android:background="@drawable/bg_circle_teal"
+            android:backgroundTint="#25000000"
+            android:contentDescription="Switch Camera"
+            android:padding="14dp"
+            android:src="@drawable/outline_photo_camera_24"
+            app:tint="@color/white"
+            android:visibility="gone" />
+
+        <!-- Red End Call Button -->
+        <ImageView
+            android:id="@+id/endCallBtn"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginHorizontal="12dp"
+            android:background="@drawable/bg_circle_red_badge"
+            android:contentDescription="End call"
+            android:padding="18dp"
+            android:src="@drawable/outline_cancel_24"
+            app:tint="@color/white" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

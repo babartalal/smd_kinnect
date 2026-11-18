@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="end"
+    android:layout_marginVertical="4dp">
+
+    <!-- Reply Reference Bubble -->
+    <TextView
+        android:id="@+id/replyBubbleTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/bg_comment_rounded"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp"
+        android:text="Replying to message"
+        android:textColor="@color/text_dark"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_chat_outgoing"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="8dp">
+
+            <!-- Attached Image -->
+            <ImageView
+                android:id="@+id/messageImageView"
+                android:layout_width="200dp"
+                android:layout_height="140dp"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="4dp"
+                android:contentDescription="Message Image"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/messageBodyTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Outgoing message"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="end"
+                android:layout_marginTop="2dp">
+
+                <TextView
+                    android:id="@+id/editedLabelTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(edited) "
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/messageTimeTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12:00 PM"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/heartReactionBadge"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="-6dp"
+            android:layout_marginBottom="-6dp"
+            android:background="@drawable/bg_circle_teal"
+            android:gravity="center"
+            android:text="❤️"
+            android:textSize="10sp"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>
