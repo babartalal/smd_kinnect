@@ -131,6 +131,45 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <!-- Whose accounts to search: everyone, my friends, or pending friend requests -->
+    <LinearLayout
+        android:id="@+id/searchPeopleFilters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/filterEveryoneChip"
+            style="@style/Kinnect.Chip.Selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Everyone" />
+
+        <TextView
+            android:id="@+id/filterFriendsChip"
+            style="@style/Kinnect.Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Friends" />
+
+        <TextView
+            android:id="@+id/filterRequestsChip"
+            style="@style/Kinnect.Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Requests" />
+    </LinearLayout>
+
     <View
         android:id="@+id/headerDivider"
         android:layout_width="match_parent"
