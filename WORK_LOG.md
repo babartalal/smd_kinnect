@@ -109,31 +109,80 @@ The app builds, and no screen that was opened crashed. Home feed, Friends, Profi
 - Story editor: "Saturday plans" is the hint of the label field, not real text.
 - Avatar colours are fixed per screen in most lists (per person in the chat list).
 
-## 3. Assignment 03 requirements (not started)
+## 3. Assignment 03 requirements (done, committed)
 
-Read `SMD_Assignment_03.pdf`. Gaps already visible against the current backend, to be worked through after the UI:
+How each requirement in `SMD_Assignment_03.pdf` is met:
 
-- Offline: the assignment asks for SQLite tables for messages, posts, stories, users and friends, a `pending_actions` table, and a visible "pending" state. The app currently caches whole API responses and queues writes in `pending_requests`.
-- Token storage: should use encrypted storage (e.g. EncryptedSharedPreferences); it is in plain SharedPreferences now.
-- Uploads: posts should use a multipart upload endpoint; they are sent as Base64 in JSON now.
-- Stories and chat: video stories, and video/file messages, are not supported yet.
-- Calls: call logs are not stored yet.
-- Search: Friends / Requests / Everyone filter is missing.
-- Notifications screen: friend requests should be confirmable there.
-- Friend requests and message edit/delete are not queued offline yet.
-- Two Espresso tests exist from Assignment 2 but have not been updated or run.
-- Submission rules: private GitHub repo, commits from both members, and `google-services.json` must not be in a public repo (it is currently committed locally; nothing is pushed).
+| Requirement | Status | Where |
+| --- | --- | --- |
+| Splash 5 s, then Home if a token is stored (even offline), else Log in | Done | `SplashActivity.kt` |
+| Sign up, log in, log out through own endpoints; passwords hashed on the server | Done | `auth/*.php` (`password_hash`) |
+| Session token stored securely and sent with every request | Done | `Session.kt` encrypts it with an AES-GCM key held in the Android Keystore |
+| First-time users go to Edit profile to pick a unique username and bio | Done | `users/update.php` checks uniqueness |
+| Password strength and Recent login card | Done | `CreateAccountActivity.kt`, `LoginActivity.kt` |
+| Log out invalidates the token, marks offline, clears SQLite, clears the back stack | Done | `auth/logout.php`, `Session.clear()` |
+| Stories: image or video, text label, Your story / Close friends, upload endpoint | Done | `media/upload.php`, `stories/create.php` |
+| Stories disappear after 24 hours on the server and in SQLite | Done | `stories/feed.php`, `LocalDb.loadResponse` |
+| Posts with one or more images through a multipart upload endpoint | Done | `posts/create.php` (multipart), `CreatePostActivity.kt` |
+| Six reactions, one per user, changeable or removable | Done | `posts/react.php` |
+| Comments with replies, likes and image comments | Done | `comments/*.php` |
+| Feed of own and friends' posts, newest first, cached in SQLite | Done | `posts/feed.php`, `posts` table in `LocalDb.kt` |
+| Chat: text, images, videos and files; stored in MySQL; cached in SQLite | Done | `media/upload.php`, `messages/send.php`, `messages` table |
+| Edit/delete own message within 5 minutes, enforced by the server; "Edited" label | Done | `messages/edit.php`, `messages/delete.php` |
+| New messages appear without leaving the screen | Done | `LiveQuery` polls every 2.5 s |
+| Voice and video calls with Agora; call logs stored through web services | Done | `calls/*.php`, `call_logs` table, `calls/logs.php` |
+| Friend requests from Search, Other profile, Friends and Notifications | Done | `friends/action.php`, `NotificationRequestAdapter.kt` |
+| Add friend → Requested → Friends button state | Done | `Friendship.kt` |
+| Edit profile picture, cover, name, username, bio | Done | `users/update.php` |
+| FCM for push only; server stores tokens and sends | Done | `users/heartbeat.php`, `send_push` in `core.php` |
+| Push for new messages, friend requests, screenshot alerts | Done | needs a Firebase service account key on the server (see README) |
+| Search by username or name as the user types | Done | `users/search.php` |
+| Filter by Friends / Requests / Everyone | Done | `filter` parameter, chips in `SearchActivity.kt` |
+| Online/offline status in real time | Done | heartbeat, 45 s window |
+| Screenshot notification and system message | Done | `ChatActivity.kt`, `messages/send.php` |
+| SQLite stores messages, posts, stories, users, friends; screens read SQLite first | Done | `LocalDb.kt`, `LiveQuery.showLocal` |
+| Offline actions queued in `pending_actions` and shown with a pending state | Done | messages ("Sending..."), posts ("Pending"), comments, reactions, friend requests, message edit/delete |
+| Background sync retries queued actions in order on reconnect | Done | `KinnectApp.kt` network callback, `Api.syncPending` |
+| No data loss, no duplication: client UUID ignored by the server on repeats | Done | `processed_actions` table, `replay_if_repeated` in `core.php` |
+| Two Espresso tests | Done | `AuthNavigationTest.kt`, `HomeCommentsTest.kt` |
+
+### What was tested
+
+- Offline, on the emulator: with airplane mode on, a chat message showed at once with "Sending..." and a post reaction showed at once; MySQL had neither. After turning airplane mode off, MySQL had exactly one of each and the label disappeared.
+- Repeat safety, on the server: the same `clientId` sent twice returned the same answer and changed the data once.
+- Espresso: all five test methods pass on the emulator against XAMPP (`gradlew connectedDebugAndroidTest`).
+- Through Apache: file upload and download, a multipart post, rejection of a `.php` upload, the Friends search filter, and a declined call appearing in `calls/logs.php`.
+- In the app: feed, notifications, the search filter chips, the chat list and a file message in chat all opened without crashes.
+
+### Not tested or limited
+
+- Not run in the app: sending a video or file from the phone's picker, video stories, calls (no `AGORA_APP_ID`), real push delivery (no service account key), friend requests on the Notifications screen with live data, offline post/comment/friend-request/edit/delete (only offline message and reaction were run).
+- Attachments (photo, video, file) in chat need a connection; only text messages queue offline.
+- A post written offline shows in the feed as text only until it syncs.
+- Video messages show a play tile without a thumbnail.
+- The call history has an endpoint but no screen.
+- Still open from the submission rules: push to a private GitHub repo, commits from both group members, keep `google-services.json` out of any public repo, and the project/package naming rule (`rollNumber1_rollNumber2`).
 
 ## Git
 
-Local commits so far (nothing pushed; waiting for the repository URL):
+Nothing is pushed yet (waiting for the repository URL). Local commits, oldest first:
 
 1. Baseline: Kinnect app with Firebase backend
-2. Add PHP web services and MySQL schema for XAMPP
-3. Replace Firebase Auth and Realtime Database with PHP web services
-4. Request local network access, log unreachable server, add README
-5. Add shared Kinnect design kit: colours, text and button styles, icons
-6. Rebuild all screens to match Kinnect_UI.pdf using LinearLayouts
+1. Add PHP web services and MySQL schema for XAMPP
+1. Replace Firebase Auth and Realtime Database with PHP web services
+1. Request local network access, log unreachable server, add README
+1. Add shared Kinnect design kit: colours, text and button styles, icons
+1. Rebuild all screens to match Kinnect_UI.pdf using LinearLayouts
+1. Add work log
+1. Redraw logo mark with larger interlocking rings; update work log
+1. Backend: ignore repeated writes by clientId and add a migration runner
+1. Store the session token encrypted with an Android Keystore AES-GCM key
+1. Offline support: SQLite content tables, pending_actions queue and auto sync
+1. Search: filter results by Everyone, Friends or Requests
+1. Notifications: show real friend requests with working Confirm and Delete
+1. Calls: store call history in call_logs and add calls/logs.php
+1. Espresso tests for login and commenting against the PHP backend
+1. Media: multipart upload endpoint, video and file messages, video stories
 
 ## How to run
 

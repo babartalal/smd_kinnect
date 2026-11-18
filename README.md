@@ -12,7 +12,7 @@ Android social app (posts, stories, friends, chat, voice/video calls).
 1. Start **Apache** and **MySQL** in the XAMPP control panel.
 2. Copy the web services into XAMPP by double-clicking `backend/deploy.bat`
    (it copies `backend/kinnect_api` to `C:\xampp\htdocs\kinnect_api`; run it again after changing any PHP file).
-3. Open <http://localhost/kinnect_api/setup.php> once. It creates the `kinnect_db` database and its tables.
+3. Open <http://localhost/kinnect_api/setup.php>. It creates the `kinnect_db` database and its tables. Open it again after pulling new changes: it applies any new files in `migrations/`.
 4. Open <http://localhost/kinnect_api/>. You should see `"database":"ok"`.
 
 Database settings (host, user, password) are in `backend/kinnect_api/config.php`. The defaults match a stock XAMPP install (`root`, no password).
@@ -47,13 +47,14 @@ After login, requests carry the token in an `X-Auth-Token` header.
 | Area | Endpoints |
 | --- | --- |
 | Accounts | `auth/signup.php`, `auth/login.php`, `auth/logout.php`, `auth/request_reset.php`, `auth/reset_password.php` |
-| Users | `users/get.php`, `users/update.php`, `users/search.php`, `users/heartbeat.php` |
+| Users | `users/get.php`, `users/update.php`, `users/search.php` (`filter=everyone|friends|requests`), `users/heartbeat.php` |
 | Friends | `friends/list.php`, `friends/requests.php`, `friends/action.php` |
 | Posts | `posts/feed.php`, `posts/create.php`, `posts/react.php` |
 | Comments | `comments/list.php`, `comments/create.php`, `comments/like.php` |
 | Stories | `stories/feed.php`, `stories/get.php`, `stories/create.php` |
 | Chat | `chats/list.php`, `messages/list.php`, `messages/send.php`, `messages/edit.php`, `messages/delete.php`, `messages/react.php` |
-| Calls | `calls/start.php`, `calls/incoming.php`, `calls/status.php`, `calls/answer.php`, `calls/end.php` |
+| Calls | `calls/start.php`, `calls/incoming.php`, `calls/status.php`, `calls/answer.php`, `calls/end.php`, `calls/logs.php` |
+| Media | `media/upload.php` (multipart: images, videos, documents) |
 
 Each PHP file starts with a comment describing its parameters.
 
@@ -61,4 +62,4 @@ Each PHP file starts with a comment describing its parameters.
 
 - `Api.kt` – HTTP client for the web services (`Api.get`, `Api.post`) and `LiveQuery`, which polls an endpoint so screens update by themselves.
 - `Session.kt` – the signed-in user's id and token.
-- `LocalDb.kt` – the SQLite database: cached responses and the offline write queue.
+- `LocalDb.kt` – the SQLite database: `users`, `friends`, `posts`, `stories`, `messages`, and the `pending_actions` queue of writes made offline.
