@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -92,6 +93,7 @@ object Api {
                 }
                 response.toResult()
             } catch (e: IOException) {
+                Log.w("KinnectApi", "$endpoint unreachable: $e")
                 val cached = LocalDb.get().getCache(cacheKey)
                 if (cached != null) {
                     ApiResult(ok = true, envelope = JSONObject(cached), fromCache = true)
@@ -121,6 +123,7 @@ object Api {
             val result = try {
                 postNow(endpoint, json).toResult()
             } catch (e: IOException) {
+                Log.w("KinnectApi", "$endpoint unreachable: $e")
                 if (queueIfOffline && Session.isLoggedIn) {
                     LocalDb.get().enqueue(endpoint, json)
                     ApiResult(ok = false, queued = true, error = "You're offline. This will be sent when you're back online.")
