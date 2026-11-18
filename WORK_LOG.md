@@ -67,46 +67,47 @@ Also added:
 - Old Firebase data was not migrated; the database starts empty.
 - Password reset codes are written to `C:\xampp\mailoutput` (XAMPP does not send real email).
 
-## 2. UI rebuild to match `Kinnect_UI.pdf` (in progress, not yet built or committed)
+## 2. UI rebuild to match `Kinnect_UI.pdf` (done, committed)
 
 **Goal:** all 23 screens match the design, using only LinearLayouts, RecyclerViews and scroll containers.
 
-### Shared design kit (done, committed)
+### Shared design kit
 
 - `res/values/kinnect_design.xml` – colours, text styles and button/chip styles. Primary teal set to `#0B5F63`.
 - 85 shared drawables: `k_bg_*` shapes (avatar circles, pills, buttons, cards, bubbles, badges) and `k_ic_*` icons.
 
 ### Screens
 
-| Group | Screens | Status |
-| --- | --- | --- |
-| Auth | 01 Splash, 02 Log in, 03 Sign up, 16 Edit profile | Rebuilt, not yet built |
-| Feed | 04 Home feed, 05 Reaction picker, 06 Comments, 07 Create post | Still being rebuilt |
-| Stories and calls | 08 Photo picker, 09 Camera, 10 Story editor, 11 Story viewer, 12 Your story, 22 Voice call | Rebuilt, not yet built |
-| People | 13 Search, 14 Friends, 15 Profile, 17 Other profile | Rebuilt, not yet built |
-| Hub | 18 Notifications, 19 Menu, 20 Chats, 21 Chat, 23 Marketplace | Still being rebuilt |
+| Group | Screens | Layouts rebuilt | Checked on emulator |
+| --- | --- | --- | --- |
+| Auth | 01 Splash, 02 Log in, 03 Sign up, 16 Edit profile | Yes | Splash and Edit profile opened; Log in and Sign up not viewed (the emulator was signed in) |
+| Feed | 04 Home feed, 05 Reaction picker, 06 Comments, 07 Create post | Yes | Home feed, Comments, Create post opened; reaction picker not opened |
+| Stories and calls | 08 Photo picker, 09 Camera, 10 Story editor, 11 Story viewer, 12 Your story, 22 Voice call | Yes | Story viewer opened; the others not opened |
+| People | 13 Search, 14 Friends, 15 Profile, 17 Other profile | Yes | Search, Friends, Profile opened; Other profile not opened |
+| Hub | 18 Notifications, 19 Menu, 20 Chats, 21 Chat, 23 Marketplace | Yes | All five opened |
 
-"Rebuilt, not yet built" means the XML and small Kotlin UI changes are written and statically checked, but the app has not been compiled or run with them yet.
+The app builds, and no screen that was opened crashed. Home feed, Friends, Profile and Chat were compared with the PDF by screenshot.
 
 ### Deviations from "LinearLayout only"
 
 - Photo picker, photo grid item, Camera, Story editor, Story viewer, Your story and Voice call each use one FrameLayout as an overlay container, because controls sit on top of a full-screen image or video. Everything inside is LinearLayouts.
 - The Voice call screen keeps two FrameLayouts that the Agora SDK needs for video.
-- Auth and People screens use no FrameLayout; overlaps use negative margins.
+- All other screens use no FrameLayout; overlaps (badges, avatar over cover, "+N" on photos) use negative margins.
+- No ConstraintLayout, RelativeLayout or CardView remains anywhere.
 
-### Known differences from the design so far
+### Known differences from the design
 
 - Fonts: the design's display typeface is approximated with the system `sans-serif-black`.
-- Sample content (badge counts, "Seen by 24", filter chips, Groups, recent searches, profile details, photo tiles) is static dummy content.
-- Avatar colours are fixed per screen rather than varied per user.
-- Search rows show "N mutual friends" rather than the design's "Friend · Lives in Karachi".
-
-### Still to do for the UI
-
-1. Finish the Feed and Hub groups.
-2. Build the app and fix any errors.
-3. Check each screen on the emulator against the PDF.
-4. Commit.
+- Sample content is static dummy content: badge counts, "86 comments · 12 shares", notification rows, marketplace listings, menu tiles, filter chips, Groups, recent searches, profile details, "Seen by 24", camera mode tabs.
+- Home feed: "is at Clifton Beach" is omitted (no location data); the reactions text shows "N reactions".
+- Reaction picker: plain white pill with six icons; the enlarged icon with tooltip and dimmed backdrop are not built.
+- Comments: thread connector lines and "View 6 more replies" are not built.
+- Chat: the typing indicator and seen-avatar dot are omitted; per-message times are hidden as in the design; "TODAY 4:49 PM" is a static label.
+- Chat messages now sit in a scrolling column under the contact header, so very long conversations lay out every row.
+- Chats: the group-chat row with two stacked avatars is not reproduced.
+- Search rows show "N mutual friends" rather than "Friend · Lives in Karachi"; existing friends keep a "Friends" pill so unfriend still works.
+- Story editor: "Saturday plans" is the hint of the label field, not real text.
+- Avatar colours are fixed per screen in most lists (per person in the chat list).
 
 ## 3. Assignment 03 requirements (not started)
 
@@ -132,6 +133,7 @@ Local commits so far (nothing pushed; waiting for the repository URL):
 3. Replace Firebase Auth and Realtime Database with PHP web services
 4. Request local network access, log unreachable server, add README
 5. Add shared Kinnect design kit: colours, text and button styles, icons
+6. Rebuild all screens to match Kinnect_UI.pdf using LinearLayouts
 
 ## How to run
 
