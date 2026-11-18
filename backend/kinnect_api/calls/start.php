@@ -1,6 +1,7 @@
 <?php
 // POST {recipient_id, type}   type: audio | video
 // Starts ringing a friend. Returns the Agora channel both sides should join.
+// The call is also added to the call history (call_logs) as "ringing".
 require __DIR__ . '/../core.php';
 require __DIR__ . '/common.php';
 require_method('POST');
@@ -23,6 +24,7 @@ $channel = 'kinnect_' . chat_id($me, $other);
 
 q('REPLACE INTO calls (recipient_id, caller_id, caller_name, channel_name, type, status, created_at)
    VALUES (?, ?, ?, ?, ?, "ringing", ?)', [$other, $me, $callerName, $channel, $type, now_ms()]);
+log_call_started($me, $other, $type);
 
 send_push($other, 'Incoming ' . ucfirst($type) . ' Call', "$callerName is calling you...");
 
