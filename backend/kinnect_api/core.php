@@ -85,8 +85,52 @@ function respond($data = null): void
         echo json_encode(['ok' => true, 'notModified' => true, 'etag' => $etag]);
         exit;
     }
-    echo json_encode(['ok' => true, 'etag' => $etag, 'data' => $data], JSON_UNESCAPED_SLASHES);
+    $body = json_encode(['ok' => true, 'etag' => $etag, 'data' => $data], JSON_UNESCAPED_SLASHES);
+    remember_action($body);
+    echo $body;
     exit;
+}
+
+// ---------- repeat-safe writes ----------
+// Every write the app queues offline carries a clientId (UUID). The first
+// time it arrives we save the answer; if the same clientId arrives again
+// (a retry after a lost connection) we return that answer without redoing
+// the action, so nothing is ever duplicated or toggled twice.
+
+function action_client_id(): string
+{
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+        return '';
+    }
+    $clientId = (string) param('clientId');
+    return preg_match('/^[A-Za-z0-9-]{8,40}$/', $clientId) ? $clientId : '';
+}
+
+/** Called once the user is known: answer a repeated request from the saved copy. */
+function replay_if_repeated(int $userId): void
+{
+    $GLOBALS['kinnect_user_id'] = $userId;
+    $clientId = action_client_id();
+    if ($clientId === '') {
+        return;
+    }
+    $saved = q('SELECT response FROM processed_actions WHERE client_id = ? AND user_id = ?',
+        [$clientId, $userId])->fetchColumn();
+    if ($saved !== false) {
+        echo $saved;
+        exit;
+    }
+}
+
+function remember_action(string $responseBody): void
+{
+    $clientId = action_client_id();
+    $userId = $GLOBALS['kinnect_user_id'] ?? 0;
+    if ($clientId === '' || !$userId) {
+        return;
+    }
+    q('INSERT IGNORE INTO processed_actions (client_id, user_id, response, created_at) VALUES (?, ?, ?, ?)',
+        [$clientId, $userId, $responseBody, now_ms()]);
 }
 
 function fail(string $message, int $status = 400): void
@@ -124,6 +168,7 @@ function require_auth(): int
     }
     $userId = (int) $row['user_id'];
     q('UPDATE users SET last_seen = ?, is_online = 1 WHERE id = ?', [now_ms(), $userId]);
+    replay_if_repeated($userId);
     return $userId;
 }
 

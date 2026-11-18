@@ -27,6 +27,25 @@ try {
         $pdo->exec($statement);
     }
 
+    // Then run each migration in migrations/ exactly once, in file-name order.
+    $pdo->exec('CREATE TABLE IF NOT EXISTS schema_migrations (name VARCHAR(190) PRIMARY KEY, applied_at BIGINT NOT NULL)');
+    $applied = $pdo->query('SELECT name FROM schema_migrations')->fetchAll(PDO::FETCH_COLUMN);
+    $files = glob(__DIR__ . '/migrations/*.sql') ?: [];
+    sort($files);
+    foreach ($files as $file) {
+        $name = basename($file);
+        if (in_array($name, $applied, true)) {
+            continue;
+        }
+        $migration = preg_replace('/^\s*--.*$/m', '', file_get_contents($file));
+        foreach (array_filter(array_map('trim', explode(';', $migration))) as $statement) {
+            $pdo->exec($statement);
+        }
+        $pdo->prepare('INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)')
+            ->execute([$name, (int) round(microtime(true) * 1000)]);
+        echo "Applied migration $name\n";
+    }
+
     if (!is_dir(UPLOAD_DIR)) {
         mkdir(UPLOAD_DIR, 0775, true);
     }
