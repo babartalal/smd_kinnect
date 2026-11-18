@@ -7,20 +7,26 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ahmadtalal.i210734_i210819.databinding.ActivityChatsBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class ChatsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatsBinding
     private lateinit var chatListAdapter: ChatListAdapter
+
     private val conversationList = mutableListOf<ChatConversation>()
 
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-    private val dbRef = FirebaseDatabase.getInstance().reference
+    /**
+     * One row per friend with their profile, last message and unread flag,
+     * already sorted by the server (most recent conversation first).
+     */
+    private val chatsQuery = LiveQuery("chats/list.php", intervalMs = 4000L) { result ->
+        val chats = result.arr()
+        conversationList.clear()
+        for (i in 0 until chats.length()) {
+            conversationList.add(ChatConversation.fromJson(chats.getJSONObject(i)))
+        }
+        chatListAdapter.updateData(conversationList, showPresence = !result.fromCache)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,75 +43,21 @@ class ChatsActivity : AppCompatActivity() {
         binding.chatsBackBtn.setOnClickListener { finish() }
 
         setupRecyclerView()
-        loadActiveChats()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (Session.isLoggedIn) chatsQuery.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        chatsQuery.stop()
     }
 
     private fun setupRecyclerView() {
         chatListAdapter = ChatListAdapter(this, conversationList)
         binding.chatsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.chatsRecyclerView.adapter = chatListAdapter
-    }
-
-    private fun loadActiveChats() {
-        if (currentUserId.isEmpty()) return
-
-        dbRef.child("friends").child(currentUserId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val friendIds = snapshot.children.mapNotNull { it.key }
-                    if (friendIds.isEmpty()) {
-                        conversationList.clear()
-                        chatListAdapter.updateData(conversationList)
-                        return
-                    }
-
-                    val tempMap = mutableMapOf<String, ChatConversation>()
-                    var processedCount = 0
-
-                    for (friendId in friendIds) {
-                        val chatId = getChatId(currentUserId, friendId)
-                        dbRef.child("messages").child(chatId)
-                            .limitToLast(1)
-                            .addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(msgSnap: DataSnapshot) {
-                                    var lastText = "Start a conversation"
-                                    var lastTime = 0L
-
-                                    for (child in msgSnap.children) {
-                                        val msg = child.getValue(Message::class.java)
-                                        if (msg != null) {
-                                            lastText = if (msg.imageBase64.isNotEmpty()) "📷 Photo" else msg.text
-                                            lastTime = msg.timestamp
-                                        }
-                                    }
-
-                                    tempMap[friendId] = ChatConversation(
-                                        recipientId = friendId,
-                                        lastMessage = lastText,
-                                        timestamp = lastTime,
-                                        unread = false
-                                    )
-
-                                    processedCount++
-                                    if (processedCount >= friendIds.size) {
-                                        conversationList.clear()
-                                        conversationList.addAll(tempMap.values.sortedByDescending { it.timestamp })
-                                        chatListAdapter.updateData(conversationList)
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    processedCount++
-                                }
-                            })
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
-    private fun getChatId(uid1: String, uid2: String): String {
-        return if (uid1 < uid2) "${uid1}_${uid2}" else "${uid2}_${uid1}"
     }
 }

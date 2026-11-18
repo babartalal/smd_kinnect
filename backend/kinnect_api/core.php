@@ -342,3 +342,15 @@ function send_push(int $userId, string $title, string $body): void
         error_log('Kinnect push failed: ' . $e->getMessage());
     }
 }
+
+/**
+ * User JSON for embedding in feeds (post, comment and story authors). Leaves
+ * out the online flag so a feed's etag does not change every time someone
+ * opens or closes the app.
+ */
+function author_json(int $userId): array
+{
+    $author = user_json(fetch_user_row($userId));
+    unset($author['isOnline']);
+    return $author;
+}

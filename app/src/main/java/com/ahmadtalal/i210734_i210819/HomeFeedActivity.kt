@@ -1,7 +1,6 @@
 package com.ahmadtalal.i210734_i210819
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -14,11 +13,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ahmadtalal.i210734_i210819.databinding.ActivityHomeFeedBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class HomeFeedActivity : AppCompatActivity() {
 
@@ -28,10 +22,36 @@ class HomeFeedActivity : AppCompatActivity() {
 
     private val feedPostList = mutableListOf<Post>()
     private val storyItemList = mutableListOf<StoryModel>()
-    private var incomingCallDialog: AlertDialog? = null
 
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-    private val dbRef = FirebaseDatabase.getInstance().reference
+    private val callWatcher = IncomingCallWatcher(this)
+
+    /** Posts by me and my friends, newest first (filtered and sorted by the server). */
+    private val postsQuery = LiveQuery("posts/feed.php", intervalMs = 5000L) { result ->
+        val posts = result.arr()
+        feedPostList.clear()
+        for (i in 0 until posts.length()) {
+            feedPostList.add(Post.fromJson(posts.getJSONObject(i)))
+        }
+        postAdapter.updateData(feedPostList)
+    }
+
+    /** Stories from the last 24 hours by me and my friends. */
+    private val storiesQuery = LiveQuery("stories/feed.php", intervalMs = 8000L) { result ->
+        val stories = result.arr()
+        storyItemList.clear()
+        storyItemList.add(StoryModel(isCreateStory = true))
+        for (i in 0 until stories.length()) {
+            val json = stories.getJSONObject(i)
+            storyItemList.add(
+                StoryModel(
+                    story = Story.fromJson(json),
+                    author = json.optJSONObject("author")?.let { User.fromJson(it) },
+                    isCreateStory = false
+                )
+            )
+        }
+        storyAdapter.updateData(storyItemList)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +67,22 @@ class HomeFeedActivity : AppCompatActivity() {
 
         setupRecyclerViews()
         setupClickListeners()
-        loadHomeFeedPosts()
-        loadHomeFeedStories()
-        listenForIncomingCalls()
         checkNotificationPermission()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (!Session.isLoggedIn) return
+        postsQuery.start()
+        storiesQuery.start()
+        callWatcher.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        postsQuery.stop()
+        storiesQuery.stop()
+        callWatcher.stop()
     }
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(
@@ -70,6 +102,8 @@ class HomeFeedActivity : AppCompatActivity() {
         binding.postsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.postsRecyclerView.adapter = postAdapter
 
+        // The "Create Story" card is always there, even before stories load.
+        storyItemList.add(StoryModel(isCreateStory = true))
         storyAdapter = StoryAdapter(this, storyItemList)
         binding.storiesRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -112,167 +146,5 @@ class HomeFeedActivity : AppCompatActivity() {
         binding.homeFeedPhotoPickerBtn.setOnClickListener {
             startActivity(Intent(this, CreatePostActivity::class.java))
         }
-    }
-
-    private fun listenForIncomingCalls() {
-        if (currentUserId.isEmpty()) return
-
-        dbRef.child("calls").child(currentUserId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!snapshot.exists()) {
-                        incomingCallDialog?.dismiss()
-                        incomingCallDialog = null
-                        return
-                    }
-
-                    val callerName = snapshot.child("callerName").getValue(String::class.java) ?: "Someone"
-                    val channelName = snapshot.child("channelName").getValue(String::class.java).orEmpty()
-                    val callType = snapshot.child("type").getValue(String::class.java) ?: "audio"
-                    val status = snapshot.child("status").getValue(String::class.java) ?: "ringing"
-                    val callerId = snapshot.child("callerId").getValue(String::class.java).orEmpty()
-
-                    if (status == "ringing" && incomingCallDialog == null) {
-                        incomingCallDialog = AlertDialog.Builder(this@HomeFeedActivity)
-                            .setTitle("Incoming ${callType.replaceFirstChar { it.uppercase() }} Call")
-                            .setMessage("$callerName is calling you...")
-                            .setPositiveButton("Accept") { _, _ ->
-                                dbRef.child("calls").child(currentUserId).child("status").setValue("accepted")
-                                incomingCallDialog = null
-
-                                val intent = Intent(this@HomeFeedActivity, VoiceCallActivity::class.java)
-                                intent.putExtra("channelName", channelName)
-                                intent.putExtra("type", callType)
-                                intent.putExtra("isCaller", false)
-                                intent.putExtra("recipientId", callerId)
-                                startActivity(intent)
-                            }
-                            .setNegativeButton("Decline") { _, _ ->
-                                dbRef.child("calls").child(currentUserId).child("status").setValue("ended")
-                                dbRef.child("calls").child(currentUserId).removeValue()
-                                incomingCallDialog = null
-                            }
-                            .setCancelable(false)
-                            .create()
-                        incomingCallDialog?.show()
-                    } else if (status == "ended") {
-                        incomingCallDialog?.dismiss()
-                        incomingCallDialog = null
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
-    private fun loadHomeFeedPosts() {
-        if (currentUserId.isEmpty()) return
-
-        dbRef.child("friends").child(currentUserId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(friendsSnap: DataSnapshot) {
-                    val friendIds = friendsSnap.children.mapNotNull { it.key }.toSet()
-                    val allowedAuthorIds = friendIds + currentUserId
-
-                    dbRef.child("posts")
-                        .addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(postsSnap: DataSnapshot) {
-                                feedPostList.clear()
-                                for (child in postsSnap.children) {
-                                    val post = child.getValue(Post::class.java)
-                                    if (post != null && allowedAuthorIds.contains(post.authorId)) {
-                                        feedPostList.add(post)
-                                    }
-                                }
-
-                                feedPostList.sortByDescending { it.timestamp }
-                                postAdapter.updateData(feedPostList)
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {}
-                        })
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
-    private fun loadHomeFeedStories() {
-        if (currentUserId.isEmpty()) return
-
-        dbRef.child("friends").child(currentUserId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(friendsSnap: DataSnapshot) {
-                    val friendIds = friendsSnap.children.mapNotNull { it.key }.toSet()
-                    val allowedUserIds = friendIds + currentUserId
-
-                    dbRef.child("stories")
-                        .addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(storiesSnap: DataSnapshot) {
-                                storyItemList.clear()
-
-                                storyItemList.add(StoryModel(isCreateStory = true))
-
-                                val currentTime = System.currentTimeMillis()
-                                val activeStories = mutableListOf<Pair<Story, User?>>()
-
-                                val targetUserIds = allowedUserIds.filter { storiesSnap.hasChild(it) }
-
-                                if (targetUserIds.isEmpty()) {
-                                    storyAdapter.updateData(storyItemList)
-                                    return
-                                }
-
-                                var fetchedUserCount = 0
-                                for (userId in targetUserIds) {
-                                    val userStoriesSnap = storiesSnap.child(userId)
-
-                                    dbRef.child("users").child(userId)
-                                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                                            override fun onDataChange(userSnap: DataSnapshot) {
-                                                val user = userSnap.getValue(User::class.java)
-
-                                                for (sSnap in userStoriesSnap.children) {
-                                                    val story = sSnap.getValue(Story::class.java)
-                                                    if (story != null) {
-                                                        val age = currentTime - story.timestamp
-                                                        if (age in 0..86400000L) {
-                                                            activeStories.add(Pair(story, user))
-                                                        }
-                                                    }
-                                                }
-
-                                                fetchedUserCount++
-                                                if (fetchedUserCount == targetUserIds.size) {
-                                                    activeStories.sortByDescending { it.first.timestamp }
-                                                    for (pair in activeStories) {
-                                                        storyItemList.add(
-                                                            StoryModel(
-                                                                story = pair.first,
-                                                                author = pair.second,
-                                                                isCreateStory = false
-                                                            )
-                                                        )
-                                                    }
-                                                    storyAdapter.updateData(storyItemList)
-                                                }
-                                            }
-
-                                            override fun onCancelled(error: DatabaseError) {
-                                                fetchedUserCount++
-                                                if (fetchedUserCount == targetUserIds.size) {
-                                                    storyAdapter.updateData(storyItemList)
-                                                }
-                                            }
-                                        })
-                                }
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {}
-                        })
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
     }
 }

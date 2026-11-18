@@ -16,11 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.ahmadtalal.i210734_i210819.databinding.ActivityVoiceCallBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.RtcEngine
@@ -44,8 +39,8 @@ class VoiceCallActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var timerRunnable: Runnable? = null
 
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-    private val dbRef = FirebaseDatabase.getInstance().reference
+    private var callEnded = false
+    private var callStatusQuery: LiveQuery? = null
 
     private val requestPermissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -121,26 +116,14 @@ class VoiceCallActivity : AppCompatActivity() {
         }
 
         if (recipientId.isNotEmpty()) {
-            dbRef.child("users").child(recipientId)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val user = snapshot.getValue(User::class.java)
-                        val name = user?.name.orEmpty().ifEmpty {
-                            "${user?.firstName.orEmpty()} ${user?.lastName.orEmpty()}".trim().ifEmpty { user?.username.orEmpty() }
-                        }
-                        if (name.isNotEmpty()) {
-                            binding.callContactName.text = name
-                            val initials = name.split(" ")
-                                .mapNotNull { it.firstOrNull()?.toString() }
-                                .take(2)
-                                .joinToString("")
-                                .uppercase()
-                            binding.callContactAvatar.text = initials.ifEmpty { "U" }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
-                })
+            Api.get("users/get.php", mapOf("user_id" to recipientId)) { result ->
+                if (!result.ok || isFinishing || isDestroyed) return@get
+                val name = User.fromJson(result.obj()).displayName()
+                if (name.isNotEmpty()) {
+                    binding.callContactName.text = name
+                    binding.callContactAvatar.text = initialsOf(name)
+                }
+            }
         }
     }
 
@@ -228,26 +211,20 @@ class VoiceCallActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Both sides poll the call's row on the server. It exists from the moment
+     * the caller starts ringing until someone declines or hangs up (or the
+     * ring times out), so once it is gone the call is over.
+     */
     private fun listenToCallStatus() {
-        val targetId = if (isCaller && recipientId.isNotEmpty()) recipientId else currentUserId
-        if (targetId.isEmpty()) return
+        if (recipientId.isEmpty()) return
 
-        dbRef.child("calls").child(targetId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!snapshot.exists()) {
-                        if (isCaller) {
-                        }
-                    } else {
-                        val status = snapshot.child("status").getValue(String::class.java)
-                        if (status == "ended") {
-                            endCall()
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
+        callStatusQuery = LiveQuery("calls/status.php", mapOf("peer_id" to recipientId), intervalMs = 2000L) { result ->
+            if (!result.fromCache && !result.hasData) {
+                endCall()
+            }
+        }
+        callStatusQuery?.start()
     }
 
     private fun startTimer() {
@@ -265,19 +242,18 @@ class VoiceCallActivity : AppCompatActivity() {
     }
 
     private fun endCall() {
-        timerRunnable?.let { handler.removeCallbacks(it) }
+        if (callEnded) return
+        callEnded = true
 
+        callStatusQuery?.stop()
+        timerRunnable?.let { handler.removeCallbacks(it) }
         mRtcEngine?.leaveChannel()
         RtcEngine.destroy()
         mRtcEngine = null
 
+        // Removing the call on the server is what hangs up for the other side.
         if (recipientId.isNotEmpty()) {
-            dbRef.child("calls").child(recipientId).child("status").setValue("ended")
-            dbRef.child("calls").child(recipientId).removeValue()
-        }
-        if (currentUserId.isNotEmpty()) {
-            dbRef.child("calls").child(currentUserId).child("status").setValue("ended")
-            dbRef.child("calls").child(currentUserId).removeValue()
+            Api.post("calls/end.php", mapOf("peer_id" to recipientId))
         }
 
         finish()
@@ -285,7 +261,15 @@ class VoiceCallActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        callStatusQuery?.stop()
         timerRunnable?.let { handler.removeCallbacks(it) }
+        if (!callEnded) {
+            // Closed without the hang-up button (e.g. back gesture): still end the call.
+            callEnded = true
+            if (recipientId.isNotEmpty()) {
+                Api.post("calls/end.php", mapOf("peer_id" to recipientId))
+            }
+        }
         mRtcEngine?.leaveChannel()
         RtcEngine.destroy()
         mRtcEngine = null

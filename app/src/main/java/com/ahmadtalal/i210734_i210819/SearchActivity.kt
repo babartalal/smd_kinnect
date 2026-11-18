@@ -9,18 +9,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ahmadtalal.i210734_i210819.databinding.ActivitySearchBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
     private lateinit var userAdapter: UserAdapter
     private val searchResults = mutableListOf<User>()
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+    private var latestQuery = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +46,7 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s?.toString()?.trim().orEmpty()
+                latestQuery = query
                 if (query.isNotEmpty()) {
                     performSearch(query)
                 } else {
@@ -63,30 +59,16 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun performSearch(query: String) {
-        val usersRef = FirebaseDatabase.getInstance().getReference("users")
+        Api.get("users/search.php", mapOf("q" to query)) { result ->
+            // Ignore answers to text the user has already typed past.
+            if (!result.ok || query != latestQuery) return@get
 
-        usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                searchResults.clear()
-                val lowerQuery = query.lowercase()
-
-                for (child in snapshot.children) {
-                    val user = child.getValue(User::class.java)
-                    if (user != null && user.userId.isNotEmpty() && user.userId != currentUserId) {
-                        val usernameMatches = user.username.lowercase().contains(lowerQuery)
-                        val firstNameMatches = user.firstName.lowercase().contains(lowerQuery)
-                        val lastNameMatches = user.lastName.lowercase().contains(lowerQuery)
-                        val fullNameMatches = user.name.lowercase().contains(lowerQuery)
-
-                        if (usernameMatches || firstNameMatches || lastNameMatches || fullNameMatches) {
-                            searchResults.add(user)
-                        }
-                    }
-                }
-                userAdapter.updateData(searchResults)
+            val users = result.arr()
+            searchResults.clear()
+            for (i in 0 until users.length()) {
+                searchResults.add(User.fromJson(users.getJSONObject(i)))
             }
-
-            override fun onCancelled(error: DatabaseError) {}
-        })
+            userAdapter.updateData(searchResults)
+        }
     }
 }

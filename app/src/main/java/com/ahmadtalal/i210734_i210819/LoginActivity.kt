@@ -1,27 +1,23 @@
 package com.ahmadtalal.i210734_i210819
 
-import android.R
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.ahmadtalal.i210734_i210819.databinding.ActivityLoginBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.messaging.FirebaseMessaging
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +40,10 @@ class LoginActivity : AppCompatActivity() {
         val languages = arrayOf("English", "Urdu", "Arabic", "Spanish")
         val adapter = ArrayAdapter(
             this,
-            R.layout.simple_spinner_item,
+            android.R.layout.simple_spinner_item,
             languages
         )
-        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.languageSpinner.adapter = adapter
     }
 
@@ -84,18 +80,59 @@ class LoginActivity : AppCompatActivity() {
         binding.forgotPasswordLink.setOnClickListener {
             val email = binding.loginEmailInput.text.toString().trim()
             if (email.isNotEmpty()) {
-                auth.sendPasswordResetEmail(email)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(this, "Password reset email sent to $email", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                requestPasswordReset(email)
             } else {
                 Toast.makeText(this, "Please enter your email address first", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    /** Step 1: ask the server to email a reset code. */
+    private fun requestPasswordReset(email: String) {
+        Api.post("auth/request_reset.php", mapOf("email" to email)) { result ->
+            if (isFinishing || isDestroyed) return@post
+            if (result.ok) {
+                showResetCodeDialog(email)
+            } else {
+                Toast.makeText(this, "Error: ${result.error}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    /** Step 2: enter the emailed code and choose a new password. */
+    private fun showResetCodeDialog(email: String) {
+        val codeInput = EditText(this).apply {
+            hint = "6-digit code"
+            inputType = InputType.TYPE_CLASS_NUMBER
+        }
+        val passwordInput = EditText(this).apply {
+            hint = "New password"
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        val form = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(48, 16, 48, 0)
+            addView(codeInput)
+            addView(passwordInput)
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Reset password")
+            .setMessage("If $email has an account, a reset code was emailed to it. Enter the code and a new password.")
+            .setView(form)
+            .setPositiveButton("Reset") { _, _ ->
+                val body = mapOf(
+                    "email" to email,
+                    "code" to codeInput.text.toString().trim(),
+                    "password" to passwordInput.text.toString().trim()
+                )
+                Api.post("auth/reset_password.php", body) { result ->
+                    val message = if (result.ok) "Password changed. You can log in now." else "Error: ${result.error}"
+                    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun performLogin() {
@@ -112,68 +149,42 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
-                    saveFcmToken(userId)
-                    checkUserDataAndNavigate(userId, email)
-                } else {
-                    Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-    }
+        binding.loginBtn.isEnabled = false
+        Api.post("auth/login.php", mapOf("email" to email, "password" to password)) { result ->
+            if (isFinishing || isDestroyed) return@post
+            binding.loginBtn.isEnabled = true
 
-    private fun saveFcmToken(userId: String) {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful && task.result != null) {
-                FirebaseDatabase.getInstance().getReference("users")
-                    .child(userId)
-                    .child("fcmToken")
-                    .setValue(task.result)
+            if (!result.ok) {
+                Toast.makeText(this, "Login failed: ${result.error}", Toast.LENGTH_LONG).show()
+                return@post
             }
+
+            val data = result.obj()
+            val user = User.fromJson(data.optJSONObject("user") ?: return@post)
+            Session.save(user.userId, data.optString("token"))
+            KinnectApp.sendHeartbeat() // marks us online and registers the FCM token
+
+            onLoggedIn(user, email)
         }
     }
 
-    private fun checkUserDataAndNavigate(userId: String, email: String) {
-        val userRef = FirebaseDatabase.getInstance().getReference("users").child(userId)
+    private fun onLoggedIn(user: User, email: String) {
+        val name = user.displayName()
+        getSharedPreferences("AppPrefs", MODE_PRIVATE).edit()
+            .putString("last_user_email", email)
+            .putString("last_user_name", if (name.isNotEmpty()) name else email)
+            .apply()
 
-        userRef.child("isOnline").setValue(true)
+        Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show()
 
-        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val username = snapshot.child("username").getValue(String::class.java)
-                val name = snapshot.child("name").getValue(String::class.java)
-                    ?: "${snapshot.child("firstName").getValue(String::class.java).orEmpty()} ${snapshot.child("lastName").getValue(String::class.java).orEmpty()}".trim()
-
-                val prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE)
-                prefs.edit()
-                    .putString("last_user_email", email)
-                    .putString("last_user_name", if (name.isNotEmpty()) name else email)
-                    .apply()
-
-                Toast.makeText(this@LoginActivity, "Welcome back!", Toast.LENGTH_SHORT).show()
-
-                if (!username.isNullOrEmpty()) {
-                    val intent = Intent(this@LoginActivity, HomeFeedActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    finish()
-                } else {
-                    val intent = Intent(this@LoginActivity, EditProfileActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    finish()
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@LoginActivity, "Database error: ${error.message}", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this@LoginActivity, HomeFeedActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
-            }
-        })
+        val destination = if (user.username.isNotEmpty()) {
+            HomeFeedActivity::class.java
+        } else {
+            EditProfileActivity::class.java
+        }
+        val intent = Intent(this, destination)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 }

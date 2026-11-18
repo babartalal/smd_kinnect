@@ -16,9 +16,7 @@ $result = [];
 foreach ($rows as $row) {
     $authorId = (int) $row['user_id'];
     if (!isset($authors[$authorId])) {
-        $author = user_json(fetch_user_row($authorId));
-        unset($author['isOnline']); // keeps the feed's etag stable while people come and go
-        $authors[$authorId] = $author;
+        $authors[$authorId] = author_json($authorId);
     }
     $result[] = story_json($row) + ['author' => $authors[$authorId]];
 }

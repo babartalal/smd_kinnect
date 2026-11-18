@@ -8,16 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.ahmadtalal.i210734_i210819.databinding.ActivityMenuBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class MenuActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMenuBinding
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,31 +30,17 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun loadUserData() {
-        val currentUser = auth.currentUser ?: return
-        val userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.uid)
+        if (!Session.isLoggedIn) return
 
-        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (!snapshot.exists()) return
+        Api.get("users/get.php") { result ->
+            if (!result.ok || isFinishing || isDestroyed) return@get
 
-                val name = snapshot.child("name").getValue(String::class.java)
-                    ?: "${snapshot.child("firstName").getValue(String::class.java).orEmpty()} ${snapshot.child("lastName").getValue(String::class.java).orEmpty()}".trim()
-
-                if (name.isNotEmpty()) {
-                    binding.menuUserName.text = name
-                    val initials = name.split(" ")
-                        .mapNotNull { it.firstOrNull()?.toString() }
-                        .take(2)
-                        .joinToString("")
-                        .uppercase()
-                    if (initials.isNotEmpty()) {
-                        binding.menuUserAvatar.text = initials
-                    }
-                }
+            val name = User.fromJson(result.obj()).displayName()
+            if (name.isNotEmpty()) {
+                binding.menuUserName.text = name
+                binding.menuUserAvatar.text = initialsOf(name)
             }
-
-            override fun onCancelled(error: DatabaseError) {}
-        })
+        }
     }
 
     private fun setupClickListeners() {
@@ -101,19 +81,11 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun performLogout() {
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            val userId = currentUser.uid
-            FirebaseDatabase.getInstance().getReference("users")
-                .child(userId)
-                .child("isOnline")
-                .setValue(false)
-                .addOnCompleteListener {
-                    auth.signOut()
-                    navigateToLogin()
-                }
-        } else {
-            auth.signOut()
+        binding.logoutBtn.isEnabled = false
+        // Tell the server (ends the session, marks us offline), then sign out
+        // locally even if the server could not be reached.
+        Api.post("auth/logout.php") {
+            Session.clear()
             navigateToLogin()
         }
     }

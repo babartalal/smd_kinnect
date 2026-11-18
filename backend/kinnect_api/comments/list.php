@@ -14,7 +14,7 @@ foreach ($rows as $row) {
     $commentId = (int) $row['id'];
     $authorId = (int) $row['author_id'];
     if (!isset($authors[$authorId])) {
-        $authors[$authorId] = user_json(fetch_user_row($authorId));
+        $authors[$authorId] = author_json($authorId);
     }
     $result[] = [
         'commentId'         => (string) $commentId,

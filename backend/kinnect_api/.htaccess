@@ -1,0 +1,6 @@
+# Never serve the database schema or the Firebase service account key.
+<FilesMatch "\.(sql|json)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes

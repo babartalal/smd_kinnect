@@ -7,17 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.ahmadtalal.i210734_i210819.databinding.ActivityProfileBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
-    private val dbRef = FirebaseDatabase.getInstance().reference
+
+    /** My profile and friend count, kept fresh while the screen is visible. */
+    private val profileQuery = LiveQuery("users/get.php", intervalMs = 6000L) { result ->
+        renderProfile(User.fromJson(result.obj()))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,54 +33,27 @@ class ProfileActivity : AppCompatActivity() {
         binding.editProfileBtn.setOnClickListener {
             startActivity(Intent(this, EditProfileActivity::class.java))
         }
-
-        loadUserProfileData()
-        loadFriendCountStats()
     }
 
-    private fun loadUserProfileData() {
-        val currentUser = auth.currentUser ?: return
-        val userId = currentUser.uid
-
-        dbRef.child("users").child(userId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!snapshot.exists()) return
-
-                    val user = snapshot.getValue(User::class.java) ?: return
-                    val displayName = user.name.ifEmpty {
-                        "${user.firstName} ${user.lastName}".trim().ifEmpty { user.username }
-                    }
-
-                    binding.profileTitleName.text = displayName
-                    binding.profileNameTxt.text = displayName
-                    binding.profileBioTxt.text = user.bio.ifEmpty { "No bio available." }
-
-                    val initials = displayName.split(" ")
-                        .mapNotNull { it.firstOrNull()?.toString() }
-                        .take(2)
-                        .joinToString("")
-                        .uppercase()
-                    binding.profileAvatar.text = initials.ifEmpty { "U" }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
+    override fun onStart() {
+        super.onStart()
+        if (Session.isLoggedIn) profileQuery.start()
     }
 
-    private fun loadFriendCountStats() {
-        val currentUser = auth.currentUser ?: return
-        val userId = currentUser.uid
+    override fun onStop() {
+        super.onStop()
+        profileQuery.stop()
+    }
 
-        dbRef.child("friends").child(userId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val count = snapshot.childrenCount
-                    binding.profileFriendsCountTxt.text = "$count friends"
-                    binding.profileFriendsSectionCountTxt.text = "$count friends"
-                }
+    private fun renderProfile(user: User) {
+        val displayName = user.displayName()
 
-                override fun onCancelled(error: DatabaseError) {}
-            })
+        binding.profileTitleName.text = displayName
+        binding.profileNameTxt.text = displayName
+        binding.profileBioTxt.text = user.bio.ifEmpty { "No bio available." }
+        binding.profileAvatar.text = initialsOf(displayName)
+
+        binding.profileFriendsCountTxt.text = "${user.friendCount} friends"
+        binding.profileFriendsSectionCountTxt.text = "${user.friendCount} friends"
     }
 }

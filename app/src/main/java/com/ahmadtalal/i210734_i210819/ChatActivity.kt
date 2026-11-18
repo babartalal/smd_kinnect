@@ -2,7 +2,6 @@ package com.ahmadtalal.i210734_i210819
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.ContentObserver
@@ -26,12 +25,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ahmadtalal.i210734_i210819.databinding.ActivityChatBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ServerValue
-import com.google.firebase.database.ValueEventListener
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
@@ -41,16 +34,19 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messageAdapter: MessageAdapter
 
     private var recipientId: String = ""
-    private var chatId: String = ""
     private var currentUserName: String = "Someone"
 
     private var activeReplyToMsg: Message? = null
     private var selectedImageBase64: String? = null
-    private var incomingCallDialog: AlertDialog? = null
 
     private val messageList = mutableListOf<Message>()
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-    private val dbRef = FirebaseDatabase.getInstance().reference
+    /** Messages typed while offline: shown right away, uploaded later from the SQLite queue. */
+    private val unsentMessages = mutableListOf<Message>()
+    private val currentUserId: String = Session.userId
+
+    private val callWatcher = IncomingCallWatcher(this)
+    private var messagesQuery: LiveQuery? = null
+    private var recipientQuery: LiveQuery? = null
 
     private var screenshotObserver: ContentObserver? = null
     private var lastScreenshotTime = 0L
@@ -98,24 +94,27 @@ class ChatActivity : AppCompatActivity() {
             return
         }
 
-        chatId = getChatId(currentUserId, recipientId)
-
         setupRecyclerView()
         setupClickListeners()
         loadCurrentUserDetails()
-        loadRecipientDetails()
-        loadMessages()
-        listenForIncomingCalls()
+        recipientQuery = createRecipientQuery()
+        messagesQuery = createMessagesQuery()
     }
 
     override fun onStart() {
         super.onStart()
         checkAndRegisterScreenshotDetection()
+        recipientQuery?.start()
+        messagesQuery?.start()
+        callWatcher.start()
     }
 
     override fun onStop() {
         super.onStop()
         unregisterScreenshotDetection()
+        recipientQuery?.stop()
+        messagesQuery?.stop()
+        callWatcher.stop()
     }
 
     private fun checkAndRegisterScreenshotDetection() {
@@ -136,12 +135,8 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun getChatId(uid1: String, uid2: String): String {
-        return if (uid1 < uid2) "${uid1}_${uid2}" else "${uid2}_${uid1}"
-    }
-
     private fun setupRecyclerView() {
-        messageAdapter = MessageAdapter(this, messageList) { replyMsg ->
+        messageAdapter = MessageAdapter(this, messageList, onChanged = { messagesQuery?.refresh() }) { replyMsg ->
             activeReplyToMsg = replyMsg
             binding.replyingMsgPreviewTxt.text = replyMsg.text.ifEmpty { "📷 Photo" }
             binding.replyingToMessageBar.visibility = View.VISIBLE
@@ -181,76 +176,24 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    /** Ask the server to ring the other person, then open the call screen. */
     private fun startOutboundCall(type: String) {
         if (recipientId.isEmpty()) return
 
-        val callMap = hashMapOf<String, Any>(
-            "callerId" to currentUserId,
-            "callerName" to currentUserName,
-            "channelName" to chatId,
-            "type" to type,
-            "status" to "ringing"
-        )
+        Api.post("calls/start.php", mapOf("recipient_id" to recipientId, "type" to type)) { result ->
+            if (isFinishing || isDestroyed) return@post
+            if (!result.ok) {
+                Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                return@post
+            }
 
-        dbRef.child("calls").child(recipientId).setValue(callMap)
-
-        val intent = Intent(this, VoiceCallActivity::class.java)
-        intent.putExtra("channelName", chatId)
-        intent.putExtra("type", type)
-        intent.putExtra("isCaller", true)
-        intent.putExtra("recipientId", recipientId)
-        startActivity(intent)
-    }
-
-    private fun listenForIncomingCalls() {
-        if (currentUserId.isEmpty()) return
-
-        dbRef.child("calls").child(currentUserId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!snapshot.exists()) {
-                        incomingCallDialog?.dismiss()
-                        incomingCallDialog = null
-                        return
-                    }
-
-                    val callerName = snapshot.child("callerName").getValue(String::class.java) ?: "Someone"
-                    val channelName = snapshot.child("channelName").getValue(String::class.java).orEmpty()
-                    val callType = snapshot.child("type").getValue(String::class.java) ?: "audio"
-                    val status = snapshot.child("status").getValue(String::class.java) ?: "ringing"
-                    val callerId = snapshot.child("callerId").getValue(String::class.java).orEmpty()
-
-                    if (status == "ringing" && incomingCallDialog == null) {
-                        incomingCallDialog = AlertDialog.Builder(this@ChatActivity)
-                            .setTitle("Incoming ${callType.replaceFirstChar { it.uppercase() }} Call")
-                            .setMessage("$callerName is calling you...")
-                            .setPositiveButton("Accept") { _, _ ->
-                                dbRef.child("calls").child(currentUserId).child("status").setValue("accepted")
-                                incomingCallDialog = null
-
-                                val intent = Intent(this@ChatActivity, VoiceCallActivity::class.java)
-                                intent.putExtra("channelName", channelName)
-                                intent.putExtra("type", callType)
-                                intent.putExtra("isCaller", false)
-                                intent.putExtra("recipientId", callerId)
-                                startActivity(intent)
-                            }
-                            .setNegativeButton("Decline") { _, _ ->
-                                dbRef.child("calls").child(currentUserId).child("status").setValue("ended")
-                                dbRef.child("calls").child(currentUserId).removeValue()
-                                incomingCallDialog = null
-                            }
-                            .setCancelable(false)
-                            .create()
-                        incomingCallDialog?.show()
-                    } else if (status == "ended") {
-                        incomingCallDialog?.dismiss()
-                        incomingCallDialog = null
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
+            val intent = Intent(this, VoiceCallActivity::class.java)
+            intent.putExtra("channelName", result.obj().optString("channelName"))
+            intent.putExtra("type", type)
+            intent.putExtra("isCaller", true)
+            intent.putExtra("recipientId", recipientId)
+            startActivity(intent)
+        }
     }
 
     private fun resetReplyState() {
@@ -260,72 +203,53 @@ class ChatActivity : AppCompatActivity() {
 
     private fun loadCurrentUserDetails() {
         if (currentUserId.isEmpty()) return
-        dbRef.child("users").child(currentUserId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val user = snapshot.getValue(User::class.java)
-                    if (user != null) {
-                        currentUserName = user.firstName.ifEmpty { user.name.ifEmpty { user.username } }
-                    }
-                }
 
-                override fun onCancelled(error: DatabaseError) {}
-            })
+        Api.get("users/get.php") { result ->
+            if (!result.ok) return@get
+            val user = User.fromJson(result.obj())
+            currentUserName = user.firstName.ifEmpty { user.name.ifEmpty { user.username } }
+        }
     }
 
-    private fun loadRecipientDetails() {
-        dbRef.child("users").child(recipientId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!snapshot.exists()) return
+    /** The other person's name and online status, refreshed while the chat is open. */
+    private fun createRecipientQuery(): LiveQuery =
+        LiveQuery("users/get.php", mapOf("user_id" to recipientId), intervalMs = 6000L) { result ->
+            val user = User.fromJson(result.obj())
+            val name = user.displayName()
+            binding.chatRecipientNameTxt.text = name
 
-                    val user = snapshot.getValue(User::class.java) ?: return
-                    val name = user.name.ifEmpty {
-                        "${user.firstName} ${user.lastName}".trim().ifEmpty { user.username }
-                    }
+            if (user.isOnline && !result.fromCache) {
+                binding.chatStatusTxt.text = "Active now"
+                binding.chatRecipientOnlineDot.visibility = View.VISIBLE
+            } else {
+                binding.chatStatusTxt.text = "Offline"
+                binding.chatRecipientOnlineDot.visibility = View.GONE
+            }
 
-                    binding.chatRecipientNameTxt.text = name
+            binding.chatRecipientAvatar.text = initialsOf(name)
+        }
 
-                    if (user.isOnline) {
-                        binding.chatStatusTxt.text = "Active now"
-                        binding.chatRecipientOnlineDot.visibility = View.VISIBLE
-                    } else {
-                        binding.chatStatusTxt.text = "Offline"
-                        binding.chatRecipientOnlineDot.visibility = View.GONE
-                    }
+    /** The conversation, polled every few seconds so new messages appear by themselves. */
+    private fun createMessagesQuery(): LiveQuery =
+        LiveQuery("messages/list.php", mapOf("recipient_id" to recipientId), intervalMs = 2500L) { result ->
+            val messages = result.arr()
+            messageList.clear()
+            for (i in 0 until messages.length()) {
+                messageList.add(Message.fromJson(messages.getJSONObject(i)))
+            }
+            if (!result.fromCache) {
+                // We reached the server, so anything queued offline is being delivered.
+                unsentMessages.clear()
+            }
+            showMessages()
+        }
 
-                    val initials = name.split(" ")
-                        .mapNotNull { it.firstOrNull()?.toString() }
-                        .take(2)
-                        .joinToString("")
-                        .uppercase()
-                    binding.chatRecipientAvatar.text = initials.ifEmpty { "U" }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
-    private fun loadMessages() {
-        dbRef.child("messages").child(chatId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    messageList.clear()
-                    for (child in snapshot.children) {
-                        val msg = child.getValue(Message::class.java)
-                        if (msg != null) {
-                            messageList.add(msg)
-                        }
-                    }
-                    messageList.sortBy { it.timestamp }
-                    messageAdapter.updateData(messageList)
-                    if (messageList.isNotEmpty()) {
-                        binding.messagesRecyclerView.scrollToPosition(messageList.size - 1)
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
+    private fun showMessages() {
+        val visible = messageList + unsentMessages
+        messageAdapter.updateData(visible)
+        if (visible.isNotEmpty()) {
+            binding.messagesRecyclerView.scrollToPosition(visible.size - 1)
+        }
     }
 
     private fun processImageUri(uri: Uri) {
@@ -367,62 +291,50 @@ class ChatActivity : AppCompatActivity() {
 
     private fun sendMessage() {
         val text = binding.chatMessageInput.text.toString().trim()
-
-        if (text.isEmpty() && selectedImageBase64.isNullOrEmpty()) {
+        val imageBase64 = selectedImageBase64
+        if (text.isEmpty() && imageBase64.isNullOrEmpty()) {
             return
         }
 
-        val messageId = dbRef.child("messages").child(chatId).push().key ?: return
-
-        val messageMap = hashMapOf<String, Any>(
-            "messageId" to messageId,
-            "chatId" to chatId,
-            "senderId" to currentUserId,
+        // The server stores the message and sends the push notification
+        // to the recipient.
+        val body = mapOf(
+            "recipient_id" to recipientId,
             "text" to text,
-            "timestamp" to ServerValue.TIMESTAMP,
-            "isEdited" to false,
-            "heartReaction" to false,
-            "isSystemMessage" to false
+            "image" to imageBase64,
+            "replyToMsgId" to activeReplyToMsg?.messageId,
+            "clientId" to newClientId()
         )
+        val replyText = activeReplyToMsg?.let { it.text.ifEmpty { "📷 Photo" } }.orEmpty()
 
-        selectedImageBase64?.let { messageMap["imageBase64"] = it }
-        activeReplyToMsg?.let { reply ->
-            messageMap["replyToMsgId"] = reply.messageId
-            messageMap["replyToText"] = reply.text.ifEmpty { "📷 Photo" }
-        }
+        binding.chatMessageInput.setText("")
+        selectedImageBase64 = null
+        resetReplyState()
 
-        dbRef.child("messages").child(chatId).child(messageId).setValue(messageMap)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val previewText = if (!selectedImageBase64.isNullOrEmpty()) "📷 Photo" else text
-                    updateChatSummary(previewText)
-                    sendNotificationToRecipient(currentUserName, previewText)
-
-                    binding.chatMessageInput.setText("")
-                    selectedImageBase64 = null
-                    resetReplyState()
-                } else {
-                    Toast.makeText(this, "Failed to send: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+        Api.post("messages/send.php", body, queueIfOffline = true) { result ->
+            if (isFinishing || isDestroyed) return@post
+            when {
+                result.ok -> messagesQuery?.refresh()
+                result.queued -> {
+                    unsentMessages.add(
+                        Message(
+                            senderId = currentUserId,
+                            text = text.ifEmpty { "📷 Photo" },
+                            timestamp = System.currentTimeMillis(),
+                            replyToText = replyText
+                        )
+                    )
+                    showMessages()
+                    Toast.makeText(this, "You're offline. The message will be sent when you reconnect.", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    // Give the text back so it is not lost.
+                    binding.chatMessageInput.setText(text)
+                    selectedImageBase64 = imageBase64
+                    Toast.makeText(this, "Failed to send: ${result.error}", Toast.LENGTH_SHORT).show()
                 }
             }
-    }
-
-    private fun updateChatSummary(lastText: String) {
-        val summaryMap = hashMapOf<String, Any>(
-            "recipientId" to recipientId,
-            "lastMessage" to lastText,
-            "timestamp" to ServerValue.TIMESTAMP,
-            "unread" to true
-        )
-        dbRef.child("chats").child(currentUserId).child(recipientId).setValue(summaryMap)
-
-        val recipientSummaryMap = hashMapOf<String, Any>(
-            "recipientId" to currentUserId,
-            "lastMessage" to lastText,
-            "timestamp" to ServerValue.TIMESTAMP,
-            "unread" to true
-        )
-        dbRef.child("chats").child(recipientId).child(currentUserId).setValue(recipientSummaryMap)
+        }
     }
 
     private fun registerScreenshotDetection() {
@@ -489,23 +401,8 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendNotificationToRecipient(title: String, messageText: String) {
-        if (recipientId.isEmpty()) return
-        dbRef.child("users").child(recipientId).child("fcmToken")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val token = snapshot.getValue(String::class.java).orEmpty()
-                    if (token.isNotEmpty()) {
-                        NotificationUtil.sendPushNotification(token, title, messageText)
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
     private fun onScreenshotDetected() {
-        if (chatId.isEmpty()) return
+        if (recipientId.isEmpty()) return
 
         val now = System.currentTimeMillis()
         if (now - lastScreenshotTime < 2000L) {
@@ -513,20 +410,17 @@ class ChatActivity : AppCompatActivity() {
         }
         lastScreenshotTime = now
 
-        val systemMsgId = dbRef.child("messages").child(chatId).push().key ?: return
-        val text = "$currentUserName took a screenshot"
-
-        val systemMsgMap = hashMapOf<String, Any>(
-            "messageId" to systemMsgId,
-            "chatId" to chatId,
-            "senderId" to currentUserId,
-            "text" to text,
-            "timestamp" to ServerValue.TIMESTAMP,
-            "isSystemMessage" to true
+        // A system message in the chat; the server also pushes a "Screenshot Alert".
+        val body = mapOf(
+            "recipient_id" to recipientId,
+            "text" to "$currentUserName took a screenshot",
+            "isSystemMessage" to true,
+            "clientId" to newClientId()
         )
+        Api.post("messages/send.php", body) { result ->
+            if (result.ok) messagesQuery?.refresh()
+        }
 
-        dbRef.child("messages").child(chatId).child(systemMsgId).setValue(systemMsgMap)
-        sendNotificationToRecipient("Screenshot Alert", text)
         Toast.makeText(this, "Screenshot detected", Toast.LENGTH_SHORT).show()
     }
 }

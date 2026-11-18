@@ -2,15 +2,11 @@ package com.ahmadtalal.i210734_i210819
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.ahmadtalal.i210734_i210819.databinding.ItemStoryCardBinding
-import com.google.firebase.auth.FirebaseAuth
 
 data class StoryModel(
     val story: Story? = null,
@@ -23,10 +19,11 @@ class StoryAdapter(
     private var storyList: List<StoryModel>
 ) : RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
 
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+    private val currentUserId: String = Session.userId
 
     fun updateData(newList: List<StoryModel>) {
-        storyList = newList
+        // Copy, because the caller reuses and clears its own list.
+        storyList = newList.toList()
         notifyDataSetChanged()
     }
 
@@ -58,11 +55,7 @@ class StoryAdapter(
             } else {
                 binding.createStoryIcon.visibility = View.GONE
                 val story = item.story
-                val author = item.author
-
-                val displayName = author?.name?.ifEmpty {
-                    "${author.firstName} ${author.lastName}".trim().ifEmpty { author.username }
-                } ?: "User"
+                val displayName = item.author?.displayName().orEmpty().ifEmpty { "User" }
 
                 if (story != null && story.userId == currentUserId) {
                     binding.storyAuthorName.text = "Your Story"
@@ -70,20 +63,8 @@ class StoryAdapter(
                     binding.storyAuthorName.text = displayName
                 }
 
-                val imageBase64 = story?.imageBase64
-                if (!imageBase64.isNullOrEmpty()) {
-                    try {
-                        val imageBytes = Base64.decode(imageBase64, Base64.DEFAULT)
-                        val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                        binding.storyAuthorAvatar.visibility = View.VISIBLE
-                        binding.storyAuthorInitials.visibility = View.GONE
-                        Glide.with(context).load(bitmap).into(binding.storyAuthorAvatar)
-                    } catch (e: Exception) {
-                        showInitials(displayName)
-                    }
-                } else {
-                    showInitials(displayName)
-                }
+                // The card shows the story's own picture, or the author's initials.
+                bindAvatar(story?.image.orEmpty(), displayName, binding.storyAuthorAvatar, binding.storyAuthorInitials)
 
                 binding.root.setOnClickListener {
                     if (story != null && story.userId == currentUserId) {
@@ -98,17 +79,6 @@ class StoryAdapter(
                     }
                 }
             }
-        }
-
-        private fun showInitials(name: String) {
-            binding.storyAuthorAvatar.visibility = View.GONE
-            binding.storyAuthorInitials.visibility = View.VISIBLE
-            val initials = name.split(" ")
-                .mapNotNull { it.firstOrNull()?.toString() }
-                .take(2)
-                .joinToString("")
-                .uppercase()
-            binding.storyAuthorInitials.text = initials.ifEmpty { "U" }
         }
     }
 }

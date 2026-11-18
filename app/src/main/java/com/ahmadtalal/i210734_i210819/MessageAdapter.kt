@@ -2,26 +2,25 @@ package com.ahmadtalal.i210734_i210819
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.text.format.DateFormat
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.ahmadtalal.i210734_i210819.databinding.ItemMessageIncomingBinding
 import com.ahmadtalal.i210734_i210819.databinding.ItemMessageOutgoingBinding
 import com.ahmadtalal.i210734_i210819.databinding.ItemMessageSystemBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import java.util.Date
 
 class MessageAdapter(
     private val context: Context,
     private var messageList: List<Message>,
+    /** Called after a message was edited, deleted or reacted to, so the chat can reload. */
+    private val onChanged: () -> Unit = {},
     private val onReplyRequested: (Message) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -31,11 +30,11 @@ class MessageAdapter(
         private const val TYPE_SYSTEM = 3
     }
 
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-    private val dbRef = FirebaseDatabase.getInstance().reference
+    private val currentUserId: String = Session.userId
 
     fun updateData(newList: List<Message>) {
-        messageList = newList
+        // Copy, because the caller reuses and clears its own list.
+        messageList = newList.toList()
         notifyDataSetChanged()
     }
 
@@ -72,49 +71,12 @@ class MessageAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(msg: Message) {
-            binding.messageBodyTxt.text = msg.text
-            binding.messageTimeTxt.text = formatTime(msg.timestamp)
-
-            if (msg.isEdited) {
-                binding.editedLabelTxt.visibility = View.VISIBLE
-            } else {
-                binding.editedLabelTxt.visibility = View.GONE
-            }
-
-            if (msg.replyToText.isNotEmpty()) {
-                binding.replyBubbleTxt.visibility = View.VISIBLE
-                binding.replyBubbleTxt.text = "Replying: ${msg.replyToText}"
-            } else {
-                binding.replyBubbleTxt.visibility = View.GONE
-            }
-
-            if (msg.imageBase64.isNotEmpty()) {
-                try {
-                    val imageBytes = Base64.decode(msg.imageBase64, Base64.DEFAULT)
-                    val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                    binding.messageImageView.visibility = View.VISIBLE
-                    Glide.with(context).load(bitmap).into(binding.messageImageView)
-                } catch (e: Exception) {
-                    binding.messageImageView.visibility = View.GONE
-                }
-            } else {
-                binding.messageImageView.visibility = View.GONE
-            }
-
-            if (msg.heartReaction) {
-                binding.heartReactionBadge.visibility = View.VISIBLE
-            } else {
-                binding.heartReactionBadge.visibility = View.GONE
-            }
-
-            binding.root.setOnClickListener {
-                onReplyRequested(msg)
-            }
-
-            binding.root.setOnLongClickListener {
-                showOptionsDialog(msg, isOwnMessage = true)
-                true
-            }
+            bindBubble(
+                msg, isOwnMessage = true, root = binding.root,
+                body = binding.messageBodyTxt, time = binding.messageTimeTxt,
+                editedLabel = binding.editedLabelTxt, replyBubble = binding.replyBubbleTxt,
+                image = binding.messageImageView, heartBadge = binding.heartReactionBadge
+            )
         }
     }
 
@@ -122,49 +84,12 @@ class MessageAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(msg: Message) {
-            binding.messageBodyTxt.text = msg.text
-            binding.messageTimeTxt.text = formatTime(msg.timestamp)
-
-            if (msg.isEdited) {
-                binding.editedLabelTxt.visibility = View.VISIBLE
-            } else {
-                binding.editedLabelTxt.visibility = View.GONE
-            }
-
-            if (msg.replyToText.isNotEmpty()) {
-                binding.replyBubbleTxt.visibility = View.VISIBLE
-                binding.replyBubbleTxt.text = "Replying: ${msg.replyToText}"
-            } else {
-                binding.replyBubbleTxt.visibility = View.GONE
-            }
-
-            if (msg.imageBase64.isNotEmpty()) {
-                try {
-                    val imageBytes = Base64.decode(msg.imageBase64, Base64.DEFAULT)
-                    val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                    binding.messageImageView.visibility = View.VISIBLE
-                    Glide.with(context).load(bitmap).into(binding.messageImageView)
-                } catch (e: Exception) {
-                    binding.messageImageView.visibility = View.GONE
-                }
-            } else {
-                binding.messageImageView.visibility = View.GONE
-            }
-
-            if (msg.heartReaction) {
-                binding.heartReactionBadge.visibility = View.VISIBLE
-            } else {
-                binding.heartReactionBadge.visibility = View.GONE
-            }
-
-            binding.root.setOnClickListener {
-                onReplyRequested(msg)
-            }
-
-            binding.root.setOnLongClickListener {
-                showOptionsDialog(msg, isOwnMessage = false)
-                true
-            }
+            bindBubble(
+                msg, isOwnMessage = false, root = binding.root,
+                body = binding.messageBodyTxt, time = binding.messageTimeTxt,
+                editedLabel = binding.editedLabelTxt, replyBubble = binding.replyBubbleTxt,
+                image = binding.messageImageView, heartBadge = binding.heartReactionBadge
+            )
         }
     }
 
@@ -173,6 +98,55 @@ class MessageAdapter(
 
         fun bind(msg: Message) {
             binding.systemMessageTxt.text = msg.text
+        }
+    }
+
+    /** Incoming and outgoing bubbles have the same parts, just different layouts. */
+    private fun bindBubble(
+        msg: Message,
+        isOwnMessage: Boolean,
+        root: View,
+        body: TextView,
+        time: TextView,
+        editedLabel: View,
+        replyBubble: TextView,
+        image: ImageView,
+        heartBadge: View
+    ) {
+        body.text = msg.text
+        time.text = formatTime(msg.timestamp)
+        editedLabel.visibility = if (msg.isEdited) View.VISIBLE else View.GONE
+
+        if (msg.replyToText.isNotEmpty()) {
+            replyBubble.visibility = View.VISIBLE
+            replyBubble.text = "Replying: ${msg.replyToText}"
+        } else {
+            replyBubble.visibility = View.GONE
+        }
+
+        if (msg.image.isNotEmpty()) {
+            image.visibility = View.VISIBLE
+            image.loadRemote(msg.image)
+        } else {
+            image.visibility = View.GONE
+        }
+
+        heartBadge.visibility = if (msg.heartReaction) View.VISIBLE else View.GONE
+
+        // A message still waiting in the offline queue has no server id yet,
+        // so it cannot be replied to, edited or reacted to.
+        if (msg.messageId.isEmpty()) {
+            root.setOnClickListener(null)
+            root.setOnLongClickListener(null)
+            return
+        }
+
+        root.setOnClickListener {
+            onReplyRequested(msg)
+        }
+        root.setOnLongClickListener {
+            showOptionsDialog(msg, isOwnMessage)
+            true
         }
     }
 
@@ -188,7 +162,7 @@ class MessageAdapter(
         options.add(heartActionText)
         options.add("Reply")
 
-        // 5-MINUTE EDIT & DELETE RULE for OWN message
+        // 5-MINUTE EDIT & DELETE RULE for OWN message (the server enforces it too)
         val isWithin5Minutes = (System.currentTimeMillis() - msg.timestamp) <= 300000L
         if (isOwnMessage && isWithin5Minutes) {
             options.add("Edit Message")
@@ -199,19 +173,13 @@ class MessageAdapter(
             .setTitle("Message Options")
             .setItems(options.toTypedArray()) { _, which ->
                 when (options[which]) {
-                    heartActionText -> toggleHeartReaction(msg)
+                    heartActionText -> change("messages/react.php", mapOf("message_id" to msg.messageId))
                     "Reply" -> onReplyRequested(msg)
                     "Edit Message" -> showEditDialog(msg)
-                    "Delete Message" -> deleteMessage(msg)
+                    "Delete Message" -> change("messages/delete.php", mapOf("message_id" to msg.messageId))
                 }
             }
             .show()
-    }
-
-    private fun toggleHeartReaction(msg: Message) {
-        if (msg.chatId.isEmpty() || msg.messageId.isEmpty()) return
-        val msgRef = dbRef.child("messages").child(msg.chatId).child(msg.messageId).child("heartReaction")
-        msgRef.setValue(!msg.heartReaction)
     }
 
     private fun showEditDialog(msg: Message) {
@@ -225,25 +193,21 @@ class MessageAdapter(
             .setPositiveButton("Save") { _, _ ->
                 val newText = editText.text.toString().trim()
                 if (newText.isNotEmpty()) {
-                    val msgRef = dbRef.child("messages").child(msg.chatId).child(msg.messageId)
-                    val updates = hashMapOf<String, Any>(
-                        "text" to newText,
-                        "isEdited" to true
-                    )
-                    msgRef.updateChildren(updates)
+                    change("messages/edit.php", mapOf("message_id" to msg.messageId, "text" to newText))
                 }
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
-    private fun deleteMessage(msg: Message) {
-        if (msg.chatId.isEmpty() || msg.messageId.isEmpty()) return
-        val msgRef = dbRef.child("messages").child(msg.chatId).child(msg.messageId)
-        val updates = hashMapOf<String, Any>(
-            "text" to "This message was deleted.",
-            "imageBase64" to ""
-        )
-        msgRef.updateChildren(updates)
+    /** Send a change to the server, then let the chat reload to show it. */
+    private fun change(endpoint: String, body: Map<String, Any?>) {
+        Api.post(endpoint, body) { result ->
+            if (result.ok) {
+                onChanged()
+            } else {
+                Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

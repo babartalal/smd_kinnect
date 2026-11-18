@@ -14,9 +14,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.ahmadtalal.i210734_i210819.databinding.ActivityStoryEditorBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ServerValue
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
@@ -25,8 +22,6 @@ class StoryEditorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStoryEditorBinding
     private var selectedBitmap: Bitmap? = null
 
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-    private val dbRef = FirebaseDatabase.getInstance().reference
 
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
@@ -102,7 +97,7 @@ class StoryEditorActivity : AppCompatActivity() {
     }
 
     private fun publishStory(audience: String) {
-        if (currentUserId.isEmpty()) {
+        if (!Session.isLoggedIn) {
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
             return
         }
@@ -121,29 +116,26 @@ class StoryEditorActivity : AppCompatActivity() {
         val base64String = Base64.encodeToString(byteArray, Base64.NO_WRAP)
 
         val textLabel = binding.storyTextInput.text.toString().trim()
-        val storyId = dbRef.child("stories").child(currentUserId).push().key ?: return
-
-        val storyMap = hashMapOf<String, Any>(
-            "storyId" to storyId,
-            "userId" to currentUserId,
-            "timestamp" to ServerValue.TIMESTAMP,
-            "imageBase64" to base64String,
+        val body = mapOf(
+            "image" to base64String,
             "textLabel" to textLabel,
-            "audience" to audience
+            "audience" to audience,
+            "clientId" to newClientId()
         )
 
-        dbRef.child("stories").child(currentUserId).child(storyId).setValue(storyMap)
-            .addOnCompleteListener { task ->
-                binding.sendStoryBtn.isEnabled = true
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Story published!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, HomeFeedActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(this, "Failed to publish story: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                }
+        Api.post("stories/create.php", body, queueIfOffline = true) { result ->
+            if (isFinishing || isDestroyed) return@post
+            binding.sendStoryBtn.isEnabled = true
+            if (result.ok || result.queued) {
+                val message = if (result.ok) "Story published!" else "You're offline. Your story will be published when you reconnect."
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, HomeFeedActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(this, "Failed to publish story: ${result.error}", Toast.LENGTH_SHORT).show()
             }
+        }
     }
 }

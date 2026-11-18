@@ -15,9 +15,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ahmadtalal.i210734_i210819.databinding.ActivityCreatePostBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ServerValue
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
@@ -27,8 +24,6 @@ class CreatePostActivity : AppCompatActivity() {
     private val selectedBitmaps = mutableListOf<Bitmap>()
     private lateinit var photoAdapter: SelectedPhotoAdapter
 
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-    private val dbRef = FirebaseDatabase.getInstance().reference
 
     private val pickMultiplePhotosLauncher = registerForActivityResult(
         ActivityResultContracts.GetMultipleContents()
@@ -134,7 +129,7 @@ class CreatePostActivity : AppCompatActivity() {
             return
         }
 
-        if (currentUserId.isEmpty()) {
+        if (!Session.isLoggedIn) {
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
             return
         }
@@ -150,25 +145,27 @@ class CreatePostActivity : AppCompatActivity() {
             imageBase64List.add(base64String)
         }
 
-        val postId = dbRef.child("posts").push().key ?: return
-
-        val postMap = hashMapOf<String, Any>(
-            "postId" to postId,
-            "authorId" to currentUserId,
+        val body = mapOf(
             "text" to postText,
-            "timestamp" to ServerValue.TIMESTAMP,
-            "images" to imageBase64List
+            "images" to imageBase64List,
+            "clientId" to newClientId()
         )
 
-        dbRef.child("posts").child(postId).setValue(postMap)
-            .addOnCompleteListener { task ->
-                binding.postBtn.isEnabled = true
-                if (task.isSuccessful) {
+        Api.post("posts/create.php", body, queueIfOffline = true) { result ->
+            if (isFinishing || isDestroyed) return@post
+            binding.postBtn.isEnabled = true
+            when {
+                result.ok -> {
                     Toast.makeText(this, "Post published!", Toast.LENGTH_SHORT).show()
                     finish()
-                } else {
-                    Toast.makeText(this, "Failed to publish post: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
+                result.queued -> {
+                    // Saved in SQLite; it is uploaded automatically once we are back online.
+                    Toast.makeText(this, "You're offline. Your post will be published when you reconnect.", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+                else -> Toast.makeText(this, "Failed to publish post: ${result.error}", Toast.LENGTH_SHORT).show()
             }
+        }
     }
 }

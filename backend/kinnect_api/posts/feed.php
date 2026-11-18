@@ -15,7 +15,7 @@ foreach ($posts as $post) {
     $postId = (int) $post['id'];
     $authorId = (int) $post['author_id'];
     if (!isset($authors[$authorId])) {
-        $authors[$authorId] = user_json(fetch_user_row($authorId));
+        $authors[$authorId] = author_json($authorId);
     }
     $images = q('SELECT image FROM post_images WHERE post_id = ? ORDER BY position', [$postId])->fetchAll(PDO::FETCH_COLUMN);
     $myReaction = q('SELECT reaction FROM post_reactions WHERE post_id = ? AND user_id = ?', [$postId, $me])->fetchColumn();

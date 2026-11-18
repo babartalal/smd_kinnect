@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,18 +14,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.ahmadtalal.i210734_i210819.databinding.ActivityEditProfileBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
 class EditProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEditProfileBinding
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     
     private var isFirstTimeUser: Boolean = false
     private var selectedProfilePicBase64: String? = null
@@ -83,52 +76,37 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun loadExistingUserData() {
-        val currentUser = auth.currentUser ?: run {
+        if (!Session.isLoggedIn) {
             navigateToLogin()
             return
         }
 
-        val userId = currentUser.uid
-        val userRef = FirebaseDatabase.getInstance().getReference("users").child(userId)
-
-        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (!snapshot.exists()) return
-
-                val name = snapshot.child("name").getValue(String::class.java)
-                    ?: "${snapshot.child("firstName").getValue(String::class.java).orEmpty()} ${snapshot.child("lastName").getValue(String::class.java).orEmpty()}".trim()
-                val username = snapshot.child("username").getValue(String::class.java).orEmpty()
-                val bio = snapshot.child("bio").getValue(String::class.java).orEmpty()
-                val website = snapshot.child("website").getValue(String::class.java).orEmpty()
-                val email = snapshot.child("email").getValue(String::class.java) ?: currentUser.email.orEmpty()
-                val phone = snapshot.child("phone").getValue(String::class.java).orEmpty()
-                val gender = snapshot.child("gender").getValue(String::class.java).orEmpty()
-                val profilePicBase64 = snapshot.child("profilePicBase64").getValue(String::class.java)
-                val coverPhotoBase64 = snapshot.child("coverPhotoBase64").getValue(String::class.java)
-
-                isFirstTimeUser = username.isEmpty()
-
-                binding.editNameInput.setText(name)
-                binding.editUsernameInput.setText(username)
-                binding.editBioInput.setText(bio)
-                binding.editWebsiteInput.setText(website)
-                binding.editEmailInput.setText(email)
-                binding.editPhoneInput.setText(phone)
-                binding.editGenderInput.setText(gender)
-
-                if (!profilePicBase64.isNullOrEmpty()) {
-                    displayBase64Image(profilePicBase64, binding.profilePicImageView)
-                }
-
-                if (!coverPhotoBase64.isNullOrEmpty()) {
-                    displayBase64Image(coverPhotoBase64, binding.coverImageView)
-                }
+        Api.get("users/get.php") { result ->
+            if (isFinishing || isDestroyed) return@get
+            if (!result.ok) {
+                Toast.makeText(this, "Failed to load profile: ${result.error}", Toast.LENGTH_SHORT).show()
+                return@get
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@EditProfileActivity, "Failed to load profile: ${error.message}", Toast.LENGTH_SHORT).show()
+            val user = User.fromJson(result.obj())
+            isFirstTimeUser = user.username.isEmpty()
+
+            binding.editNameInput.setText(user.displayName())
+            binding.editUsernameInput.setText(user.username)
+            binding.editBioInput.setText(user.bio)
+            binding.editWebsiteInput.setText(user.website)
+            binding.editEmailInput.setText(user.email)
+            binding.editPhoneInput.setText(user.phone)
+            binding.editGenderInput.setText(user.gender)
+
+            // Don't replace a photo the user has just picked on this screen.
+            if (user.profilePic.isNotEmpty() && selectedProfilePicBase64 == null) {
+                binding.profilePicImageView.loadRemote(user.profilePic)
             }
-        })
+            if (user.coverPhoto.isNotEmpty() && selectedCoverPhotoBase64 == null) {
+                binding.coverImageView.loadRemote(user.coverPhoto)
+            }
+        }
     }
 
     private fun handleImageSelected(uri: Uri, isProfilePic: Boolean) {
@@ -175,30 +153,16 @@ class EditProfileActivity : AppCompatActivity() {
         return Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
     }
 
-    private fun displayBase64Image(base64Str: String, targetView: ImageView) {
-        try {
-            val imageBytes = Base64.decode(base64Str, Base64.DEFAULT)
-            val decodedBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-            Glide.with(this).load(decodedBitmap).into(targetView)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     private fun validateAndSaveProfile() {
-        val currentUser = auth.currentUser ?: run {
+        if (!Session.isLoggedIn) {
             navigateToLogin()
             return
         }
-        val userId = currentUser.uid
 
         val enteredName = binding.editNameInput.text.toString().trim()
         val enteredUsername = binding.editUsernameInput.text.toString().trim()
         val enteredBio = binding.editBioInput.text.toString().trim()
-        val enteredWebsite = binding.editWebsiteInput.text.toString().trim()
         val enteredEmail = binding.editEmailInput.text.toString().trim()
-        val enteredPhone = binding.editPhoneInput.text.toString().trim()
-        val enteredGender = binding.editGenderInput.text.toString().trim()
 
         if (enteredUsername.isEmpty()) {
             Toast.makeText(this, "Username is required", Toast.LENGTH_SHORT).show()
@@ -210,83 +174,42 @@ class EditProfileActivity : AppCompatActivity() {
             return
         }
 
-        val usersRef = FirebaseDatabase.getInstance().getReference("users")
-        usersRef.orderByChild("username").equalTo(enteredUsername)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    var isTakenByOther = false
-                    for (child in snapshot.children) {
-                        if (child.key != userId) {
-                            isTakenByOther = true
-                            break
-                        }
-                    }
-
-                    if (isTakenByOther) {
-                        Toast.makeText(this@EditProfileActivity, "Username '$enteredUsername' is already taken. Please choose another.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        saveUserDataAndProceed(
-                            userId = userId,
-                            name = enteredName,
-                            username = enteredUsername,
-                            bio = enteredBio,
-                            website = enteredWebsite,
-                            email = enteredEmail,
-                            phone = enteredPhone,
-                            gender = enteredGender
-                        )
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@EditProfileActivity, "Error checking username: ${error.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
-    private fun saveUserDataAndProceed(
-        userId: String,
-        name: String,
-        username: String,
-        bio: String,
-        website: String,
-        email: String,
-        phone: String,
-        gender: String
-    ) {
-        val updates = mutableMapOf<String, Any>(
-            "name" to name,
-            "username" to username,
-            "bio" to bio,
-            "website" to website,
-            "email" to email,
-            "phone" to phone,
-            "gender" to gender,
-            "isOnline" to true
+        // The server checks that the username is free and saves everything in
+        // one request. Photos are only sent when a new one was picked.
+        val body = mapOf(
+            "name" to enteredName,
+            "username" to enteredUsername,
+            "bio" to enteredBio,
+            "website" to binding.editWebsiteInput.text.toString().trim(),
+            "email" to enteredEmail,
+            "phone" to binding.editPhoneInput.text.toString().trim(),
+            "gender" to binding.editGenderInput.text.toString().trim(),
+            "profilePic" to selectedProfilePicBase64,
+            "coverPhoto" to selectedCoverPhotoBase64
         )
 
-        selectedProfilePicBase64?.let { updates["profilePicBase64"] = it }
-        selectedCoverPhotoBase64?.let { updates["coverPhotoBase64"] = it }
+        binding.saveEditBtn.isEnabled = false
+        Api.post("users/update.php", body) { result ->
+            if (isFinishing || isDestroyed) return@post
+            binding.saveEditBtn.isEnabled = true
 
-        FirebaseDatabase.getInstance().getReference("users").child(userId)
-            .updateChildren(updates)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE)
-                    prefs.edit()
-                        .putString("last_user_email", email)
-                        .putString("last_user_name", if (name.isNotEmpty()) name else username)
-                        .apply()
-
-                    Toast.makeText(this, "Profile saved successfully!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, HomeFeedActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(this, "Failed to save profile: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                }
+            if (!result.ok) {
+                Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                return@post
             }
+
+            val prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+            prefs.edit()
+                .putString("last_user_email", enteredEmail)
+                .putString("last_user_name", if (enteredName.isNotEmpty()) enteredName else enteredUsername)
+                .apply()
+
+            Toast.makeText(this, "Profile saved successfully!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, HomeFeedActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun navigateToLogin() {

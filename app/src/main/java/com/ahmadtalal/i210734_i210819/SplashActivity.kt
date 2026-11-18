@@ -7,11 +7,6 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ahmadtalal.i210734_i210819.databinding.ActivitySplashBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class SplashActivity : AppCompatActivity() {
 
@@ -28,29 +23,30 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun checkAuthAndRoute() {
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user == null) {
+        if (!Session.isLoggedIn) {
             navigateTo(LoginActivity::class.java)
-        } else {
-            val userRef = FirebaseDatabase.getInstance().getReference("users")
-                .child(user.uid)
-                .child("username")
+            return
+        }
 
-            userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val username = snapshot.getValue(String::class.java)
-                    if (!username.isNullOrEmpty()) {
+        // Works offline too: the profile comes from the SQLite cache then.
+        Api.get("users/get.php") { result ->
+            if (isFinishing || isDestroyed) return@get
+            when {
+                result.ok -> {
+                    val username = User.fromJson(result.obj()).username
+                    if (username.isNotEmpty()) {
                         navigateTo(HomeFeedActivity::class.java)
                     } else {
                         navigateTo(EditProfileActivity::class.java)
                     }
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@SplashActivity, "Database error: ${error.message}", Toast.LENGTH_SHORT).show()
-                    navigateTo(LoginActivity::class.java)
+                // The server rejected our token; Api already opened the login screen.
+                !Session.isLoggedIn -> finish()
+                else -> {
+                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                    navigateTo(HomeFeedActivity::class.java)
                 }
-            })
+            }
         }
     }
 

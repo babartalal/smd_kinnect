@@ -14,14 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.ahmadtalal.i210734_i210819.databinding.ActivityCreateAccountBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.messaging.FirebaseMessaging
 
 class CreateAccountActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateAccountBinding
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,51 +157,35 @@ class CreateAccountActivity : AppCompatActivity() {
             "Not Specified"
         }
 
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
-                    val userMap = hashMapOf<String, Any>(
-                        "userId" to userId,
-                        "firstName" to firstName,
-                        "lastName" to lastName,
-                        "name" to "$firstName $lastName",
-                        "birthday" to birthday,
-                        "gender" to gender,
-                        "email" to email,
-                        "isOnline" to true
-                    )
+        val body = mapOf(
+            "firstName" to firstName,
+            "lastName" to lastName,
+            "email" to email,
+            "password" to password,
+            "birthday" to birthday,
+            "gender" to gender
+        )
 
-                    saveFcmToken(userId)
+        binding.createAccBtn.isEnabled = false
+        Api.post("auth/signup.php", body) { result ->
+            if (isFinishing || isDestroyed) return@post
+            binding.createAccBtn.isEnabled = true
 
-                    FirebaseDatabase.getInstance().getReference("users")
-                        .child(userId)
-                        .setValue(userMap)
-                        .addOnCompleteListener { dbTask ->
-                            if (dbTask.isSuccessful) {
-                                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
-                                val intent = Intent(this, EditProfileActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            } else {
-                                Toast.makeText(this, "Failed to save profile: ${dbTask.exception?.message}", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                } else {
-                    Toast.makeText(this, "Sign up failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
-                }
+            if (!result.ok) {
+                Toast.makeText(this, "Sign up failed: ${result.error}", Toast.LENGTH_LONG).show()
+                return@post
             }
-    }
 
-    private fun saveFcmToken(userId: String) {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful && task.result != null) {
-                FirebaseDatabase.getInstance().getReference("users")
-                    .child(userId)
-                    .child("fcmToken")
-                    .setValue(task.result)
-            }
+            val data = result.obj()
+            val user = User.fromJson(data.optJSONObject("user") ?: return@post)
+            Session.save(user.userId, data.optString("token"))
+            KinnectApp.sendHeartbeat() // marks us online and registers the FCM token
+
+            Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, EditProfileActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
         }
     }
 }

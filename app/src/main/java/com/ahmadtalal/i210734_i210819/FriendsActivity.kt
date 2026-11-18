@@ -8,11 +8,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ahmadtalal.i210734_i210819.databinding.ActivityFriendsBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import org.json.JSONArray
 
 class FriendsActivity : AppCompatActivity() {
 
@@ -23,8 +19,20 @@ class FriendsActivity : AppCompatActivity() {
     private val friendRequestsList = mutableListOf<User>()
     private val yourFriendsList = mutableListOf<User>()
 
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-    private val dbRef = FirebaseDatabase.getInstance().reference
+    /** People who sent me a friend request. */
+    private val requestsQuery = LiveQuery("friends/requests.php", intervalMs = 5000L) { result ->
+        friendRequestsList.clear()
+        friendRequestsList.addAll(parseUsers(result.arr()))
+        binding.friendRequestsCountTxt.text = "${friendRequestsList.size}"
+        requestAdapter.updateData(friendRequestsList)
+    }
+
+    /** My friends. */
+    private val friendsQuery = LiveQuery("friends/list.php", intervalMs = 5000L) { result ->
+        yourFriendsList.clear()
+        yourFriendsList.addAll(parseUsers(result.arr()))
+        friendsAdapter.updateData(yourFriendsList)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,19 +48,35 @@ class FriendsActivity : AppCompatActivity() {
 
         setupRecyclerViews()
         setupClickListeners()
-        loadFriendRequests()
-        loadYourFriends()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (!Session.isLoggedIn) return
+        requestsQuery.start()
+        friendsQuery.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requestsQuery.stop()
+        friendsQuery.stop()
+    }
+
+    private fun parseUsers(array: JSONArray): List<User> =
+        (0 until array.length()).map { User.fromJson(array.getJSONObject(it)) }
+
+    private fun reloadLists() {
+        requestsQuery.refresh()
+        friendsQuery.refresh()
     }
 
     private fun setupRecyclerViews() {
-        requestAdapter = FriendRequestAdapter(this, friendRequestsList) {
-            loadFriendRequests()
-            loadYourFriends()
-        }
+        requestAdapter = FriendRequestAdapter(this, friendRequestsList) { reloadLists() }
         binding.friendRequestsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.friendRequestsRecyclerView.adapter = requestAdapter
 
-        friendsAdapter = UserAdapter(this, yourFriendsList)
+        friendsAdapter = UserAdapter(this, yourFriendsList) { reloadLists() }
         binding.yourFriendsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.yourFriendsRecyclerView.adapter = friendsAdapter
     }
@@ -80,92 +104,5 @@ class FriendsActivity : AppCompatActivity() {
             startActivity(Intent(this, MenuActivity::class.java))
             finish()
         }
-    }
-
-    private fun loadFriendRequests() {
-        if (currentUserId.isEmpty()) return
-
-        dbRef.child("friend_requests").child(currentUserId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    friendRequestsList.clear()
-                    val senderIds = snapshot.children.mapNotNull { it.key }
-                    binding.friendRequestsCountTxt.text = "${senderIds.size}"
-
-                    if (senderIds.isEmpty()) {
-                        requestAdapter.updateData(friendRequestsList)
-                        return
-                    }
-
-                    var loadedCount = 0
-                    for (senderId in senderIds) {
-                        dbRef.child("users").child(senderId)
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(userSnap: DataSnapshot) {
-                                    val user = userSnap.getValue(User::class.java)
-                                    if (user != null) {
-                                        friendRequestsList.add(user)
-                                    }
-                                    loadedCount++
-                                    if (loadedCount == senderIds.size) {
-                                        requestAdapter.updateData(friendRequestsList)
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    loadedCount++
-                                    if (loadedCount == senderIds.size) {
-                                        requestAdapter.updateData(friendRequestsList)
-                                    }
-                                }
-                            })
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
-    private fun loadYourFriends() {
-        if (currentUserId.isEmpty()) return
-
-        dbRef.child("friends").child(currentUserId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    yourFriendsList.clear()
-                    val friendIds = snapshot.children.mapNotNull { it.key }
-
-                    if (friendIds.isEmpty()) {
-                        friendsAdapter.updateData(yourFriendsList)
-                        return
-                    }
-
-                    var loadedCount = 0
-                    for (friendId in friendIds) {
-                        dbRef.child("users").child(friendId)
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(userSnap: DataSnapshot) {
-                                    val user = userSnap.getValue(User::class.java)
-                                    if (user != null) {
-                                        yourFriendsList.add(user)
-                                    }
-                                    loadedCount++
-                                    if (loadedCount == friendIds.size) {
-                                        friendsAdapter.updateData(yourFriendsList)
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    loadedCount++
-                                    if (loadedCount == friendIds.size) {
-                                        friendsAdapter.updateData(yourFriendsList)
-                                    }
-                                }
-                            })
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
     }
 }

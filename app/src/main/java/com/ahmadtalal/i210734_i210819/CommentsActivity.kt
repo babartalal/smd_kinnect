@@ -14,12 +14,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ahmadtalal.i210734_i210819.databinding.ActivityCommentsBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ServerValue
-import com.google.firebase.database.ValueEventListener
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
@@ -34,8 +28,7 @@ class CommentsActivity : AppCompatActivity() {
     private var selectedCommentImageBase64: String? = null
 
     private val commentList = mutableListOf<Comment>()
-    private val currentUserId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-    private val dbRef = FirebaseDatabase.getInstance().reference
+    private var commentsQuery: LiveQuery? = null
 
     private val pickCommentImageLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
@@ -60,11 +53,23 @@ class CommentsActivity : AppCompatActivity() {
 
         setupRecyclerView()
         setupClickListeners()
-        loadComments()
+        if (postId.isNotEmpty()) {
+            commentsQuery = createCommentsQuery()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        commentsQuery?.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        commentsQuery?.stop()
     }
 
     private fun setupRecyclerView() {
-        commentAdapter = CommentAdapter(this, commentList) { parentComment, authorName ->
+        commentAdapter = CommentAdapter(this, commentList, onLikeChanged = { commentsQuery?.refresh() }) { parentComment, authorName ->
             activeReplyToCommentId = parentComment.commentId
             activeReplyToAuthorName = authorName
 
@@ -133,29 +138,21 @@ class CommentsActivity : AppCompatActivity() {
         return Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
     }
 
-    private fun loadComments() {
-        if (postId.isEmpty()) return
+    /** Keeps the comment list in sync with the server while the screen is open. */
+    private fun createCommentsQuery(): LiveQuery =
+        LiveQuery("comments/list.php", mapOf("post_id" to postId), intervalMs = 4000L) { result ->
+            val comments = result.arr()
+            val rawComments = mutableListOf<Comment>()
+            for (i in 0 until comments.length()) {
+                rawComments.add(Comment.fromJson(comments.getJSONObject(i)))
+            }
 
-        dbRef.child("posts").child(postId).child("comments")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val rawComments = mutableListOf<Comment>()
-                    for (child in snapshot.children) {
-                        val comment = child.getValue(Comment::class.java)
-                        if (comment != null) {
-                            rawComments.add(comment)
-                        }
-                    }
+            binding.commentTotalCountTxt.text = "${rawComments.size} comments"
 
-                    binding.commentTotalCountTxt.text = "${rawComments.size} comments"
-                    commentList.clear()
-                    commentList.addAll(organizeThreadedComments(rawComments))
-                    commentAdapter.updateData(commentList)
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
+            commentList.clear()
+            commentList.addAll(organizeThreadedComments(rawComments))
+            commentAdapter.updateData(commentList)
+        }
 
     private fun organizeThreadedComments(allComments: List<Comment>): List<Comment> {
         val result = mutableListOf<Comment>()
@@ -179,36 +176,36 @@ class CommentsActivity : AppCompatActivity() {
             return
         }
 
-        if (currentUserId.isEmpty()) {
+        if (!Session.isLoggedIn) {
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val commentId = dbRef.child("posts").child(postId).child("comments").push().key ?: return
-
-        val commentMap = hashMapOf<String, Any>(
-            "commentId" to commentId,
-            "postId" to postId,
-            "authorId" to currentUserId,
+        val body = mapOf(
+            "post_id" to postId,
             "text" to text,
-            "timestamp" to ServerValue.TIMESTAMP
+            "image" to selectedCommentImageBase64,
+            "replyToCommentId" to activeReplyToCommentId,
+            "replyToAuthorName" to activeReplyToCommentId?.let { activeReplyToAuthorName.orEmpty() },
+            "clientId" to newClientId()
         )
 
-        selectedCommentImageBase64?.let { commentMap["imageBase64"] = it }
-        activeReplyToCommentId?.let {
-            commentMap["replyToCommentId"] = it
-            commentMap["replyToAuthorName"] = activeReplyToAuthorName.orEmpty()
-        }
-
-        dbRef.child("posts").child(postId).child("comments").child(commentId).setValue(commentMap)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    binding.commentInputText.setText("")
-                    selectedCommentImageBase64 = null
-                    resetReplyState()
+        binding.commentSendBtn.isEnabled = false
+        Api.post("comments/create.php", body, queueIfOffline = true) { result ->
+            if (isFinishing || isDestroyed) return@post
+            binding.commentSendBtn.isEnabled = true
+            if (result.ok || result.queued) {
+                binding.commentInputText.setText("")
+                selectedCommentImageBase64 = null
+                resetReplyState()
+                if (result.ok) {
+                    commentsQuery?.refresh()
                 } else {
-                    Toast.makeText(this, "Failed to post comment: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(this, "Failed to post comment: ${result.error}", Toast.LENGTH_SHORT).show()
             }
+        }
     }
 }

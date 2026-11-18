@@ -3,27 +3,23 @@ package com.ahmadtalal.i210734_i210819
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
+/**
+ * Receives push notifications. FCM is the only Firebase product the app
+ * still uses: the PHP server sends the pushes (see send_push in core.php)
+ * to the device token this service reports through the heartbeat web service.
+ */
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (!userId.isNullOrEmpty()) {
-            FirebaseDatabase.getInstance().reference
-                .child("users")
-                .child(userId)
-                .child("fcmToken")
-                .setValue(token)
-        }
+        Session.fcmToken = token
+        KinnectApp.sendHeartbeat()
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
