@@ -24,3 +24,6 @@ backend/kinnect_api/uploads/*
 !backend/kinnect_api/uploads/.gitkeep
 backend/kinnect_api/config.local.php
 backend/kinnect_api/firebase-service-account.json
+
+# Firebase config: keep out of the repository (the repo is public)
+app/google-services.json

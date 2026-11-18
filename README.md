@@ -63,3 +63,7 @@ Each PHP file starts with a comment describing its parameters.
 - `Api.kt` – HTTP client for the web services (`Api.get`, `Api.post`) and `LiveQuery`, which polls an endpoint so screens update by themselves.
 - `Session.kt` – the signed-in user's id and token.
 - `LocalDb.kt` – the SQLite database: `users`, `friends`, `posts`, `stories`, `messages`, and the `pending_actions` queue of writes made offline.
+
+## Firebase config file
+
+`app/google-services.json` is not in the repository (it is public). Download it from the Firebase console (Project settings → Your apps) and put it in `app/` before building.

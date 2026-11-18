@@ -161,7 +161,7 @@ How each requirement in `SMD_Assignment_03.pdf` is met:
 - A post written offline shows in the feed as text only until it syncs.
 - Video messages show a play tile without a thumbnail.
 - The call history has an endpoint but no screen.
-- Still open from the submission rules: push to a private GitHub repo, commits from both group members, keep `google-services.json` out of any public repo, and the project/package naming rule (`rollNumber1_rollNumber2`).
+- Still open from the submission rules: commits from both group members, and the project/package naming rule (`rollNumber1_rollNumber2`). `app/google-services.json` is deliberately not in Git because the GitHub repository is public; copy it into `app/` by hand on a new machine.
 
 ## Git
 
