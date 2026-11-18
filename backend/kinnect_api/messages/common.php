@@ -1,7 +1,35 @@
 <?php
-// Shared by the messages endpoints.
+// Shared by the messages endpoints (and by chats/list.php for the preview).
 
 const MESSAGE_EDIT_WINDOW_MS = 5 * 60 * 1000;
+
+/**
+ * What a message carries besides text: '' (nothing), image, video or file.
+ * Messages sent before videos and files existed have an image but no
+ * media_type; those are images.
+ */
+function message_media_type(array $row): string
+{
+    if (($row['image'] ?? '') === '') {
+        return '';
+    }
+    return ($row['media_type'] ?? '') ?: 'image';
+}
+
+/** One-line summary for the chat list, a push notification or a quoted reply. */
+function message_preview(array $row): string
+{
+    switch (message_media_type($row)) {
+        case 'image':
+            return '📷 Photo';
+        case 'video':
+            return '🎥 Video';
+        case 'file':
+            return '📎 ' . (($row['file_name'] ?? '') ?: 'File');
+        default:
+            return (string) $row['text'];
+    }
+}
 
 function message_json(array $row): array
 {
@@ -10,7 +38,10 @@ function message_json(array $row): array
         'chatId'          => $row['chat_id'],
         'senderId'        => (string) $row['sender_id'],
         'text'            => $row['text'],
+        // Path of the attached media, whatever its kind (see mediaType).
         'image'           => image_path($row['image']),
+        'mediaType'       => message_media_type($row),
+        'fileName'        => (string) ($row['file_name'] ?? ''),
         'timestamp'       => (int) $row['created_at'],
         'isEdited'        => (bool) $row['is_edited'],
         'replyToMsgId'    => $row['reply_to_msg_id'] ? (string) $row['reply_to_msg_id'] : '',

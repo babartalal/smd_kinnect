@@ -1,6 +1,6 @@
 <?php
 // Shared plumbing for every Kinnect web service: database access, request
-// parsing, JSON responses, token authentication, image storage and push.
+// parsing, JSON responses, token authentication, image and media storage and push.
 
 require_once __DIR__ . '/config.php';
 
@@ -210,9 +210,210 @@ function image_path(string $name): string
 
 function delete_image(string $name): void
 {
-    if ($name !== '' && preg_match('/^[a-f0-9]{32}\.(jpg|png|webp)$/', $name)) {
+    if (is_stored_media_name($name)) {
         @unlink(UPLOAD_DIR . '/' . $name);
     }
+}
+
+// ---------- uploaded media (multipart) ----------
+// Files arrive as multipart/form-data. What may be stored is decided here:
+// the extension must be on the whitelist below AND the real content type
+// (finfo) must be one that extension is allowed to have. The stored name is
+// always "<32 random hex>.<whitelisted extension>", never the client's name,
+// so nothing executable (.php, .phtml, .htaccess ...) can ever land in uploads/.
+
+/** extension => [media type, content types that extension may really contain] */
+function media_rules(): array
+{
+    $office = ['application/msword', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint',
+               'application/vnd.ms-office', 'application/x-ole-storage', 'application/CDFV2'];
+    $officeXml = ['application/zip', 'application/octet-stream',
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                  'application/vnd.openxmlformats-officedocument.presentationml.presentation'];
+    $mp4 = ['video/mp4', 'video/3gpp', 'video/quicktime', 'video/x-m4v'];
+    $matroska = ['video/webm', 'video/x-matroska'];
+    return [
+        'jpg'  => ['image', ['image/jpeg']],
+        'jpeg' => ['image', ['image/jpeg']],
+        'png'  => ['image', ['image/png']],
+        'webp' => ['image', ['image/webp']],
+        'mp4'  => ['video', $mp4],
+        '3gp'  => ['video', $mp4],
+        'webm' => ['video', $matroska],
+        'mkv'  => ['video', $matroska],
+        'pdf'  => ['file', ['application/pdf']],
+        'doc'  => ['file', $office],
+        'xls'  => ['file', $office],
+        'ppt'  => ['file', $office],
+        'docx' => ['file', $officeXml],
+        'xlsx' => ['file', $officeXml],
+        'pptx' => ['file', $officeXml],
+        'txt'  => ['file', ['text/plain']],
+        'zip'  => ['file', ['application/zip', 'application/x-zip-compressed']],
+    ];
+}
+
+/** True for a file name this server generated: 32 hex characters plus a whitelisted extension. */
+function is_stored_media_name(string $name): bool
+{
+    return preg_match('/^[a-f0-9]{32}\.([a-z0-9]{2,4})$/', $name, $m) === 1
+        && $m[1] !== 'jpeg' && isset(media_rules()[$m[1]]);
+}
+
+/** The client's file name made safe to show: no folders, no control or reserved characters. */
+function display_file_name($name): string
+{
+    $name = is_string($name) ? $name : '';
+    $name = basename(str_replace('\\', '/', $name));
+    $name = preg_replace('~[\x00-\x1F\x7F<>:"/|?*]+~', '', $name) ?? '';
+    return mb_substr(trim($name, ' .'), 0, 120);
+}
+
+/**
+ * The files sent under one multipart field as a plain list, whether the app
+ * sent one file ("file") or several ("images[]").
+ */
+function uploaded_files(string $field): array
+{
+    $entry = $_FILES[$field] ?? null;
+    if (!is_array($entry) || !isset($entry['error'])) {
+        return [];
+    }
+    if (!is_array($entry['error'])) {
+        return $entry['error'] === UPLOAD_ERR_NO_FILE ? [] : [$entry];
+    }
+    $files = [];
+    foreach ($entry['error'] as $i => $error) {
+        if ($error !== UPLOAD_ERR_NO_FILE) {
+            $files[] = [
+                'name'     => $entry['name'][$i],
+                'tmp_name' => $entry['tmp_name'][$i],
+                'error'    => $error,
+                'size'     => $entry['size'][$i],
+            ];
+        }
+    }
+    return $files;
+}
+
+/**
+ * Check one uploaded file without storing it. Stops the request with an error
+ * when it is missing, too large, or not an allowed type. Returns
+ * [tmp, extension, mediaType, fileName, size].
+ */
+function inspect_upload($file, array $allowedTypes = ['image', 'video', 'file']): array
+{
+    $limitMb = (int) (MAX_UPLOAD_BYTES / 1048576);
+    if (!is_array($file) || !isset($file['error']) || is_array($file['error'])) {
+        // PHP drops the whole body when it is bigger than post_max_size.
+        if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > MAX_UPLOAD_BYTES) {
+            fail("File is too large (limit $limitMb MB)", 413);
+        }
+        fail('No file was uploaded');
+    }
+    if ($file['error'] === UPLOAD_ERR_INI_SIZE || $file['error'] === UPLOAD_ERR_FORM_SIZE) {
+        fail("File is too large (limit $limitMb MB)", 413);
+    }
+    if ($file['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'])) {
+        fail('The upload did not complete. Please try again.');
+    }
+    $tmp = $file['tmp_name'];
+    $size = (int) filesize($tmp);
+    if ($size <= 0) {
+        fail('The file is empty');
+    }
+    if ($size > MAX_UPLOAD_BYTES) {
+        fail("File is too large (limit $limitMb MB)", 413);
+    }
+
+    $rules = media_rules();
+    $extension = strtolower(pathinfo((string) $file['name'], PATHINFO_EXTENSION));
+    $mime = (string) (new finfo(FILEINFO_MIME_TYPE))->file($tmp);
+
+    // Pictures: the content decides, whatever the client called the file.
+    $imageTypes = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+    // A camera or gallery item often has no extension in its name; for these
+    // unmistakable content types the extension is taken from the content.
+    $byContent = $imageTypes + ['video/mp4' => 'mp4', 'video/3gpp' => '3gp', 'video/webm' => 'webm',
+                                'video/x-matroska' => 'mkv', 'application/pdf' => 'pdf'];
+
+    if (isset($imageTypes[$mime])) {
+        if (!@getimagesize($tmp)) {
+            fail('Unsupported image format');
+        }
+        $extension = $imageTypes[$mime];
+    } elseif (!isset($rules[$extension]) && isset($byContent[$mime])) {
+        $extension = $byContent[$mime];
+    }
+
+    if (!isset($rules[$extension])) {
+        fail('This file type is not allowed');
+    }
+    [$mediaType, $contentTypes] = $rules[$extension];
+    $matches = in_array($mime, $contentTypes, true)
+        || ($extension === 'txt' && strncmp($mime, 'text/', 5) === 0);
+    if (!$matches) {
+        fail('The file content does not match its type');
+    }
+    if (!in_array($mediaType, $allowedTypes, true)) {
+        fail('Only ' . implode(' or ', $allowedTypes) . ' files are accepted here');
+    }
+
+    $fileName = display_file_name($file['name']);
+    return [
+        'tmp'       => $tmp,
+        'extension' => $extension === 'jpeg' ? 'jpg' : $extension,
+        'mediaType' => $mediaType,
+        'fileName'  => $fileName !== '' ? $fileName : $mediaType . '.' . $extension,
+        'size'      => $size,
+    ];
+}
+
+/**
+ * Validate an uploaded file and move it into uploads/ under a random,
+ * server-chosen name (the multipart counterpart of save_image). $file is one
+ * entry of $_FILES, or the result of inspect_upload when it was checked
+ * already. Returns [name, mediaType, fileName, size]: "name" goes in the
+ * database and image_path(name) is what the app downloads.
+ */
+function store_upload($file, array $allowedTypes = ['image', 'video', 'file']): array
+{
+    $info = is_array($file) && isset($file['tmp'], $file['extension']) ? $file : inspect_upload($file, $allowedTypes);
+    if (!is_dir(UPLOAD_DIR)) {
+        mkdir(UPLOAD_DIR, 0775, true);
+    }
+    $name = bin2hex(random_bytes(16)) . '.' . $info['extension'];
+    if (!move_uploaded_file($info['tmp'], UPLOAD_DIR . '/' . $name)) {
+        fail('Could not store the file', 500);
+    }
+    return ['name' => $name, 'mediaType' => $info['mediaType'], 'fileName' => $info['fileName'], 'size' => $info['size']];
+}
+
+/**
+ * Take a file the signed-in user uploaded earlier through media/upload.php so
+ * it can be attached to a message or story. $path is what the upload returned
+ * ("uploads/<name>"). The file must exist, be theirs, be of an allowed kind and
+ * not be attached to anything yet. Returns its media_uploads row.
+ */
+function claim_upload($path, int $userId, array $allowedTypes = ['image', 'video', 'file']): array
+{
+    $name = is_string($path) && strncmp($path, 'uploads/', 8) === 0 ? substr($path, 8) : '';
+    if (!is_stored_media_name($name) || !is_file(UPLOAD_DIR . '/' . $name)) {
+        fail('Attachment not found. Please upload it again.');
+    }
+    $row = q('SELECT * FROM media_uploads WHERE name = ? AND user_id = ?', [$name, $userId])->fetch();
+    if (!$row) {
+        fail('Attachment not found. Please upload it again.');
+    }
+    if (!in_array($row['media_type'], $allowedTypes, true)) {
+        fail('Only ' . implode(' or ', $allowedTypes) . ' files are accepted here');
+    }
+    $claimed = q('UPDATE media_uploads SET used = 1 WHERE name = ? AND used = 0', [$name])->rowCount();
+    if ($claimed !== 1) {
+        fail('This attachment was already sent. Please upload it again.');
+    }
+    return $row;
 }
 
 // ---------- users and friendships ----------

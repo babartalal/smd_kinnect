@@ -1,15 +1,23 @@
 package com.ahmadtalal.i210734_i210819
 
 import android.app.AlertDialog
+import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.text.format.DateFormat
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
 import com.ahmadtalal.i210734_i210819.databinding.ItemMessageIncomingBinding
 import com.ahmadtalal.i210734_i210819.databinding.ItemMessageOutgoingBinding
@@ -79,7 +87,9 @@ class MessageAdapter(
                 body = binding.messageBodyTxt, time = binding.messageTimeTxt,
                 editedLabel = binding.editedLabelTxt, replyBubble = binding.replyBubbleTxt,
                 replyCaption = binding.replyCaptionTxt,
-                image = binding.messageImageView, heartBadge = binding.heartReactionBadge
+                image = binding.messageImageView, videoTile = binding.messageVideoTile,
+                fileRow = binding.messageFileRow, fileName = binding.messageFileNameTxt,
+                heartBadge = binding.heartReactionBadge
             )
         }
     }
@@ -99,7 +109,9 @@ class MessageAdapter(
                 body = binding.messageBodyTxt, time = binding.messageTimeTxt,
                 editedLabel = binding.editedLabelTxt, replyBubble = binding.replyBubbleTxt,
                 replyCaption = binding.replyCaptionTxt,
-                image = binding.messageImageView, heartBadge = binding.heartReactionBadge
+                image = binding.messageImageView, videoTile = binding.messageVideoTile,
+                fileRow = binding.messageFileRow, fileName = binding.messageFileNameTxt,
+                heartBadge = binding.heartReactionBadge
             )
         }
     }
@@ -123,6 +135,9 @@ class MessageAdapter(
         replyBubble: TextView,
         replyCaption: TextView,
         image: ImageView,
+        videoTile: View,
+        fileRow: View,
+        fileName: TextView,
         heartBadge: View
     ) {
         body.text = msg.text
@@ -148,13 +163,19 @@ class MessageAdapter(
             replyCaption.visibility = View.GONE
         }
 
-        if (msg.image.isNotEmpty()) {
-            image.visibility = View.VISIBLE
+        // The attachment, if any: a photo tile, a video tile or a file row.
+        val kind = msg.mediaKind
+        image.visibility = if (kind == "image") View.VISIBLE else View.GONE
+        videoTile.visibility = if (kind == "video") View.VISIBLE else View.GONE
+        fileRow.visibility = if (kind == "file") View.VISIBLE else View.GONE
+        if (kind == "image") {
             image.clipToOutline = true // round the corners to the tile background
             image.loadRemote(msg.image)
-        } else {
-            image.visibility = View.GONE
         }
+        fileName.text = msg.fileName.ifEmpty { "File" }
+        // A tap plays the video in the app, or opens the file from its server URL.
+        videoTile.setOnClickListener { MediaOpener.playVideo(context, msg.image) }
+        fileRow.setOnClickListener { MediaOpener.openFile(context, msg.image) }
 
         heartBadge.visibility = if (msg.heartReaction) View.VISIBLE else View.GONE
 
@@ -163,16 +184,22 @@ class MessageAdapter(
         if (msg.pending || msg.messageId.isEmpty()) {
             root.setOnClickListener(null)
             root.setOnLongClickListener(null)
+            videoTile.setOnLongClickListener(null)
+            fileRow.setOnLongClickListener(null)
             return
         }
 
         root.setOnClickListener {
             onReplyRequested(msg)
         }
-        root.setOnLongClickListener {
+        val showOptions = View.OnLongClickListener {
             showOptionsDialog(msg, isOwnMessage)
             true
         }
+        root.setOnLongClickListener(showOptions)
+        // The tiles take their own taps, so they need the long-press menu too.
+        videoTile.setOnLongClickListener(showOptions)
+        fileRow.setOnLongClickListener(showOptions)
     }
 
     private fun formatTime(timestamp: Long): String {
@@ -204,7 +231,7 @@ class MessageAdapter(
                     "Reply" -> onReplyRequested(msg)
                     "Edit Message" -> showEditDialog(msg)
                     "Delete Message" -> change("messages/delete.php", msg.messageId, mapOf("message_id" to msg.messageId)) {
-                        it.put("text", "This message was deleted.").put("image", "")
+                        it.put("text", "This message was deleted.").put("image", "").put("mediaType", "").put("fileName", "")
                     }
                 }
             }
@@ -251,6 +278,71 @@ class MessageAdapter(
                 }
                 else -> Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+}
+
+/** Opens chat attachments: videos in a full-screen player inside the app, files in the app that handles them. */
+object MediaOpener {
+
+    /**
+     * Stream a video from the server ("uploads/abc.mp4") in a full-screen
+     * dialog. Tap the video to pause or resume, press back to close. If the
+     * built-in player cannot play it, it is handed to another app instead.
+     */
+    fun playVideo(context: Context, path: String) {
+        if (path.isEmpty()) return
+        val dialog = Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+
+        val container = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setBackgroundColor(Color.BLACK)
+        }
+        val status = TextView(context).apply {
+            text = "Loading video..."
+            setTextColor(Color.WHITE)
+            gravity = Gravity.CENTER
+        }
+        val video = VideoView(context)
+        container.addView(
+            status,
+            LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        )
+        container.addView(
+            video,
+            LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        )
+        dialog.setContentView(
+            container,
+            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        )
+
+        video.setOnPreparedListener {
+            status.visibility = View.GONE
+            video.start()
+        }
+        video.setOnErrorListener { _, _, _ ->
+            dialog.dismiss()
+            openFile(context, path)
+            true
+        }
+        video.setOnClickListener {
+            if (video.isPlaying) video.pause() else video.start()
+        }
+        dialog.setOnDismissListener { video.stopPlayback() }
+
+        video.setVideoURI(Uri.parse(Api.imageUrl(path)))
+        dialog.show()
+    }
+
+    /** Open (or download) a file from its server URL with whichever app the phone offers. */
+    fun openFile(context: Context, path: String) {
+        if (path.isEmpty()) return
+        try {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Api.imageUrl(path))))
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "No app on this phone can open this file", Toast.LENGTH_SHORT).show()
         }
     }
 }

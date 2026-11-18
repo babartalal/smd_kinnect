@@ -32,6 +32,15 @@
             android:scaleType="centerCrop"
             android:src="@drawable/landscape1" />
 
+        <!-- Video stories play here, over the picture and under the controls (shown by the activity) -->
+        <VideoView
+            android:id="@+id/storyVideo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="Story video"
+            android:visibility="gone" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

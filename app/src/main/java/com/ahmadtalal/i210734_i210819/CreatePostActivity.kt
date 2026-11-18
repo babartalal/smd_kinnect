@@ -154,38 +154,58 @@ class CreatePostActivity : AppCompatActivity() {
 
         binding.postBtn.isEnabled = false
 
-        val imageBase64List = mutableListOf<String>()
-        for (bitmap in selectedBitmaps) {
+        // Each photo as JPEG bytes (max 800px, 50% quality).
+        val photos = selectedBitmaps.map { bitmap ->
             val outputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
-            val byteArray = outputStream.toByteArray()
-            val base64String = Base64.encodeToString(byteArray, Base64.NO_WRAP)
-            imageBase64List.add(base64String)
+            outputStream.toByteArray()
         }
+        // One clientId for both attempts below, so the post can only ever be stored once.
+        val clientId = newClientId()
 
-        val body = mapOf(
-            "text" to postText,
-            "images" to imageBase64List,
-            "clientId" to newClientId()
-        )
-
-        Api.post("posts/create.php", body, queueIfOffline = true) { result ->
-            if (isFinishing || isDestroyed) return@post
-            binding.postBtn.isEnabled = true
-            when {
-                result.ok -> {
-                    Toast.makeText(this, "Post published!", Toast.LENGTH_SHORT).show()
-                    finish()
+        // Online: a multipart upload, the text as a form field and every photo as a file.
+        val files = photos.mapIndexed { index, bytes ->
+            "images[]" to UploadPart.bytes("photo_${index + 1}.jpg", "image/jpeg", bytes)
+        }
+        Api.postMultipart(
+            "posts/create.php", mapOf("text" to postText, "clientId" to clientId), files
+        ) { result ->
+            if (result.unreachable) {
+                // No connection: hand the post to the offline queue instead. The queue
+                // stores JSON bodies, so the photos travel as Base64 on this path.
+                val body = mapOf(
+                    "text" to postText,
+                    "images" to photos.map { Base64.encodeToString(it, Base64.NO_WRAP) },
+                    "clientId" to clientId
+                )
+                Api.post("posts/create.php", body, queueIfOffline = true) { queuedResult ->
+                    onPostResult(queuedResult, postText)
                 }
-                result.queued -> {
-                    // Saved in pending_actions; it is uploaded automatically once we are
-                    // back online. Until then the feed shows it marked as pending.
-                    LocalDb.get().addPendingPost(result.clientId, postText)
-                    Toast.makeText(this, "You're offline. Your post will be published when you reconnect.", Toast.LENGTH_LONG).show()
-                    finish()
-                }
-                else -> Toast.makeText(this, "Failed to publish post: ${result.error}", Toast.LENGTH_SHORT).show()
+            } else {
+                onPostResult(result, postText)
             }
+        }
+    }
+
+    private fun onPostResult(result: ApiResult, postText: String) {
+        if (result.queued) {
+            // Saved in pending_actions; it is uploaded automatically once we are
+            // back online. Until then the feed shows it marked as pending.
+            // (Done even if this screen was closed meanwhile, so the feed still shows it.)
+            LocalDb.get().addPendingPost(result.clientId, postText)
+        }
+        if (isFinishing || isDestroyed) return
+        binding.postBtn.isEnabled = true
+        when {
+            result.ok -> {
+                Toast.makeText(this, "Post published!", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            result.queued -> {
+                Toast.makeText(this, "You're offline. Your post will be published when you reconnect.", Toast.LENGTH_LONG).show()
+                finish()
+            }
+            else -> Toast.makeText(this, "Failed to publish post: ${result.error}", Toast.LENGTH_SHORT).show()
         }
     }
 }

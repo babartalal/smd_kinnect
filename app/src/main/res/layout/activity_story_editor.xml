@@ -28,9 +28,18 @@
             android:id="@+id/storyPreviewImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="Story image, tap to change"
+            android:contentDescription="Story photo, tap to change"
             android:scaleType="centerCrop"
             android:src="@drawable/landscape1" />
+
+        <!-- Video stories play here, over the picture and under the controls (shown by the activity) -->
+        <VideoView
+            android:id="@+id/storyPreviewVideo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="Story video, tap to change"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"

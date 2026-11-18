@@ -25,3 +25,8 @@ defined('FCM_SERVICE_ACCOUNT') || define('FCM_SERVICE_ACCOUNT', __DIR__ . '/fire
 
 defined('UPLOAD_DIR') || define('UPLOAD_DIR', __DIR__ . '/uploads');
 defined('MAX_IMAGE_BYTES') || define('MAX_IMAGE_BYTES', 5 * 1024 * 1024);
+
+// Largest file media/upload.php (and a multipart post) accepts. PHP's own
+// upload_max_filesize / post_max_size in php.ini must be at least this big
+// (a stock XAMPP allows 40 MB).
+defined('MAX_UPLOAD_BYTES') || define('MAX_UPLOAD_BYTES', 25 * 1024 * 1024);

@@ -79,9 +79,10 @@ class StoryAdapter(
                     binding.storyAuthorName.text = displayName
                 }
 
-                // The story's own picture fills the card.
+                // The story's own picture fills the card. A video story has no
+                // picture to show here, so its card keeps the placeholder.
                 val storyImage = story?.image.orEmpty()
-                if (storyImage.isNotEmpty()) {
+                if (storyImage.isNotEmpty() && story?.isVideo != true) {
                     binding.storyImage.loadRemote(storyImage)
                 } else {
                     Glide.with(context.applicationContext).clear(binding.storyImage)

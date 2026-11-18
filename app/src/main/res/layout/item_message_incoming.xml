@@ -71,6 +71,96 @@
             android:scaleType="centerCrop"
             android:visibility="gone" />
 
+        <!-- Attached video: dark rounded tile with a play icon; tap to play (MessageAdapter) -->
+        <LinearLayout
+            android:id="@+id/messageVideoTile"
+            android:layout_width="200dp"
+            android:layout_height="140dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/media_bg_video_tile"
+            android:clickable="true"
+            android:contentDescription="Play video"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/media_bg_play_circle"
+                android:importantForAccessibility="no"
+                android:padding="12dp"
+                android:src="@drawable/media_ic_play"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:includeFontPadding="false"
+                android:text="Video"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Attached file: bubble row with a file icon and the file name; tap to open -->
+        <LinearLayout
+            android:id="@+id/messageFileRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/k_bg_bubble_gray"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingTop="9dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="9dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/k_bg_circle_white"
+                android:importantForAccessibility="no"
+                android:padding="8dp"
+                android:src="@drawable/media_ic_file"
+                app:tint="@color/primary_teal" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/messageFileNameTxt"
+                    style="@style/Kinnect.Text.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="middle"
+                    android:maxWidth="180dp"
+                    android:maxLines="1"
+                    android:text="Document.pdf"
+                    android:textColor="@color/k_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:includeFontPadding="false"
+                    android:text="Tap to open"
+                    android:textColor="@color/k_text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
         <!-- Bubble; the heart badge overlaps its bottom corner (negative top margin) -->
         <LinearLayout
             android:layout_width="wrap_content"

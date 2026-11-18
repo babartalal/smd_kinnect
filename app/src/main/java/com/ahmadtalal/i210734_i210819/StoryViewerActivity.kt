@@ -1,7 +1,9 @@
 package com.ahmadtalal.i210734_i210819
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -9,6 +11,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.ahmadtalal.i210734_i210819.databinding.ActivityStoryViewerBinding
 
 class StoryViewerActivity : AppCompatActivity() {
+
+    /** True while a video story is on screen, so it can pause and resume with the screen. */
+    private var showingVideo = false
 
     private lateinit var binding: ActivityStoryViewerBinding
 
@@ -43,14 +48,50 @@ class StoryViewerActivity : AppCompatActivity() {
         Api.get("stories/get.php", params) { result ->
             if (!result.ok || isFinishing || isDestroyed) return@get
             val story = Story.fromJson(result.obj())
-            if (story.image.isNotEmpty()) {
-                binding.storyMedia.loadRemote(story.image)
-            }
+            showStoryMedia(story)
             binding.storyTextLabel.text = story.textLabel
             binding.storyTextLabel.visibility = if (story.textLabel.isEmpty()) View.GONE else View.VISIBLE
             if (story.timestamp > 0) binding.storyTime.text = storyAge(story.timestamp)
             if (story.userId.isNotEmpty()) showAuthor(story.userId)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (showingVideo) binding.storyVideo.start()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.storyVideo.pause()
+    }
+
+    /** A picture story fills the frame as an image; a video story plays there in a loop. */
+    private fun showStoryMedia(story: Story) {
+        if (story.image.isEmpty()) return
+        if (!story.isVideo) {
+            showingVideo = false
+            binding.storyVideo.visibility = View.GONE
+            binding.storyMedia.loadRemote(story.image)
+            return
+        }
+        showingVideo = true
+        binding.storyVideo.visibility = View.VISIBLE
+        binding.storyVideo.setOnPreparedListener { player ->
+            player.isLooping = true
+            // The sample picture underneath is only needed until the video is ready.
+            binding.storyMedia.visibility = View.INVISIBLE
+            binding.storyVideo.start()
+        }
+        binding.storyVideo.setOnErrorListener { _, _, _ ->
+            showingVideo = false
+            binding.storyVideo.visibility = View.GONE
+            binding.storyMedia.visibility = View.VISIBLE
+            Toast.makeText(this, "This video story could not be played", Toast.LENGTH_SHORT).show()
+            true
+        }
+        // Streamed straight from the server's uploads folder.
+        binding.storyVideo.setVideoURI(Uri.parse(Api.imageUrl(story.image)))
     }
 
     /** Shows the story author's name and initials in the header. */

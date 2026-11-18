@@ -247,6 +247,54 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Attachment bar: the photo, video or file that will go out with the next send -->
+    <LinearLayout
+        android:id="@+id/attachmentBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/k_bg_app"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/attachmentIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="8dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/media_ic_file"
+            app:tint="@color/primary_teal" />
+
+        <TextView
+            android:id="@+id/attachmentNameTxt"
+            style="@style/Kinnect.Text.Body"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="middle"
+            android:maxLines="1"
+            android:text="Attachment"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/cancelAttachmentBtn"
+            style="@style/Kinnect.Text.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Remove"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <!-- Bottom input row -->
     <LinearLayout
         android:layout_width="match_parent"

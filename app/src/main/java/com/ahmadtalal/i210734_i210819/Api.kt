@@ -2,16 +2,24 @@ package com.ahmadtalal.i210734_i210819
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.provider.OpenableColumns
 import android.util.Log
+import android.webkit.MimeTypeMap
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import java.io.IOException
 import java.util.UUID
 import java.util.concurrent.Executors
@@ -30,12 +38,34 @@ class ApiResult(
     /** The data is the same as the etag the caller already has. */
     val notModified: Boolean = false,
     /** The UUID sent with a write; the server uses it to ignore repeats. */
-    val clientId: String = ""
+    val clientId: String = "",
+    /** An upload could not reach the server at all (no connection), as opposed to being refused. */
+    val unreachable: Boolean = false
 ) {
     val etag: String get() = envelope?.optString("etag").orEmpty()
     fun obj(): JSONObject = envelope?.optJSONObject("data") ?: JSONObject()
     fun arr(): JSONArray = envelope?.optJSONArray("data") ?: JSONArray()
     val hasData: Boolean get() = envelope != null && !envelope.isNull("data")
+}
+
+/** One file of a multipart upload: the name and type sent to the server, and the content. */
+class UploadPart private constructor(
+    val fileName: String,
+    val mimeType: String,
+    internal val body: RequestBody
+) {
+    companion object {
+        private fun type(mimeType: String) =
+            mimeType.toMediaTypeOrNull() ?: "application/octet-stream".toMediaType()
+
+        /** Content already in memory, e.g. a JPEG-compressed photo. */
+        fun bytes(fileName: String, mimeType: String, bytes: ByteArray): UploadPart =
+            UploadPart(fileName, mimeType, bytes.toRequestBody(type(mimeType)))
+
+        /** Content streamed from a file, e.g. a video copied into the cache folder. */
+        fun file(fileName: String, mimeType: String, file: File): UploadPart =
+            UploadPart(fileName, mimeType, file.asRequestBody(type(mimeType)))
+    }
 }
 
 /**
@@ -66,7 +96,7 @@ object Api {
         appContext = context.applicationContext
     }
 
-    /** Full URL for an image path returned by the server ("uploads/abc.jpg"). */
+    /** Full URL for an image, video or file path returned by the server ("uploads/abc.jpg"). */
     fun imageUrl(path: String): String =
         if (path.isEmpty() || path.startsWith("http")) path else baseUrl + path
 
@@ -183,6 +213,150 @@ object Api {
                 syncing.set(false)
             }
         }
+    }
+
+    // ---------- multipart uploads ----------
+
+    /** media/upload.php refuses anything larger; checked here first to save the upload. */
+    const val MAX_UPLOAD_BYTES = 25L * 1024 * 1024
+
+    /**
+     * Send a multipart/form-data request: plain [fields] plus [files], each a
+     * pair of form field name ("file", "images[]") and content. Like [post] it
+     * carries the X-Auth-Token header and a clientId, runs on the background
+     * executor and answers on the main thread. Uploads are never queued: when
+     * the server cannot be reached the result has unreachable = true and the
+     * caller decides what to do (fall back to a queued JSON write, or tell
+     * the user that attachments need a connection).
+     */
+    fun postMultipart(
+        endpoint: String,
+        fields: Map<String, String?> = emptyMap(),
+        files: List<Pair<String, UploadPart>> = emptyList(),
+        callback: (ApiResult) -> Unit
+    ) {
+        val clientId = fields["clientId"].orEmpty().ifEmpty { UUID.randomUUID().toString() }
+        executor.execute {
+            deliver(multipartNow(endpoint, fields, files, clientId), callback)
+        }
+    }
+
+    /**
+     * Upload one file to media/upload.php. On success the result's obj() holds
+     * {path, mediaType, fileName, size}; pass "path" as `media` to
+     * messages/send.php or stories/create.php.
+     */
+    fun upload(part: UploadPart, callback: (ApiResult) -> Unit) {
+        postMultipart("media/upload.php", emptyMap(), listOf("file" to part), callback)
+    }
+
+    /**
+     * Upload something the user picked (a content:// uri) to media/upload.php.
+     * The content is read through the ContentResolver and copied to a file in
+     * the cache folder first, so no storage permission is needed; the copy is
+     * deleted afterwards.
+     */
+    fun uploadUri(uri: Uri, callback: (ApiResult) -> Unit) {
+        val clientId = UUID.randomUUID().toString()
+        executor.execute {
+            var copy: File? = null
+            val result = try {
+                val name = displayName(uri)
+                val type = mimeTypeOf(uri)
+                val file = copyToCache(uri)
+                copy = file
+                when {
+                    file == null -> ApiResult(ok = false, error = "Could not read the selected file")
+                    file.length() == 0L -> ApiResult(ok = false, error = "The selected file is empty")
+                    file.length() > MAX_UPLOAD_BYTES ->
+                        ApiResult(ok = false, error = "This file is too large. The limit is 25 MB.")
+                    else -> multipartNow(
+                        "media/upload.php", emptyMap(),
+                        listOf("file" to UploadPart.file(withExtension(name, type), type, file)), clientId
+                    )
+                }
+            } catch (e: Exception) {
+                ApiResult(ok = false, error = "Could not read the selected file")
+            } finally {
+                copy?.delete()
+            }
+            deliver(result, callback)
+        }
+    }
+
+    /** The name the user knows a picked file by ("Report.pdf"). */
+    fun displayName(uri: Uri): String {
+        val fromProvider = try {
+            appContext.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst() && !cursor.isNull(0)) cursor.getString(0) else null
+            }
+        } catch (e: Exception) {
+            null
+        }
+        return fromProvider.orEmpty()
+            .ifEmpty { uri.lastPathSegment.orEmpty().substringAfterLast('/') }
+            .ifEmpty { "file" }
+    }
+
+    /** MIME type of a picked uri, from its provider or else from its file name. */
+    fun mimeTypeOf(uri: Uri): String {
+        appContext.contentResolver.getType(uri)?.let { return it }
+        val extension = displayName(uri).substringAfterLast('.', "").lowercase()
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "application/octet-stream"
+    }
+
+    /** image, video or file: how the app treats content of this MIME type. */
+    fun mediaTypeOf(mimeType: String): String = when {
+        mimeType.startsWith("image/") -> "image"
+        mimeType.startsWith("video/") -> "video"
+        else -> "file"
+    }
+
+    /** Gallery items are often named without an extension; the server needs one to recognise the type. */
+    private fun withExtension(fileName: String, mimeType: String): String {
+        if (fileName.substringAfterLast('.', "").length in 2..5) return fileName
+        val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: return fileName
+        return "$fileName.$extension"
+    }
+
+    /** Copy picked content into the cache folder; null when it cannot be opened. */
+    private fun copyToCache(uri: Uri): File? {
+        val input = appContext.contentResolver.openInputStream(uri) ?: return null
+        val folder = File(appContext.cacheDir, "uploads").apply { mkdirs() }
+        val copy = File(folder, UUID.randomUUID().toString())
+        input.use { source ->
+            copy.outputStream().use { target ->
+                val buffer = ByteArray(64 * 1024)
+                var total = 0L
+                while (total <= MAX_UPLOAD_BYTES) {
+                    // Stops early on a file the server would refuse anyway.
+                    val read = source.read(buffer)
+                    if (read < 0) break
+                    target.write(buffer, 0, read)
+                    total += read
+                }
+            }
+        }
+        return copy
+    }
+
+    private fun multipartNow(
+        endpoint: String,
+        fields: Map<String, String?>,
+        files: List<Pair<String, UploadPart>>,
+        clientId: String
+    ): ApiResult = try {
+        val body = MultipartBody.Builder().setType(MultipartBody.FORM).apply {
+            fields.forEach { (name, value) -> if (value != null && name != "clientId") addFormDataPart(name, value) }
+            addFormDataPart("clientId", clientId)
+            files.forEach { (field, part) -> addFormDataPart(field, part.fileName, part.body) }
+        }.build()
+        execute(Request.Builder().url(baseUrl + endpoint).post(body)).toResult(clientId)
+    } catch (e: IOException) {
+        Log.w("KinnectApi", "$endpoint unreachable: $e")
+        ApiResult(ok = false, error = OFFLINE_MESSAGE, clientId = clientId, unreachable = true)
+    } catch (e: Exception) {
+        ApiResult(ok = false, error = e.message ?: "Unexpected error", clientId = clientId)
     }
 
     // ---------- internals ----------

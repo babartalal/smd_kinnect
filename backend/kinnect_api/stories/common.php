@@ -9,7 +9,9 @@ function story_json(array $row): array
         'storyId'   => (string) $row['id'],
         'userId'    => (string) $row['user_id'],
         'timestamp' => (int) $row['created_at'],
+        // Path of the story's picture or video (see mediaType).
         'image'     => image_path($row['image']),
+        'mediaType' => ($row['media_type'] ?? '') ?: 'image',
         'textLabel' => $row['text_label'],
         'audience'  => $row['audience'],
     ];

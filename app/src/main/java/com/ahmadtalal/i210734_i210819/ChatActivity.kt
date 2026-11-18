@@ -15,7 +15,6 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Base64
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -32,6 +31,23 @@ import java.io.InputStream
 
 class ChatActivity : AppCompatActivity() {
 
+    companion object {
+        /** What the plus button offers: the file types media/upload.php accepts. */
+        private val ATTACHABLE_TYPES = arrayOf(
+            "image/*",
+            "video/*",
+            "application/pdf",
+            "text/plain",
+            "application/zip",
+            "application/msword",
+            "application/vnd.ms-excel",
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        )
+    }
+
     private lateinit var binding: ActivityChatBinding
     private lateinit var messageAdapter: MessageAdapter
 
@@ -39,7 +55,12 @@ class ChatActivity : AppCompatActivity() {
     private var currentUserName: String = "Someone"
 
     private var activeReplyToMsg: Message? = null
-    private var selectedImageBase64: String? = null
+
+    /** A photo, video or file the user picked; it is uploaded and sent with the next tap on send. */
+    private class Attachment(val uri: Uri, val name: String, val mimeType: String, val mediaType: String)
+
+    private var attachment: Attachment? = null
+    private var uploading = false
 
     private val messageList = mutableListOf<Message>()
     private val currentUserId: String = Session.userId
@@ -62,7 +83,14 @@ class ChatActivity : AppCompatActivity() {
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { processImageUri(it) }
+        uri?.let { attach(it) }
+    }
+
+    /** Gallery button: a photo or a video. Plus button: any supported file. */
+    private val pickDocumentLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        uri?.let { attach(it) }
     }
 
     private val requestStoragePermissionLauncher = registerForActivityResult(
@@ -138,7 +166,7 @@ class ChatActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         messageAdapter = MessageAdapter(this, messageList, onChanged = { messagesQuery?.showLocal(); messagesQuery?.refresh() }) { replyMsg ->
             activeReplyToMsg = replyMsg
-            binding.replyingMsgPreviewTxt.text = replyMsg.text.ifEmpty { "📷 Photo" }
+            binding.replyingMsgPreviewTxt.text = replyMsg.preview()
             binding.replyingToMessageBar.visibility = View.VISIBLE
             binding.chatMessageInput.requestFocus()
         }
@@ -163,28 +191,41 @@ class ChatActivity : AppCompatActivity() {
             resetReplyState()
         }
 
+        // Gallery: a photo or a video from the system picker (no storage permission needed).
         binding.chatGalleryBtn.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+            pickDocumentLauncher.launch(arrayOf("image/*", "video/*"))
         }
 
         binding.chatCameraBtn.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
 
+        // Plus: any file the server accepts (documents, archives, photos, videos).
+        binding.chatMoreBtn.setOnClickListener {
+            pickDocumentLauncher.launch(ATTACHABLE_TYPES)
+        }
+
+        binding.cancelAttachmentBtn.setOnClickListener {
+            if (!uploading) showAttachment(null)
+        }
+
         binding.chatSendBtn.setOnClickListener {
             sendMessage()
         }
 
-        // Like icon while the input is empty (as in the design), send icon once there is text.
+        // Like icon while there is nothing to send (as in the design), send icon otherwise.
         binding.chatMessageInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                binding.chatSendBtn.setImageResource(
-                    if (s.isNullOrBlank()) R.drawable.k_ic_like else R.drawable.k_ic_send
-                )
+                updateSendIcon()
             }
         })
+    }
+
+    private fun updateSendIcon() {
+        val nothingToSend = binding.chatMessageInput.text.isNullOrBlank() && attachment == null
+        binding.chatSendBtn.setImageResource(if (nothingToSend) R.drawable.k_ic_like else R.drawable.k_ic_send)
     }
 
     /** Ask the server to ring the other person, then open the call screen. */
@@ -268,22 +309,52 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun processImageUri(uri: Uri) {
-        try {
+    /** Remember what the user picked and show it in the bar above the input. */
+    private fun attach(uri: Uri) {
+        if (uploading) return
+        val mimeType = Api.mimeTypeOf(uri)
+        showAttachment(Attachment(uri, Api.displayName(uri), mimeType, Api.mediaTypeOf(mimeType)))
+        val kind = when (attachment?.mediaType) {
+            "image" -> "Photo"
+            "video" -> "Video"
+            else -> "File"
+        }
+        Toast.makeText(this, "$kind attached. Tap send to deliver.", Toast.LENGTH_SHORT).show()
+    }
+
+    /** Show (or with null, clear) the attachment waiting to be sent. */
+    private fun showAttachment(picked: Attachment?) {
+        attachment = picked
+        binding.attachmentBar.visibility = if (picked == null) View.GONE else View.VISIBLE
+        if (picked != null) {
+            binding.attachmentNameTxt.text = picked.name
+            binding.attachmentIcon.setImageResource(
+                when (picked.mediaType) {
+                    "image" -> R.drawable.k_ic_image
+                    "video" -> R.drawable.k_ic_video
+                    else -> R.drawable.media_ic_file
+                }
+            )
+        }
+        updateSendIcon()
+    }
+
+    /**
+     * A picked photo as JPEG bytes (max 800px, 50% quality), read through the
+     * ContentResolver. Null when it cannot be decoded; it is then uploaded as it is.
+     */
+    private fun compressImage(uri: Uri): ByteArray? {
+        return try {
             val inputStream: InputStream? = contentResolver.openInputStream(uri)
             val originalBitmap = BitmapFactory.decodeStream(inputStream)
             inputStream?.close()
+            if (originalBitmap == null) return null
 
-            if (originalBitmap != null) {
-                val scaledBitmap = scaleBitmap(originalBitmap, 800)
-                val outputStream = ByteArrayOutputStream()
-                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
-                val byteArray = outputStream.toByteArray()
-                selectedImageBase64 = Base64.encodeToString(byteArray, Base64.NO_WRAP)
-                Toast.makeText(this, "Photo attached. Tap send to deliver.", Toast.LENGTH_SHORT).show()
-            }
+            val outputStream = ByteArrayOutputStream()
+            scaleBitmap(originalBitmap, 800).compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+            outputStream.toByteArray()
         } catch (e: Exception) {
-            Toast.makeText(this, "Failed to load image: ${e.message}", Toast.LENGTH_SHORT).show()
+            null
         }
     }
 
@@ -306,43 +377,98 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun sendMessage() {
+        if (uploading) return
         val text = binding.chatMessageInput.text.toString().trim()
-        val imageBase64 = selectedImageBase64
-        if (text.isEmpty() && imageBase64.isNullOrEmpty()) {
+        val picked = attachment
+        if (text.isEmpty() && picked == null) {
+            return
+        }
+        if (picked == null) {
+            deliverMessage(text, null, null)
             return
         }
 
+        // With an attachment: first upload the file to media/upload.php, then
+        // send the message that points at the stored file.
+        uploading = true
+        binding.chatSendBtn.isEnabled = false
+        binding.attachmentNameTxt.text = "Uploading ${picked.name}..."
+
+        val onUploaded: (ApiResult) -> Unit = { result ->
+            uploading = false
+            if (!isFinishing && !isDestroyed) {
+                binding.chatSendBtn.isEnabled = true
+                if (result.ok) {
+                    deliverMessage(text, picked, result.obj())
+                } else {
+                    // Keep the attachment and the text so the user can try again.
+                    showAttachment(picked)
+                    val problem = if (result.unreachable) {
+                        "You're offline. Attachments need a connection. Reconnect and tap send again."
+                    } else {
+                        "Upload failed: ${result.error}"
+                    }
+                    Toast.makeText(this, problem, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        // Photos are scaled down and sent as JPEG; videos and files go as they are.
+        val jpeg = if (picked.mediaType == "image") compressImage(picked.uri) else null
+        if (jpeg != null) {
+            val name = picked.name.substringBeforeLast('.').ifEmpty { "photo" } + ".jpg"
+            Api.upload(UploadPart.bytes(name, "image/jpeg", jpeg), onUploaded)
+        } else {
+            Api.uploadUri(picked.uri, onUploaded)
+        }
+    }
+
+    /**
+     * Send the message itself. [uploaded] is the answer of media/upload.php
+     * ({path, mediaType, fileName}) when [picked] was attached.
+     */
+    private fun deliverMessage(text: String, picked: Attachment?, uploaded: org.json.JSONObject?) {
         // The server stores the message and sends the push notification
         // to the recipient.
         val body = mapOf(
             "recipient_id" to recipientId,
             "text" to text,
-            "image" to imageBase64,
+            "media" to uploaded?.optString("path"),
+            "mediaType" to uploaded?.optString("mediaType"),
+            "fileName" to uploaded?.optString("fileName"),
             "replyToMsgId" to activeReplyToMsg?.messageId,
             "clientId" to newClientId()
         )
-        val replyText = activeReplyToMsg?.let { it.text.ifEmpty { "📷 Photo" } }.orEmpty()
+        val replyText = activeReplyToMsg?.preview().orEmpty()
+        // What stands for the message in the chat while it waits in the offline queue.
+        val preview = text.ifEmpty {
+            when (uploaded?.optString("mediaType")) {
+                "image" -> "📷 Photo"
+                "video" -> "🎥 Video"
+                else -> "📎 " + uploaded?.optString("fileName").orEmpty()
+            }
+        }
 
         binding.chatMessageInput.setText("")
-        selectedImageBase64 = null
+        showAttachment(null)
         resetReplyState()
 
+        // The file is already on the server, so even a message with an attachment
+        // can wait in the offline queue if the connection drops at this point.
         Api.post("messages/send.php", body, queueIfOffline = true) { result ->
             if (isFinishing || isDestroyed) return@post
             when {
                 result.ok -> messagesQuery?.refresh()
                 result.queued -> {
                     // Saved in pending_actions; show it now from SQLite with a "Sending..." label.
-                    LocalDb.get().addPendingMessage(
-                        result.clientId, recipientId, text.ifEmpty { "📷 Photo" }, replyText
-                    )
+                    LocalDb.get().addPendingMessage(result.clientId, recipientId, preview, replyText)
                     messagesQuery?.showLocal()
                     Toast.makeText(this, "You're offline. The message will be sent when you reconnect.", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
-                    // Give the text back so it is not lost.
+                    // Give the text and the attachment back so they are not lost.
                     binding.chatMessageInput.setText(text)
-                    selectedImageBase64 = imageBase64
+                    if (picked != null && attachment == null) showAttachment(picked)
                     Toast.makeText(this, "Failed to send: ${result.error}", Toast.LENGTH_SHORT).show()
                 }
             }
