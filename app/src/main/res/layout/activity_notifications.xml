@@ -355,109 +355,15 @@
                         app:tint="@color/k_text_secondary" />
                 </LinearLayout>
 
-                <LinearLayout
+                <!-- Incoming friend requests (friends/requests.php), one
+                     item_notification_request row each; empty when there are none. -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/notifRequestsRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingStart="16dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="12dp"
-                    android:paddingBottom="8dp">
-
-                    <!-- avatar with a small type badge overlapping its bottom-right (negative margin) -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            style="@style/Kinnect.Text.AvatarInitials"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:layout_marginBottom="4dp"
-                            android:background="@drawable/k_bg_circle_indigo"
-                            android:text="SI"
-                            android:textSize="20sp" />
-
-                        <LinearLayout
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_gravity="bottom"
-                            android:layout_marginStart="-22dp"
-                            android:background="@drawable/k_bg_circle_white"
-                            android:padding="2dp">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/k_bg_circle_white"
-                                android:backgroundTint="@color/primary_teal"
-                                android:importantForAccessibility="no"
-                                android:padding="5dp"
-                                android:src="@drawable/k_ic_person"
-                                app:tint="@color/white" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <!-- bold parts are applied in NotificationsActivity (Html.fromHtml) -->
-                        <TextView
-                            android:id="@+id/notifText2"
-                            style="@style/Kinnect.Text.Body"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:lineSpacingExtra="3dp"
-                            android:text="&lt;b&gt;Sara Iqbal&lt;/b&gt; sent you a friend request." />
-
-                        <TextView
-                            style="@style/Kinnect.Text.Link"
-                            android:textSize="14sp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="20m" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="2dp"
-                            android:orientation="horizontal">
-
-                            <androidx.appcompat.widget.AppCompatButton
-                                android:id="@+id/notifConfirmBtn"
-                                style="@style/Kinnect.Button.Teal"
-                                android:layout_width="0dp"
-                                android:layout_height="36dp"
-                                android:layout_weight="1"
-                                android:text="Confirm" />
-
-                            <androidx.appcompat.widget.AppCompatButton
-                                android:id="@+id/notifDeleteBtn"
-                                style="@style/Kinnect.Button.Gray"
-                                android:layout_width="0dp"
-                                android:layout_height="36dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_weight="1"
-                                android:text="Delete" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="8dp"
-                        android:contentDescription="More"
-                        android:padding="5dp"
-                        android:src="@drawable/k_ic_more"
-                        app:tint="@color/k_text_secondary" />
-                </LinearLayout>
+                    android:nestedScrollingEnabled="false"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_notification_request" />
             </LinearLayout>
 
             <TextView

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 18 Notifications: one incoming friend request ("… sent you a friend request."). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="8dp">
+
+    <!-- avatar with a small type badge overlapping its bottom-right (negative margin) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- bindAvatar() shows exactly one of these two views. -->
+        <ImageView
+            android:id="@+id/notifRequestAvatarImage"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/k_bg_circle_indigo"
+            android:contentDescription="User avatar"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/notifRequestAvatarInitials"
+            style="@style/Kinnect.Text.AvatarInitials"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/k_bg_circle_indigo"
+            android:text="SI"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="-22dp"
+            android:background="@drawable/k_bg_circle_white"
+            android:padding="2dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/k_bg_circle_white"
+                android:backgroundTint="@color/primary_teal"
+                android:importantForAccessibility="no"
+                android:padding="5dp"
+                android:src="@drawable/k_ic_person"
+                app:tint="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- NotificationRequestAdapter sets "<b>Name</b> sent you a friend request." -->
+        <TextView
+            android:id="@+id/notifRequestText"
+            style="@style/Kinnect.Text.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="3dp"
+            android:text="Sara Iqbal sent you a friend request." />
+
+        <TextView
+            android:id="@+id/notifRequestTime"
+            style="@style/Kinnect.Text.Link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="20m"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="2dp"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/notifRequestConfirmBtn"
+                style="@style/Kinnect.Button.Teal"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="Confirm" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/notifRequestDeleteBtn"
+                style="@style/Kinnect.Button.Gray"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="Delete" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="More"
+        android:padding="5dp"
+        android:src="@drawable/k_ic_more"
+        app:tint="@color/k_text_secondary" />
+</LinearLayout>
