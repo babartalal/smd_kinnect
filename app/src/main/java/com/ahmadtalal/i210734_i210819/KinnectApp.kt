@@ -2,6 +2,8 @@ package com.ahmadtalal.i210734_i210819
 
 import android.app.Activity
 import android.app.Application
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -29,6 +31,16 @@ class KinnectApp : Application() {
         LocalDb.init(this)
         Session.init(this)
         Api.init(this)
+
+        // Background sync: the moment the device gets a connection again, send
+        // everything that was queued in pending_actions while offline.
+        getSystemService(ConnectivityManager::class.java)?.registerDefaultNetworkCallback(
+            object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    Api.syncPending()
+                }
+            }
+        )
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityStarted(activity: Activity) {

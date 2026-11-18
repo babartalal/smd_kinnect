@@ -79,7 +79,9 @@ class CommentAdapter(
 
             binding.commentText.text = comment.text
 
-            if (comment.timestamp > 0) {
+            if (comment.pending) {
+                binding.commentTimestamp.text = "Pending"
+            } else if (comment.timestamp > 0) {
                 val relativeTime = DateUtils.getRelativeTimeSpanString(
                     comment.timestamp,
                     System.currentTimeMillis(),

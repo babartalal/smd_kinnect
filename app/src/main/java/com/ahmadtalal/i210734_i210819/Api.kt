@@ -13,6 +13,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
+import java.util.UUID
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -22,12 +23,14 @@ class ApiResult(
     val ok: Boolean,
     private val envelope: JSONObject? = null,
     val error: String = "",
-    /** The server was unreachable and this is the copy saved in SQLite. */
+    /** This is the copy stored in SQLite, not a fresh answer from the server. */
     val fromCache: Boolean = false,
-    /** The server was unreachable; the write is saved and will be sent later. */
+    /** The server was unreachable; the write is in pending_actions and will be sent later. */
     val queued: Boolean = false,
     /** The data is the same as the etag the caller already has. */
-    val notModified: Boolean = false
+    val notModified: Boolean = false,
+    /** The UUID sent with a write; the server uses it to ignore repeats. */
+    val clientId: String = ""
 ) {
     val etag: String get() = envelope?.optString("etag").orEmpty()
     fun obj(): JSONObject = envelope?.optJSONObject("data") ?: JSONObject()
@@ -67,9 +70,27 @@ object Api {
     fun imageUrl(path: String): String =
         if (path.isEmpty() || path.startsWith("http")) path else baseUrl + path
 
+    private fun cacheKey(endpoint: String, params: Map<String, Any?>): String =
+        Session.userId + "|" + endpoint + "?" +
+            params.toSortedMap().entries.joinToString("&") { "${it.key}=${it.value}" }
+
     /**
-     * Read data. A successful response is saved in SQLite; if the server
-     * cannot be reached, the saved copy is returned with fromCache = true.
+     * What SQLite already holds for a read web service, or null. Screens show
+     * this first, then refresh from the server.
+     */
+    fun local(endpoint: String, params: Map<String, Any?> = emptyMap()): ApiResult? {
+        val stored = try {
+            LocalDb.get().loadResponse(endpoint, params, cacheKey(endpoint, params))
+        } catch (e: Exception) {
+            null
+        } ?: return null
+        return ApiResult(ok = true, envelope = JSONObject(stored), fromCache = true)
+    }
+
+    /**
+     * Read data from the server. A successful answer is stored in SQLite; if
+     * the server cannot be reached, the stored copy is returned instead with
+     * fromCache = true.
      */
     fun get(
         endpoint: String,
@@ -77,29 +98,22 @@ object Api {
         etag: String = "",
         callback: (ApiResult) -> Unit
     ) {
-        val userId = Session.userId
-        val cacheKey = userId + "|" + endpoint + "?" +
-            params.toSortedMap().entries.joinToString("&") { "${it.key}=${it.value}" }
+        val key = cacheKey(endpoint, params)
 
         executor.execute {
             val result = try {
                 val url = (baseUrl + endpoint).toHttpUrl().newBuilder().apply {
-                    params.forEach { (key, value) -> if (value != null) addQueryParameter(key, value.toString()) }
+                    params.forEach { (name, value) -> if (value != null) addQueryParameter(name, value.toString()) }
                     if (etag.isNotEmpty()) addQueryParameter("etag", etag)
                 }.build()
                 val response = execute(Request.Builder().url(url).get())
-                if (response.ok && !response.notModified) {
-                    LocalDb.get().putCache(cacheKey, response.raw)
+                if (response.ok && !response.notModified && response.json != null) {
+                    LocalDb.get().saveResponse(endpoint, params, key, response.raw, response.json)
                 }
                 response.toResult()
             } catch (e: IOException) {
                 Log.w("KinnectApi", "$endpoint unreachable: $e")
-                val cached = LocalDb.get().getCache(cacheKey)
-                if (cached != null) {
-                    ApiResult(ok = true, envelope = JSONObject(cached), fromCache = true)
-                } else {
-                    ApiResult(ok = false, error = OFFLINE_MESSAGE)
-                }
+                local(endpoint, params) ?: ApiResult(ok = false, error = OFFLINE_MESSAGE)
             } catch (e: Exception) {
                 ApiResult(ok = false, error = e.message ?: "Unexpected error")
             }
@@ -108,9 +122,9 @@ object Api {
     }
 
     /**
-     * Write data. With [queueIfOffline], a call that cannot reach the server
-     * is stored in SQLite and re-sent automatically later; the callback then
-     * receives queued = true.
+     * Write data. Every write carries a clientId (UUID). With [queueIfOffline],
+     * a call that cannot reach the server is saved in pending_actions and sent
+     * automatically later; the callback then receives queued = true.
      */
     fun post(
         endpoint: String,
@@ -118,40 +132,50 @@ object Api {
         queueIfOffline: Boolean = false,
         callback: (ApiResult) -> Unit = {}
     ) {
-        val json = JSONObject(body.filterValues { it != null }).toString()
+        val clientId = (body["clientId"] as? String).orEmpty().ifEmpty { UUID.randomUUID().toString() }
+        val json = JSONObject(body.filterValues { it != null }).put("clientId", clientId).toString()
+
         executor.execute {
             val result = try {
-                postNow(endpoint, json).toResult()
+                postNow(endpoint, json).toResult(clientId)
             } catch (e: IOException) {
                 Log.w("KinnectApi", "$endpoint unreachable: $e")
                 if (queueIfOffline && Session.isLoggedIn) {
-                    LocalDb.get().enqueue(endpoint, json)
-                    ApiResult(ok = false, queued = true, error = "You're offline. This will be sent when you're back online.")
+                    LocalDb.get().enqueue(clientId, endpoint, json)
+                    ApiResult(
+                        ok = false, queued = true, clientId = clientId,
+                        error = "You're offline. This will be sent when you're back online."
+                    )
                 } else {
-                    ApiResult(ok = false, error = OFFLINE_MESSAGE)
+                    ApiResult(ok = false, error = OFFLINE_MESSAGE, clientId = clientId)
                 }
             } catch (e: Exception) {
-                ApiResult(ok = false, error = e.message ?: "Unexpected error")
+                ApiResult(ok = false, error = e.message ?: "Unexpected error", clientId = clientId)
             }
             deliver(result, callback)
         }
     }
 
-    /** Re-send writes that were queued while offline, oldest first. */
+    /**
+     * Background sync: send the queued offline actions, oldest first. Runs
+     * when the network comes back, on the heartbeat, and after any successful
+     * call. An action leaves the queue only once the server has answered it;
+     * repeats are harmless because the server remembers each clientId.
+     */
     fun syncPending() {
         if (!Session.isLoggedIn || !syncing.compareAndSet(false, true)) return
         syncExecutor.execute {
             try {
                 val db = LocalDb.get()
                 while (Session.isLoggedIn) {
-                    val pending = db.nextPending() ?: break
-                    try {
-                        // Whatever the server answers, it received the request: drop it.
-                        postNow(pending.endpoint, pending.body)
-                        db.deletePending(pending.id)
+                    val action = db.nextPending() ?: break
+                    val response = try {
+                        postNow(action.endpoint, action.body)
                     } catch (e: IOException) {
                         break // still offline; try again on the next sync
                     }
+                    if (response.code >= 500) break // server trouble: keep it and retry later
+                    db.completePending(action)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -168,9 +192,12 @@ object Api {
         val ok: Boolean get() = code in 200..299 && json?.optBoolean("ok") == true
         val notModified: Boolean get() = json?.optBoolean("notModified") == true
 
-        fun toResult(): ApiResult = when {
-            ok -> ApiResult(ok = true, envelope = json, notModified = notModified)
-            else -> ApiResult(ok = false, error = json?.optString("error").orEmpty().ifEmpty { "Server error ($code)" })
+        fun toResult(clientId: String = ""): ApiResult = when {
+            ok -> ApiResult(ok = true, envelope = json, notModified = notModified, clientId = clientId)
+            else -> ApiResult(
+                ok = false, clientId = clientId,
+                error = json?.optString("error").orEmpty().ifEmpty { "Server error ($code)" }
+            )
         }
     }
 
@@ -207,10 +234,10 @@ object Api {
 }
 
 /**
- * Keeps a screen up to date by polling a read web service. This stands in
- * for Firebase's addValueEventListener: [onData] runs when the data first
- * loads and again whenever it changes on the server. Unchanged polls are
- * answered with a tiny "not modified" reply thanks to the etag.
+ * Keeps a screen up to date. It first shows what SQLite already holds, then
+ * polls the web service so the screen follows the server (this stands in for
+ * Firebase's addValueEventListener). Unchanged polls are answered with a tiny
+ * "not modified" reply thanks to the etag.
  *
  * Call [start] in onStart and [stop] in onStop.
  */
@@ -225,12 +252,12 @@ class LiveQuery(
     private var running = false
     private var inFlight = false
     private var refreshRequested = false
-    private var delivered = false
     private var etag = ""
 
     fun start() {
         if (running) return
         running = true
+        showLocal()
         fetch()
     }
 
@@ -250,22 +277,25 @@ class LiveQuery(
         }
     }
 
+    /**
+     * Show the SQLite copy now. Used on start, and after an offline action
+     * changed the local data (a pending message, an edited message ...).
+     */
+    fun showLocal() {
+        if (!running) return
+        Api.local(endpoint, params)?.let(onData)
+    }
+
     private fun fetch() {
         if (inFlight) return
         inFlight = true
         Api.get(endpoint, params, etag) { result ->
             inFlight = false
             if (!running) return@get
-            if (result.ok && !result.notModified) {
-                if (!result.fromCache) {
-                    etag = result.etag
-                    delivered = true
-                    onData(result)
-                } else if (!delivered) {
-                    // Offline: show the saved copy once, then keep trying the server.
-                    delivered = true
-                    onData(result)
-                }
+            // Offline answers are the same SQLite copy already on screen.
+            if (result.ok && !result.notModified && !result.fromCache) {
+                etag = result.etag
+                onData(result)
             }
             handler.removeCallbacks(tick)
             if (refreshRequested) {

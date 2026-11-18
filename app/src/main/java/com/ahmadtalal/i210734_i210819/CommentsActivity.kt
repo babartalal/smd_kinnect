@@ -201,6 +201,17 @@ class CommentsActivity : AppCompatActivity() {
                 if (result.ok) {
                     commentsQuery?.refresh()
                 } else {
+                    // Queued in pending_actions: show it now, marked as pending.
+                    commentList.add(
+                        Comment(
+                            postId = postId,
+                            authorId = Session.userId,
+                            text = text,
+                            author = LocalDb.get().getUser(Session.userId)?.let { User.fromJson(it) },
+                            pending = true
+                        )
+                    )
+                    commentAdapter.updateData(commentList)
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
                 }
             } else {

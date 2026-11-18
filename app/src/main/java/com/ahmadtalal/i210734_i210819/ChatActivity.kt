@@ -42,8 +42,6 @@ class ChatActivity : AppCompatActivity() {
     private var selectedImageBase64: String? = null
 
     private val messageList = mutableListOf<Message>()
-    /** Messages typed while offline: shown right away, uploaded later from the SQLite queue. */
-    private val unsentMessages = mutableListOf<Message>()
     private val currentUserId: String = Session.userId
 
     private val callWatcher = IncomingCallWatcher(this)
@@ -138,7 +136,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        messageAdapter = MessageAdapter(this, messageList, onChanged = { messagesQuery?.refresh() }) { replyMsg ->
+        messageAdapter = MessageAdapter(this, messageList, onChanged = { messagesQuery?.showLocal(); messagesQuery?.refresh() }) { replyMsg ->
             activeReplyToMsg = replyMsg
             binding.replyingMsgPreviewTxt.text = replyMsg.text.ifEmpty { "📷 Photo" }
             binding.replyingToMessageBar.visibility = View.VISIBLE
@@ -255,15 +253,11 @@ class ChatActivity : AppCompatActivity() {
             for (i in 0 until messages.length()) {
                 messageList.add(Message.fromJson(messages.getJSONObject(i)))
             }
-            if (!result.fromCache) {
-                // We reached the server, so anything queued offline is being delivered.
-                unsentMessages.clear()
-            }
             showMessages()
         }
 
     private fun showMessages() {
-        val visible = messageList + unsentMessages
+        val visible = messageList.toList()
         messageAdapter.updateData(visible)
         if (visible.isNotEmpty()) {
             binding.messagesRecyclerView.scrollToPosition(visible.size - 1)
@@ -338,15 +332,11 @@ class ChatActivity : AppCompatActivity() {
             when {
                 result.ok -> messagesQuery?.refresh()
                 result.queued -> {
-                    unsentMessages.add(
-                        Message(
-                            senderId = currentUserId,
-                            text = text.ifEmpty { "📷 Photo" },
-                            timestamp = System.currentTimeMillis(),
-                            replyToText = replyText
-                        )
+                    // Saved in pending_actions; show it now from SQLite with a "Sending..." label.
+                    LocalDb.get().addPendingMessage(
+                        result.clientId, recipientId, text.ifEmpty { "📷 Photo" }, replyText
                     )
-                    showMessages()
+                    messagesQuery?.showLocal()
                     Toast.makeText(this, "You're offline. The message will be sent when you reconnect.", Toast.LENGTH_SHORT).show()
                 }
                 else -> {

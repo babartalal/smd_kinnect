@@ -58,7 +58,10 @@ class PostAdapter(
             bindAvatar(post.author?.profilePic.orEmpty(), authorName, binding.postAuthorAvatar, binding.postAuthorInitials)
 
             // Timestamp
-            if (post.timestamp > 0) {
+            if (post.pending) {
+                // Written offline: waiting in pending_actions until the connection returns.
+                binding.postTimestamp.text = "Pending · will post when you're online"
+            } else if (post.timestamp > 0) {
                 val relativeTime = DateUtils.getRelativeTimeSpanString(
                     post.timestamp,
                     System.currentTimeMillis(),
@@ -171,19 +174,38 @@ class PostAdapter(
         private fun handleReactionSelected(postId: String, selectedReaction: String) {
             binding.reactionPickerLayout.visibility = View.GONE
 
+            // A post that has not reached the server yet cannot be reacted to.
+            if (postId.startsWith(LocalDb.PENDING_PREFIX)) return
+
             val body = mapOf("post_id" to postId, "reaction" to selectedReaction)
             Api.post("posts/react.php", body, queueIfOffline = true) { result ->
-                if (result.ok) {
-                    val index = postList.indexOfFirst { it.postId == postId }
-                    if (index != -1) {
+                val index = postList.indexOfFirst { it.postId == postId }
+                when {
+                    result.ok -> if (index != -1) {
                         postList[index] = postList[index].copy(
                             myReaction = result.obj().optString("myReaction"),
                             reactionCount = result.obj().optInt("reactionCount")
                         )
                         notifyItemChanged(index)
                     }
-                } else {
-                    Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
+                    result.queued -> if (index != -1) {
+                        // Offline: work out the result the server will give, show it
+                        // now and keep it in SQLite. The real reaction is queued.
+                        val current = postList[index]
+                        val removing = current.myReaction == selectedReaction
+                        val newReaction = if (removing) "" else selectedReaction
+                        val newCount = current.reactionCount + when {
+                            removing -> -1
+                            current.myReaction.isEmpty() -> 1
+                            else -> 0
+                        }
+                        postList[index] = current.copy(myReaction = newReaction, reactionCount = newCount)
+                        LocalDb.get().patchPost(postId) {
+                            it.put("myReaction", newReaction).put("reactionCount", newCount)
+                        }
+                        notifyItemChanged(index)
+                    }
+                    else -> Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
                 }
             }
         }

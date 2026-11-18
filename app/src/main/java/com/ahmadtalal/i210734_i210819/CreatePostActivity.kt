@@ -178,7 +178,9 @@ class CreatePostActivity : AppCompatActivity() {
                     finish()
                 }
                 result.queued -> {
-                    // Saved in SQLite; it is uploaded automatically once we are back online.
+                    // Saved in pending_actions; it is uploaded automatically once we are
+                    // back online. Until then the feed shows it marked as pending.
+                    LocalDb.get().addPendingPost(result.clientId, postText)
                     Toast.makeText(this, "You're offline. Your post will be published when you reconnect.", Toast.LENGTH_LONG).show()
                     finish()
                 }

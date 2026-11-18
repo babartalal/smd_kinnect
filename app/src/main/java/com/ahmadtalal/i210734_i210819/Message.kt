@@ -14,7 +14,9 @@ data class Message(
     val replyToMsgId: String = "",
     val replyToText: String = "",
     val heartReaction: Boolean = false,
-    val isSystemMessage: Boolean = false
+    val isSystemMessage: Boolean = false,
+    /** Written offline and still waiting in pending_actions. */
+    val pending: Boolean = false
 ) {
     companion object {
         fun fromJson(json: JSONObject): Message = Message(
@@ -28,7 +30,8 @@ data class Message(
             replyToMsgId = json.optString("replyToMsgId"),
             replyToText = json.optString("replyToText"),
             heartReaction = json.optBoolean("heartReaction"),
-            isSystemMessage = json.optBoolean("isSystemMessage")
+            isSystemMessage = json.optBoolean("isSystemMessage"),
+            pending = json.optBoolean("pending")
         )
     }
 }

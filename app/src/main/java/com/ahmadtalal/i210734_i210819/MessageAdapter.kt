@@ -129,7 +129,9 @@ class MessageAdapter(
         // Photo-only messages show just the rounded image tile, without an empty bubble.
         body.visibility = if (msg.text.isEmpty()) View.GONE else View.VISIBLE
         time.text = formatTime(msg.timestamp)
-        editedLabel.visibility = if (msg.isEdited) View.VISIBLE else View.GONE
+        // A message written offline shows "Sending..." until it has synced.
+        editedLabel.visibility = if (msg.isEdited || msg.pending) View.VISIBLE else View.GONE
+        (editedLabel as? TextView)?.text = if (msg.pending) "Sending..." else "Edited"
 
         if (msg.replyToText.isNotEmpty()) {
             val peerFirstName = peerName.substringBefore(" ")
@@ -158,7 +160,7 @@ class MessageAdapter(
 
         // A message still waiting in the offline queue has no server id yet,
         // so it cannot be replied to, edited or reacted to.
-        if (msg.messageId.isEmpty()) {
+        if (msg.pending || msg.messageId.isEmpty()) {
             root.setOnClickListener(null)
             root.setOnLongClickListener(null)
             return
@@ -196,10 +198,14 @@ class MessageAdapter(
             .setTitle("Message Options")
             .setItems(options.toTypedArray()) { _, which ->
                 when (options[which]) {
-                    heartActionText -> change("messages/react.php", mapOf("message_id" to msg.messageId))
+                    heartActionText -> change("messages/react.php", msg.messageId, mapOf("message_id" to msg.messageId)) {
+                        it.put("heartReaction", !msg.heartReaction)
+                    }
                     "Reply" -> onReplyRequested(msg)
                     "Edit Message" -> showEditDialog(msg)
-                    "Delete Message" -> change("messages/delete.php", mapOf("message_id" to msg.messageId))
+                    "Delete Message" -> change("messages/delete.php", msg.messageId, mapOf("message_id" to msg.messageId)) {
+                        it.put("text", "This message was deleted.").put("image", "")
+                    }
                 }
             }
             .show()
@@ -216,20 +222,34 @@ class MessageAdapter(
             .setPositiveButton("Save") { _, _ ->
                 val newText = editText.text.toString().trim()
                 if (newText.isNotEmpty()) {
-                    change("messages/edit.php", mapOf("message_id" to msg.messageId, "text" to newText))
+                    change("messages/edit.php", msg.messageId, mapOf("message_id" to msg.messageId, "text" to newText)) {
+                        it.put("text", newText).put("isEdited", true)
+                    }
                 }
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
-    /** Send a change to the server, then let the chat reload to show it. */
-    private fun change(endpoint: String, body: Map<String, Any?>) {
-        Api.post(endpoint, body) { result ->
-            if (result.ok) {
-                onChanged()
-            } else {
-                Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
+    /**
+     * Send a change to the server, then let the chat reload to show it.
+     * Offline, the change is queued in pending_actions and [offlineChange]
+     * applies it to the copy in SQLite so it shows straight away.
+     */
+    private fun change(
+        endpoint: String,
+        messageId: String,
+        body: Map<String, Any?>,
+        offlineChange: (org.json.JSONObject) -> Unit
+    ) {
+        Api.post(endpoint, body, queueIfOffline = true) { result ->
+            when {
+                result.ok -> onChanged()
+                result.queued -> {
+                    LocalDb.get().patchMessage(messageId, offlineChange)
+                    onChanged()
+                }
+                else -> Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
             }
         }
     }

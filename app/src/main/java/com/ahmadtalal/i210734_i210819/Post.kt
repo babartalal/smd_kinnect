@@ -11,7 +11,9 @@ data class Post(
     val images: List<String> = emptyList(),
     val author: User? = null,
     val reactionCount: Int = 0,
-    val myReaction: String = ""
+    val myReaction: String = "",
+    /** Written offline and still waiting in pending_actions. */
+    val pending: Boolean = false
 ) {
     companion object {
         fun fromJson(json: JSONObject): Post {
@@ -25,7 +27,8 @@ data class Post(
                 images = images,
                 author = json.optJSONObject("author")?.let { User.fromJson(it) },
                 reactionCount = json.optInt("reactionCount"),
-                myReaction = json.optString("myReaction")
+                myReaction = json.optString("myReaction"),
+                pending = json.optBoolean("pending")
             )
         }
     }

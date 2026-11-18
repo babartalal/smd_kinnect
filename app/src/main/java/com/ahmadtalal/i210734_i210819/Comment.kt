@@ -14,7 +14,9 @@ data class Comment(
     val replyToAuthorName: String = "",
     val author: User? = null,
     val likeCount: Int = 0,
-    val likedByMe: Boolean = false
+    val likedByMe: Boolean = false,
+    /** Written offline and still waiting in pending_actions. */
+    val pending: Boolean = false
 ) {
     companion object {
         fun fromJson(json: JSONObject): Comment = Comment(
