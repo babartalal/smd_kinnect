@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared Kinnect design language (Kinnect_UI.pdf): colours and text/button styles. -->
+<resources>
+    <!-- surfaces -->
+    <color name="k_bg_app">#F2F0EC</color>
+    <color name="k_chip_gray">#EAE7E0</color>
+    <color name="k_divider">#DEDAD2</color>
+    <color name="k_teal_tint">#DFECEC</color>
+    <color name="k_story_bg_dark">#121212</color>
+
+    <!-- text -->
+    <color name="k_text_primary">#1C1B1A</color>
+    <color name="k_text_secondary">#5F5B55</color>
+    <color name="k_text_hint">#8A857D</color>
+
+    <!-- accents -->
+    <color name="k_badge_red">#B94A2C</color>
+    <color name="k_online_green">#2DA75A</color>
+    <color name="k_reaction_love">#D0364F</color>
+    <color name="k_reaction_yellow">#C98A12</color>
+    <color name="k_call_red">#C62828</color>
+
+    <!-- avatar backgrounds used across the design -->
+    <color name="k_avatar_purple">#7B4F7E</color>
+    <color name="k_avatar_maroon">#9A3B4E</color>
+    <color name="k_avatar_green">#2F6E50</color>
+    <color name="k_avatar_indigo">#4D5190</color>
+    <color name="k_avatar_brown">#8C5A2B</color>
+    <color name="k_avatar_olive">#6B5B2E</color>
+    <color name="k_avatar_slate">#3F6E8C</color>
+
+    <!-- text styles -->
+    <style name="Kinnect.Text" parent="">
+        <item name="android:textColor">@color/k_text_primary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- Big page titles: "Friends", "Menu", "Notifications" -->
+    <style name="Kinnect.Text.PageTitle">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <!-- Toolbar titles next to a back arrow: "Comments", "Create post" -->
+    <style name="Kinnect.Text.ToolbarTitle">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <!-- Section headings: "People", "Details", "Friend requests" -->
+    <style name="Kinnect.Text.Section">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Names in rows -->
+    <style name="Kinnect.Text.Name">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Kinnect.Text.Body">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Kinnect.Text.Secondary">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/k_text_secondary</item>
+    </style>
+
+    <style name="Kinnect.Text.Link">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/primary_teal</item>
+    </style>
+
+    <!-- White initials inside a coloured avatar circle -->
+    <style name="Kinnect.Text.AvatarInitials">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Small red count badge on an icon -->
+    <style name="Kinnect.Text.Badge">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/k_bg_badge_red</item>
+    </style>
+
+    <!--
+        Buttons. Use these on androidx.appcompat.widget.AppCompatButton (not a
+        plain Button, which Material3 would re-tint) or on a TextView.
+    -->
+    <style name="Kinnect.Button" parent="">
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <!-- Full-width pill: "Log in", "Create account" -->
+    <style name="Kinnect.Button.Primary">
+        <item name="android:background">@drawable/k_bg_button_teal</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Outlined pill: "Create new account" -->
+    <style name="Kinnect.Button.Outline">
+        <item name="android:background">@drawable/k_bg_button_outline_teal</item>
+        <item name="android:textColor">@color/primary_teal</item>
+    </style>
+
+    <!-- Rounded-rectangle teal: "Confirm", "Add friend", "Join" -->
+    <style name="Kinnect.Button.Teal">
+        <item name="android:background">@drawable/k_bg_button_teal_small</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Rounded-rectangle grey: "Delete", "Edit profile", "See more" -->
+    <style name="Kinnect.Button.Gray">
+        <item name="android:background">@drawable/k_bg_button_gray</item>
+        <item name="android:textColor">@color/k_text_primary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Filter chips: "All", "People", "Suggestions" -->
+    <style name="Kinnect.Chip" parent="Kinnect.Button">
+        <item name="android:background">@drawable/k_bg_pill_gray</item>
+        <item name="android:textColor">@color/k_text_primary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <style name="Kinnect.Chip.Selected">
+        <item name="android:background">@drawable/k_bg_pill_teal_tint</item>
+        <item name="android:textColor">@color/primary_teal</item>
+    </style>
+</resources>
